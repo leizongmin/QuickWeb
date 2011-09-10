@@ -31,6 +31,7 @@ exports.init_response = function (web, response, debug) {
 			options.expires = new Date();
 		if (isNaN(options.maxAge))
 			options.maxAge = 0;
+		options.expires.setTime(options.expires.getTime() + options.maxAge * 1000);
 			
 		var cookie = serializeCookie(name, val, options);
 		this.setHeader('Set-Cookie', cookie);
