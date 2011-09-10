@@ -12,5 +12,5 @@ exports.init_request = function (web, request, debug) {
 		req.filename = v.pathname;		// 文件名
 		
 		req.next();
-	});
+	}, true);
 }

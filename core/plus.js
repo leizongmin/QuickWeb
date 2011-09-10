@@ -65,9 +65,9 @@ var scanPlusFile = function (plus_dir) {
 				ret.push(path.resolve(plus_dir, v));
 			else {
 				try {
-					var f = v + '/index.js';
+					var f = path.resolve(plus_dir, v, 'index.js');
 					if (fs.statSync(f))
-						ret.push(path.resolve(plus_dir, f));
+						ret.push(f);
 				}
 				catch (err) {}
 			}
