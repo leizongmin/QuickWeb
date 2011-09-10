@@ -63,7 +63,7 @@ var scanPlusFile = function (plus_dir) {
 			var ext = path.extname(v);
 			if (ext == '.js')
 				ret.push(path.resolve(plus_dir, v));
-			else if (ext == '') {
+			else {
 				try {
 					var f = v + '/index.js';
 					if (fs.statSync(f))
