@@ -7,9 +7,8 @@
  
 var router = module.exports;
 
-var logger = require('../core/logger');
-var debug = router.logger = function (msg) {
-	logger.log('router', msg);
+var debug = function (msg) {
+	console.log('[router] ' + msg);
 }
 
 /** 允许注册的请求类型 */
