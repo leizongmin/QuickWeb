@@ -1,6 +1,3 @@
-plus = require('../core/plus');
+var plus = require('../core/plus');
 
-var server = function () {
-
-}
-
+plus.load('../plus');

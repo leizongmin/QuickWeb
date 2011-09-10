@@ -15,28 +15,37 @@ var debug = plus.logger = function (msg) {
 var fs = require('fs');
 var path = require('path');
 
+var server = require('./server');
+var request = require('./request');
+var response = require('./response');
 
 /**
- * 绑定公共方法、属性
+ * 载入插件
  *
- * @param {object} base_object 被绑定的对象
- * @param {object} plus_object 需要加入的对象
+ * @param {string} plus_dir 插件目录
  */
-bind = function (base_object, plus_object) {
-	var isFunction = typeof base_object == 'function' ? true : false;
-	for (i in plus_object) {
-		if (isFunction)
-			base_object.prototype[i] = plus_object[i];
-		else
-			base_object[i] = plus_object[i];
-	}
+plus.load = function (plus_dir) {
+	var files = scanPlusFile(plus_dir);
+	debug('Find ' + files.length + ' files.');
+	
+	files.forEach(function (v) {
+		debug('Load plus [' + v + ']');
+		var m = require(v);
+		
+		if (typeof m.init_server == 'function') {
+			m.init_server(server, debug);
+			debug('Register to [server].');
+		}
+		if (typeof m.init_request == 'function') {
+			m.init_request(request, debug);
+			debug('Register to [request].');
+		}
+		if (typeof m.init_response == 'function') {
+			m.init_response(response, debug);
+			debug('Register to [response].');
+		}
+	});
 }
-
-/**
- * 注册监听链表
- *
- * @param {object} base_object 被绑定的对象
- *  
 
 
 /**
@@ -52,12 +61,12 @@ var scanPlusFile = function (plus_dir) {
 		files.forEach(function (v, i) {
 			var ext = path.extname(v);
 			if (ext == '.js')
-				ret.push(v);
+				ret.push(path.resolve(plus_dir, v));
 			else if (ext == '') {
 				try {
 					var f = v + '/index.js';
 					if (fs.statSync(f))
-						ret.push(f);
+						ret.push(path.resolve(plus_dir, f));
 				}
 				catch (err) {}
 			}

@@ -1,5 +1,6 @@
+require('../core/plus').load('../plus');
 var web = require('../core/web');
-
+/*
 // 简单插件
 var request = require('../core/request');
 request.addListener(function (req) {
@@ -27,15 +28,18 @@ response.addListener('data', function (res) {
 }, true);
 
 console.log(response.ServerResponse.prototype._listener);
+*/
 
 s = web.create(80);
-
+/*
 // 注册server
 var server = require('../core/server');
 server.addListener(function (s, req, res) {
-	res.write('Request URL: ' + req.url);
+	res.end('filename:' + req.filename);
+	console.log(req.get);
 	// s.next();
 });
 server.addListener(function (s, req, res) {
 	res.end('-------Request URL: ' + req.url);
 });
+*/

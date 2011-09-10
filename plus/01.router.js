@@ -7,7 +7,7 @@
  
 var router = module.exports;
 
-var logger = require('./logger');
+var logger = require('../core/logger');
 var debug = router.logger = function (msg) {
 	logger.log('router', msg);
 }
