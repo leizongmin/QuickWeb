@@ -3,8 +3,8 @@
  *
  */
  
-exports.paths = '/index';
+exports.paths = '/';
 
 exports.get = function (server, request, response) {
-	response.end('OK');
+	response.end('Hello, world!');
 }

@@ -33,11 +33,11 @@ exports.init_server = function (web, server, debug) {
 		if (typeof m.head == 'function')
 			router.register('head', m.paths, m.head);
 	});
-	debug(router.handlers);
+	// debug(router.handlers);
 	
 	/** ×¢²á¼àÌýÆ÷ */
 	server.addListener(function (svr, req, res) {
-		debug(req.method + '  ' + req.filename);
+		// debug(req.method + '  ' + req.filename);
 		var h = router.handler(req.method, req.filename);
 		if (h) {
 			req.path = h.value;
