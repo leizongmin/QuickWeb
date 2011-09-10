@@ -5,6 +5,8 @@
  
 var fs = require('fs'); 
 var path = require('path');
+
+var mimes = require('./mimes');
  
 exports.init_server = function (web, server, debug) {
 	server.addListener(function (svr, req, res) {
@@ -13,18 +15,19 @@ exports.init_server = function (web, server, debug) {
 			var filename = path.resolve((wwwroot ? wwwroot : '.') + req.filename);
 			fs.readFile(filename, function (err, data) {
 				if (err) {
-					res.writeHead(500);
-					res.end(err.toString());
+					res.writeHead(500, {'Content-type': 'text/html'});
+					res.end('<h3>' + err.toString() + '</h3>');
 				}
 				else {
+					res.setHeader('Content-type', mimes.get(path.extname(filename).substr(1)));
 					res.end(data);
 				}
 			});
 		}
 		catch (err) {
-			res.writeHead(404);
+			res.writeHead(404, {'Content-type': 'text/html'});
 			res.end('File not found.');
-			debug('Read file error: ' + err);
+			debug('<h3>Read file error: ' + err + '</h3>');
 		}
 	});
 }

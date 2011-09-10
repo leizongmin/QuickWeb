@@ -6,5 +6,7 @@
 exports.paths = '/';
 
 exports.get = function (server, request, response) {
-	response.end('Hello, world!');
+	console.log(request.cookie);
+	response.setCookie('bb', 'mmqq', {maxAge: 600});
+	response.end('Hello, world! ');
 }
