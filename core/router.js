@@ -55,7 +55,7 @@ router.register = function (method, paths, handler) {
 		names[i] = v.substr(2);
 	});
 	// 替换正则表达式
-	var paths = paths.replace(/\/:[\w\d_$]+/g, '(/[^/]+)');
+	var paths = paths.replace(/\/:[\w\d_$]+/g, '/([^/]+)');
 	paths = '^' + paths + '$';
 	var pathreg = new RegExp(paths);
 	
@@ -106,7 +106,7 @@ router.handler = function (method, paths) {
 				value:	{}
 			}
 			r.names.forEach(function (v, i) {
-				ret.value[v] = pv[i + 1].substr(1);
+				ret.value[v] = pv[i + 1];
 			});
 			
 			return ret;
