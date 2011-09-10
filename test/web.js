@@ -1,4 +1,4 @@
-var server = require('../core/server');
+var web = require('../core/web');
 
 // 简单插件
 var request = require('../core/request');
@@ -24,8 +24,18 @@ response.addListener('data', function (res) {
 response.addListener('data', function (res) {
 	console.log('------响应完毕!');
 	res.next();
-});
+}, true);
 
 console.log(response.ServerResponse.prototype._listener);
 
-s = server.create(80);
+s = web.create(80);
+
+// 注册server
+var server = require('../core/server');
+server.addListener(function (s, req, res) {
+	res.write('Request URL: ' + req.url);
+	// s.next();
+});
+server.addListener(function (s, req, res) {
+	res.end('-------Request URL: ' + req.url);
+});
