@@ -38,3 +38,26 @@ web.create = function (port, hostname) {
 	s.listen(port, hostname);
 	return s;
 }
+
+/** 服务器配置 */
+web._config = {}
+
+/**
+ * 设置
+ *
+ * @param {string} name 名称
+ * @param {object} value 值
+ */
+web.set = function (name, value) {
+	web._config[name] = value;
+}
+
+/**
+ * 取配置
+ *
+ * @param {string} name 名称
+ * @return {object}
+ */
+web.get = function (name) {
+	return web._config[name];
+}

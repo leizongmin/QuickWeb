@@ -5,7 +5,7 @@
 
 var url = require('url'); 
  
-exports.init_request = function (request) {
+exports.init_request = function (web, request, debug) {
 	request.addListener(function (req) {
 		var v = url.parse(req.url, true);
 		req.get = v.query;				// 问号后面的参数

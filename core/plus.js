@@ -18,6 +18,7 @@ var path = require('path');
 var server = require('./server');
 var request = require('./request');
 var response = require('./response');
+var web = require('./web');
 
 /**
  * 载入插件
@@ -33,15 +34,15 @@ plus.load = function (plus_dir) {
 		var m = require(v);
 		
 		if (typeof m.init_server == 'function') {
-			m.init_server(server, debug);
+			m.init_server(web, server, debug);
 			debug('Register to [server].');
 		}
 		if (typeof m.init_request == 'function') {
-			m.init_request(request, debug);
+			m.init_request(web, request, debug);
 			debug('Register to [request].');
 		}
 		if (typeof m.init_response == 'function') {
-			m.init_response(response, debug);
+			m.init_response(web, response, debug);
 			debug('Register to [response].');
 		}
 	});
