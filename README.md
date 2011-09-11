@@ -260,4 +260,9 @@ exports.get = function (server, request, response) {
 在模块中，通过输出字符串类型paths来说明其要匹配的请求路径，然后输出相应的get、post、delete、put、head
 函数来注册对应的请求方法。
 
-处理程序接收三个参数，分别为server、request、response，其中可以通过
+处理程序接收三个参数，分别为server、request、response：
+
++ **server** 可以通过server来访问服务器的全局信息
++ **request** 当前请求的request实例
++ **response** 当前请求的response实例
+
