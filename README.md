@@ -266,3 +266,6 @@ exports.get = function (server, request, response) {
 + **request** 当前请求的request实例
 + **response** 当前请求的response实例
 
+可以通过`request.path`来访问匹配的PATH数据，如上例代码，如果访问的路径为“/lei/hello”，则匹配后
+`request.path.username = 'lei'`，`request.path.filename = 'hello'`
+
