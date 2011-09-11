@@ -93,4 +93,30 @@ init_request函数接收三个参数：
 
 ### 注册处理链
 
-处理链的运行方式跟
+处理链的运行方式跟Nodejs的事件是差不多的，但是注册到处理链中的处理函数是按照一定的顺序
+来运行的，必须在当前的处理函数处理完毕，并调用对象的.next()方法来通知下一个处理函数运行，
+或者通过.onready()方法来提前结束（忽略剩下的处理函数）。
+
+注册处理链通过被注册对象的addListener方法来进行，以request为例：
+
+```javascript
+request.addListener(function (req) {
+	// 处理代码
+	req.next();
+});
+```
+
+注册到处理链中的函数会在每次新请求开始时运行，相当于整个请求过程中的初始化阶段。处理函数
+接收一个参数，即当前的ServerRequest实例。如上例中的代码：
+
+```
+var v = url.parse(req.url, true);
+req.get = v.query || {};				// 问号后面的参数
+req.filename = v.pathname || '/';		// 文件名
+```
+
+该插件运行完毕之后，会为该ServerRequest实例增加了两个属性：
+
++ get：请求的GET参数
++ filename 请求的文件名，即URL中?前面部分，可以为后面的router和file插件提供信息
+
