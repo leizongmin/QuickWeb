@@ -173,3 +173,32 @@ req.filename = v.pathname || '/';		// 文件名
 + **get** 请求的GET参数
 + **filename** 请求的文件名，即URL中?前面部分，可以为后面的router和file插件提供信息
 
+
+## 注册静态方法
+
+比如Web.js中，response对象有cookie、clearCookie、sendJSON、sendFile这些方法，在QuickWeb
+中是通过注册静态方法来完成的。以下是一个注册sendJSON方法的例子：
+
+```javascript
+/**
+ * 发送JSON数据
+ *
+ * @param {object} data
+ */
+response.ServerResponse.prototype.sendJSON = function (data) {
+	try {
+		var json = JSON.stringify(data);
+		this.end(json.toString());
+	}
+	catch (err) {
+		debug(err);
+		this.writeHead(500);
+		this.end(err.toString());
+	}
+}
+```
+
+其原理就是，在ServerResponse对象的原型中增加一个sendJSON方法，在实际运行时，就可以通过this来
+访问当前的ServerRequest实例。
+
+
