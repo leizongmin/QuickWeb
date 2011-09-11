@@ -174,7 +174,7 @@ req.filename = v.pathname || '/';		// 文件名
 + **filename** 请求的文件名，即URL中?前面部分，可以为后面的router和file插件提供信息
 
 
-## 注册静态方法
+### 注册静态方法
 
 比如Web.js中，response对象有cookie、clearCookie、sendJSON、sendFile这些方法，在QuickWeb
 中是通过注册静态方法来完成的。以下是一个注册sendJSON方法的例子：
@@ -198,7 +198,47 @@ response.ServerResponse.prototype.sendJSON = function (data) {
 }
 ```
 
-其原理就是，在ServerResponse对象的原型中增加一个sendJSON方法，在实际运行时，就可以通过this来
+其原理是：在ServerResponse对象的原型中增加一个sendJSON方法，在实际运行时，就可以通过this来
 访问当前的ServerRequest实例。
 
+
+## 内置的插件
+
+### Cookie
+
+加载Cookie插件之后，可以通过`request.cookie`来获取Cookie，通过`response.setCookie()`和`response.clearCookie()`
+来设置或清除Cookie。
+
+
+### GET
+
+加载Get插件之后，可以通过`request.get`来获取?后面的CET参数，以及`request.filename`来获取?前面部分。
+
+
+### POST
+
+加载POST插件之后，如果请求的方法为POST，则可以通过`request.post`来获取提交的POST参数，以及`request.file`来
+获取上传上来的文件。
+
+
+### Response
+
+加载Response插件之后，可以通过`response.sendJSON()`来简化返回数据操作。
+
+
+### file
+
+加载file插件之后，在启动QuickWeb服务器前，通过`web.set('wwwroot', '网站目录')`来设置网站的目录，
+当其他插件无法处理某一请求时，会尝试检查request.filename是否为网站目录下的一个文件，并返回相应的
+结果。
+
+
+### router
+
+加载router插件之后，在启动QuickWeb服务器前，通过`web.set('code_path', '程序目录')`来设置你的处理程序
+所在的目录。在QuickWeb初始化新请求中的ServerRequest，ServerResponse实例后，将控制权交给router时，它会
+尝试匹配你注册的路径处理程序，如果匹配成功，则执行你注册的代码。（后面将详细介绍）
+
+
+## 路由及处理程序
 
