@@ -39,32 +39,32 @@ var s = web.create(SERVER_PORT);
 
 ## 插件的运行机制
 
-在启动服务器之前，系统会先通过plus.load(PLUS_PATH)来载入插件：PLUS_PATH是插件
+在启动服务器之前，系统会先通过`plus.load(PLUS_PATH)`来载入插件：PLUS_PATH是插件
 所在的目录，在插件目录里面的所有.js文件，或者子目录里面存在index.js的都将会被
 加载；插件有两种类型：处理链与静态方法，可以注册到server、request、response这
 三个对象上。
 
 以下是plus目录中的文件列表：
 
-+ 01.router	路由
-+ 99.file 静态文件服务
-+ 00.cookie.js Cookie解析
-+ 00.get.js GET参数解析
-+ 00.post.js POST数据解析
-+ 00.response.js 扩展response的方法
++ **01.router**	路由
++ **99.file** 静态文件服务
++ **00.cookie.js** Cookie解析
++ **00.get.js** GET参数解析
++ **00.post.js** POST数据解析
++ **00.response.js** 扩展response的方法
 
 插件的加载顺序决定了它的执行顺序，有时候需要让插件在最前或最后运行，或者某个插件
 需要依赖另外的插件来先执行，因此，在QuickWeb中约定，通过在插件文件名中加上一个两
 位数的数字以及一个小数点了指定其执行顺序，数字越小顺序越靠前：
 
-+ 00.post.js、00.get.js、00.cookie.js表示在所有其他插件运行的前面
-+ 01.router需要依赖与00.get.js
-+ 99.file是静态文件服务，仅当其他插件无法处理请求时，才尝试判断是否为请求一个静态文件
++ **00.post.js**、**00.get.js**、**00.cookie.js**表示在所有其他插件运行的前面
++ **01.router**需要依赖与**00.get.js**
++ **99.file**是静态文件服务，仅当其他插件无法处理请求时，才尝试判断是否为请求一个静态文件
 
 
 ## 插件的编写
 
-以下是解析GET参数的插件00.get.js的代码：
+以下是解析GET参数的插件**00.get.js**的代码：
 
 ```javascript
 var url = require('url'); 
@@ -80,15 +80,15 @@ exports.init_request = function (web, request, debug) {
 }
 ```
 
-插件需要注册到那个对象上，是通过其输出的函数来确定的。如输出init_request表示需要注册到
-request对象上，相应地，注册到response对象需要输出init_response，注册到server对象需要输出
-init_server。
+插件需要注册到那个对象上，是通过其输出的函数来确定的。如输出**init_request**表示需要注册到
+request对象上，相应地，注册到response对象需要输出**init_response**，注册到server对象需要输出
+**init_server**。
 
 init_request函数接收三个参数：
 
-+ web QuickWeb对象，可以通过它来获取系统配置信息
-+ request request对象，通过他来完成注册功能
-+ debug 调试输出函数
++ **web** QuickWeb对象，可以通过它来获取系统配置信息
++ **request** request对象，通过他来完成注册功能
++ **debug** 调试输出函数
 
 
 ### 注册处理链
@@ -117,6 +117,6 @@ req.filename = v.pathname || '/';		// 文件名
 
 该插件运行完毕之后，会为该ServerRequest实例增加了两个属性：
 
-+ get：请求的GET参数
-+ filename 请求的文件名，即URL中?前面部分，可以为后面的router和file插件提供信息
++ **get** 请求的GET参数
++ **filename** 请求的文件名，即URL中?前面部分，可以为后面的router和file插件提供信息
 
