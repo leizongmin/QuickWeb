@@ -45,19 +45,21 @@ var s = web.create(SERVER_PORT);
 三个对象上。
 
 以下是plus目录中的文件列表：
-	01.router	路由
-	99.file 静态文件服务
-	00.cookie.js Cookie解析
-	00.get.js GET参数解析
-	00.post.js POST数据解析
-	00.response.js 扩展response的方法
+
++ 01.router	路由
++ 99.file 静态文件服务
++ 00.cookie.js Cookie解析
++ 00.get.js GET参数解析
++ 00.post.js POST数据解析
++ 00.response.js 扩展response的方法
 
 插件的加载顺序决定了它的执行顺序，有时候需要让插件在最前或最后运行，或者某个插件
 需要依赖另外的插件来先执行，因此，在QuickWeb中约定，通过在插件文件名中加上一个两
 位数的数字以及一个小数点了指定其执行顺序，数字越小顺序越靠前：
-	00.post.js、00.get.js、00.cookie.js表示在所有其他插件运行的前面
-	01.router需要依赖与00.get.js
-	99.file是静态文件服务，仅当其他插件无法处理请求时，才尝试判断是否为请求一个静态文件
+
++ 00.post.js、00.get.js、00.cookie.js表示在所有其他插件运行的前面
++ 01.router需要依赖与00.get.js
++ 99.file是静态文件服务，仅当其他插件无法处理请求时，才尝试判断是否为请求一个静态文件
 
 
 ## 插件的编写
@@ -83,9 +85,10 @@ request对象上，相应地，注册到response对象需要输出init_response�
 init_server。
 
 init_request函数接收三个参数：
-	web QuickWeb对象，可以通过它来获取系统配置信息
-	request request对象，通过他来完成注册功能
-	debug 调试输出函数
+
++ web QuickWeb对象，可以通过它来获取系统配置信息
++ request request对象，通过他来完成注册功能
++ debug 调试输出函数
 
 
 ### 注册处理链
