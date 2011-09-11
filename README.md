@@ -30,7 +30,28 @@ if (req.method.toLowerCase() == 'post') {
 if (req.method == "GET") router.getHandler(req, res, path, exports.server);
 ```
 
-如果你要增加一个处理
+如果你要增加一个处理DELETE方法的功能，或许还要在后面多加一句
+`if (req.method == "DELETE") router.deleteHandler(req, res, path, exports.server);`
+然后再在router.js文件里面加一个方法`router.deleteHandler`，
+再在web.js文件里面加一个方法`web.delete`来注册PATH。
+事情还没有结束呢，你还要在你的程序中写上
+
+```javascript
+web.delete({
+	'/:filename': function () { /* 你的代码 */ }
+});
+```
+
+然而，在QuickWeb中，你只需要将一个名叫delete.js的插件放在plus目录里面，然后在你的处理
+程序里面这样写：
+
+```javascript
+exports.delete = function (server, request, response) {
+	// 你的处理代码
+}
+```
+
+当哪天你不想要这个处理DELETE方法的功能时，直接将那个delete.js删除就好了。
 
 
 ## QuickWeb的“简单化部署”
