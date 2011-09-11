@@ -242,3 +242,22 @@ response.ServerResponse.prototype.sendJSON = function (data) {
 
 ## 路由及处理程序
 
+路由功能需要加载router插件才能使用。
+在启动QuickWeb时，需要设置一个名为'code_path'的属性来指示处理程序所在的目录。加载router插件时，它会
+扫描code_path目录下的.js文件，并尝试加载它。以下是一个简单的示例代码：
+
+```javascript
+exports.paths = '/:username/:filename';
+
+exports.get = function (server, request, response) {
+	var html = '';
+	for (var i in request.path)
+		html += i + ' = ' + request.path[i] + '\n';
+	response.end(html);
+}
+```
+
+在模块中，通过输出字符串类型paths来说明其要匹配的请求路径，然后输出相应的get、post、delete、put、head
+函数来注册对应的请求方法。
+
+处理程序接收三个参数，分别为server、request、response，其中可以通过

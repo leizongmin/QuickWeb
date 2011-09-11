@@ -8,7 +8,7 @@ exports.paths = '/';
 exports.get = function (server, request, response) {
 	console.log(request.cookie);
 	response.setCookie('bb', 'mmqq', {maxAge: 600});
-	response.end('Hello, world! ');
+	response.end('Hello, world! \n\n' + '网站的根目录：' + server.get('wwwroot') + '\n\n');
 }
 
 exports.post = function (server, request, response) {

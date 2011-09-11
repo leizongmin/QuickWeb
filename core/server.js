@@ -12,6 +12,8 @@ var debug = server.logger = function (msg) {
 	logger.log('server', msg);
 }
 
+var web = require('./web');
+
 
 /**
  * Server对象
@@ -62,4 +64,25 @@ server.ServerInstance.prototype.next = function () {
 		if (self.onready)
 			self.onready();
 	}
+}
+
+
+/**
+ * 设置
+ *
+ * @param {string} name 名称
+ * @param {object} value 值
+ */
+server.ServerInstance.prototype.set = function (name, value) {
+	return web.set(name, value);
+}
+
+/**
+ * 取配置
+ *
+ * @param {string} name 名称
+ * @return {object}
+ */
+server.ServerInstance.prototype.get = function (name) {
+	return web.get(name);
 }
