@@ -1,4 +1,4 @@
-# QuickWeb
+# QuickWeb [Web框架中的中国军铲](http://video.baidu.com/v?ct=301989888&rn=20&pn=0&db=0&s=8&word=%D6%D0%B9%FA%BE%FC%B2%F9&fr=ala0)
 
 ## 为什么要写QuickWeb
 
