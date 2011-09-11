@@ -49,12 +49,20 @@ web.delete({
 + 然后在你的处理程序里面这样写：
 
 ```javascript
+exports.paths = '/:filename';
 exports.delete = function (server, request, response) {
 	// 你的处理代码
 }
 ```
 
 当哪天你不想要这个处理DELETE方法的功能时，直接将那个delete.js删除就好了。
+如果你想要加上GET的处理代码，也只需要在后面加上下面代码：
+
+```javascript
+exports.get = function (server, request, response) {
+	// 你的处理代码
+}
+```
 
 
 ## QuickWeb的“简单化部署”
