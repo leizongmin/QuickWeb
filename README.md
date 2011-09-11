@@ -11,6 +11,27 @@ Web.js的主旨是“简单化部署”，它的做法是尽可能的少的输�
 处理程序放在少数的几个文件里，以显出文件规模的小。我觉得它没有考虑
 到文件的组织问题。
 
+放弃Web.js的另一个原因是它不支持PUT、DELETE、HEAD这些请求方法，尽管
+这些不是很常用，但是当真要用到时，才发现要扩展起来不那么容易。Web.js
+中处理各个请求方法的代码如下：
+
+```javascript
+if (req.method.toLowerCase() == 'post') {
+	var form = new formidable.IncomingForm();
+	form.parse(req, function (err, fields, files) {
+		req.data = fields;
+		for (var key in files) {
+			if (files[key].path)
+				req.data[key] = fs.readFileSync(files[key].path).toString('utf8');
+		}
+		router.postHandler(req, res, path, exports.server);
+	});
+}
+if (req.method == "GET") router.getHandler(req, res, path, exports.server);
+```
+
+如果你要增加一个处理
+
 
 ## QuickWeb的“简单化部署”
 

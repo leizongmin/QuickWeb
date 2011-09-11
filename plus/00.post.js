@@ -9,7 +9,7 @@ exports.init_request = function (web, request, debug) {
 	request.addListener(function (req) {
 		
 		var method = req.method.toLowerCase();
-		if (method == 'post' || method == 'put') {
+		if (method == 'post') {
 			// 解析
 			var form = new formidable.IncomingForm();
 			form.parse(req.origin, function (err, fields, files) {
