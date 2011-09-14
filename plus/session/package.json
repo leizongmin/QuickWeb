@@ -1,0 +1,1 @@
+{	"name":			"session",	"main":			"./session.js",	"dependencies":	{		"cookie":	"*"	}}

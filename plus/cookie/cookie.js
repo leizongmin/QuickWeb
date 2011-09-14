@@ -34,6 +34,11 @@ exports.init_response = function (web, response, debug) {
 		options.expires.setTime(options.expires.getTime() + options.maxAge * 1000);
 			
 		var cookie = serializeCookie(name, val, options);
+		
+		var oldcookie = this.getHeader('Set-Cookie');
+		if (typeof oldcookie != 'undefined')
+			cookie = oldcookie + '\r\nSet-Cookie: ' + cookie;
+			
 		this.setHeader('Set-Cookie', cookie);
 	}
 	

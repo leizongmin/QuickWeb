@@ -31,6 +31,15 @@ web.create = function (port, hostname) {
 		req.onready = function () {
 			var res = new response.ServerResponse(_res);
 			var si = new server.ServerInstance(req, res);
+			
+			/* 用于在request, response, server中访问另外的对象 */
+			var _link = {
+				request:	req,
+				response:	res,
+				server:		si
+			}
+			req._link = res._link = si._link = _link;
+			
 			si.next();
 		}
 		req.init();
