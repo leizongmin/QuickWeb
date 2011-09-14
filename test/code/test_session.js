@@ -5,10 +5,17 @@
 exports.paths = '/session';
 
 exports.get = function (server, request, response) {
-	request.sessionStart();
+	server.sessionStart();
 	
-	if (typeof request.session.count == 'undefined')
-		request.session.count = 0;
-		
-	response.end('第' + (++ request.session.count) + '次');
+	if (request.get.op == 'clear') {
+		server.clearSession();
+		response.end('已清空session');
+	}
+	else {
+		// console.log(server);
+		if (typeof server.session.count == 'undefined')
+			server.session.count = 0;
+			
+		response.end('第' + (++ server.session.count) + '次');
+	}
 }
