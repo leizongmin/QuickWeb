@@ -2,6 +2,8 @@
 
 ## _QuickWeb现在连测试版都还没出来，不保证代码向后兼容，使用需谨慎呐_
 
+## 测试地址：<http://quick.cnodejs.net/>
+
 ## 为什么要写QuickWeb
 
 在此之前，我用过小问的[Web.js](https://github.com/iwillwen/Web.js)，当写的处理程序逐渐增大时，那种将各个
@@ -89,7 +91,6 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 以下是一个最基本的QuickWeb启动代码：
 
 ```javascript
-var plus = require('./core/plus');
 var web = require('./core/web');
 
 var PLUS_PATH = './plus';			// 插件目录
@@ -216,7 +217,7 @@ response.ServerResponse.prototype.sendJSON = function (data) {
 ### 高级功能
 
 在注册的静态方法里面，可以通过this._link来访问当前请求的ServerInstance、ServerRequest、
-ServerResponse实例，如Cookie插件中的代码如下：
+ServerResponse实例，如session插件中的代码如下：
 
 ```javascript
 request.ServerInstance.prototype.sessionStart = function () {
