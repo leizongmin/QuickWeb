@@ -1,7 +1,18 @@
-<h1>Hello, world!</h2>
-<hr>
-<form method="post" action="/" enctype="multipart/form-data">
-	<input type="hidden" name="abc" value="efg" />
-	<input type="file" name="icon" />
-	<input type="submit" />
-</form>
+<style>
+li {
+	padding: 10px 0px;
+}
+</style>
+
+<h1>QuickWeb 测试页面</h1>
+
+<ul>
+	<li><a href="/cookie">测试Cookie</a></li>
+	<li><a href="/session">测试Session</a></li>
+	<li><a href="/post">测试POST</a></li>
+	<li><a href="/2011/9/14">测试RESTFUL路由</a></li>
+	<li><a href="/send?op=json">测试sendJSON</a></li>
+	<li><a href="/send?op=file">测试sendFile</a></li>
+	<li><a href="/render">测试render</a></li>
+	<li><a href="/render?op=file">测试renderFile</a></li>
+</ul>

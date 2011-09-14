@@ -60,6 +60,7 @@ web._config = {}
  */
 web.set = function (name, value) {
 	web._config[name] = value;
+	debug('set ' + name + '=' + value);
 }
 
 /**
