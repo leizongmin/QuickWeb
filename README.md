@@ -84,7 +84,7 @@ exports.get = function (server, request, response) {
 QuickWeb的核心只封装了Nodejs内置模块中的http.Server、http.ServerRequest、
 http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请求必须
 依靠加载的各种插件来完成。比如cookie，session，router，POST数据解析
-等待这些功能都需要相应的插件。
+等等这些功能都需要相应的插件。
 
 以下是一个最基本的QuickWeb启动代码：
 
@@ -96,34 +96,34 @@ var PLUS_PATH = './plus';			// 插件目录
 var SERVER_PORT = 80;				// 服务器端口
 
 // 载入插件并启动服务器
-plus.load(PLUS_PATH);
+web.loadPlus(PLUS_PATH);
 var s = web.create(SERVER_PORT);
 ```
 
 
-## 插件的运行机制
+## 插件的加载
 
-在启动服务器之前，系统会先通过`plus.load(PLUS_PATH)`来载入插件：PLUS_PATH是插件
-所在的目录，在插件目录里面的所有.js文件，或者子目录里面存在index.js的都将会被
-加载；插件有两种类型：处理链与静态方法，可以注册到server、request、response这
-三个对象上。
+在启动服务器时，你需要执行web.loadPlus(PLUS_PATH)来扫描插件包并加载。
+插件通过package.json文件来描述，其格式如下：
 
-以下是plus目录中的文件列表：
+```javascript
+{
+	"name":			"file_server",
+	"main":			"./file.js",
+	"sequence":		"last",
+	"dependencies":	{
+		"get":	"*"
+	}
+}
+```
 
-+ **01.router**	路由
-+ **99.file** 静态文件服务
-+ **00.cookie.js** Cookie解析
-+ **00.get.js** GET参数解析
-+ **00.post.js** POST数据解析
-+ **00.response.js** 扩展response的方法
++ **name**：插件的名称
++ **main**：插件的主文件
++ **sequence**：加载顺序，可以为front(最前面)、last(最后面)、或者留空
++ **dependencies**：依赖关系，如果该插件需要依赖另外的插件，则在此说明
 
-插件的加载顺序决定了它的执行顺序，有时候需要让插件在最前或最后运行，或者某个插件
-需要依赖另外的插件来先执行，因此，在QuickWeb中约定，通过在插件文件名中加上一个两
-位数的数字以及一个小数点了指定其执行顺序，数字越小顺序越靠前：
-
-+ **00.post.js**、**00.get.js**、**00.cookie.js**表示在所有其他插件运行的前面
-+ **01.router**需要依赖与**00.get.js**
-+ **99.file**是静态文件服务，仅当其他插件无法处理请求时，才尝试判断是否为请求一个静态文件
+执行web.loadPlus()时，系统会自动根据插件package.json文件所指定的加载顺序
+及依赖关系自动调整其加载顺序。如果没有找到插件所依赖的其他插件，则报错。
 
 
 ## 插件的编写
@@ -213,6 +213,42 @@ response.ServerResponse.prototype.sendJSON = function (data) {
 访问当前的ServerRequest实例。
 
 
+### 高级功能
+
+在注册的静态方法里面，可以通过this._link来访问当前请求的ServerInstance、ServerRequest、
+ServerResponse实例，如Cookie插件中的代码如下：
+
+```javascript
+request.ServerInstance.prototype.sessionStart = function () {
+	// 必须要有Cookie模块的支持
+	if (typeof this._link.request.cookie == 'undefined') {
+		debug('sessionStart error: cookie disable!');
+		return;
+	}
+		
+	// 如果为首次打开SESSION
+	if (typeof this._link.request.cookie._session_id == 'undefined') {
+		var session_id = new Date().getTime() * 100000 + Math.floor(Math.random() * 100000);
+		session_data[session_id] = {data: {} }
+		this._link.response.setCookie('_session_id', session_id, { maxAge: 3600 });
+		this._link.request.cookie._session_id = session_id;
+	}
+	else {
+		var session_id = this._link.request.cookie._session_id;
+	}
+		
+	// 如果没有该SESSION ID，则初始化
+	if (typeof session_data[session_id] == 'undefined') {
+		session_data[session_id] = {data: {} }
+	}
+		
+	this.session = session_data[session_id].data;
+	session_data[session_id].timestamp = new Date().getTime();
+}
+```
+
+
+
 ## 内置的插件
 
 ### Cookie
@@ -232,19 +268,32 @@ response.ServerResponse.prototype.sendJSON = function (data) {
 获取上传上来的文件。
 
 
-### Response
+### Response_send
 
-加载Response插件之后，可以通过`response.sendJSON()`来简化返回数据操作。
+加载Response插件之后，可以通过`response.sendJSON()`，`response.sendFile()`来简化返回数据操作。
 
 
-### file
+### file_server
 
-加载file插件之后，在启动QuickWeb服务器前，通过`web.set('wwwroot', '网站目录')`来设置网站的目录，
+加载file_server插件之后，在启动QuickWeb服务器前，通过`web.set('wwwroot', '网站目录')`来设置网站的目录，
 当其他插件无法处理某一请求时，会尝试检查request.filename是否为网站目录下的一个文件，并返回相应的
 结果。
 
 
-### router
+### session
+
+加载session插件之后，可以通过`server.sessionStart()`来开启session，并通过`server.session`来
+访问session数据。可以通过`web.set('session_maxage', 'session存活时间ms')`，
+`web.set('session_recover', '回收扫描周期ms')`来进行设置。
+
+
+### render
+
+加载render插件之后，可以通过`server.render()`或`server.renderFile()`来使用mustache引擎渲染模板。
+可以通过`web.set('template_path', '模板目录')`来设置模板所在目录。
+
+
+### RESTful_router
 
 加载router插件之后，在启动QuickWeb服务器前，通过`web.set('code_path', '程序目录')`来设置你的处理程序
 所在的目录。在QuickWeb初始化新请求中的ServerRequest，ServerResponse实例后，将控制权交给router时，它会
