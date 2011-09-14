@@ -1,5 +1,7 @@
 /**
  * QuickWeb Server对象
+ * 
+ * 用于处理HTTP请求
  *
  * @author leizongmin<leizongmin@gmail.com>
  * @version 0.1

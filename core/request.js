@@ -1,6 +1,8 @@
 /**
  * QuickWeb Request
  *
+ * 用于对HTTP请求进行预处理
+ *
  * @author leizongmin<leizongmin@gmail.com>
  * @version 0.1
  */
