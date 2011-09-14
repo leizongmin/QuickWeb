@@ -1,0 +1,1 @@
+{	"name":			"restful_router",	"main":			"./index.js",	"sequence":		"after get",	"dependencies":	["get"]}

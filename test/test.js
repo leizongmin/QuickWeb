@@ -17,34 +17,40 @@ test = {
 			console.log('ok  --  ' + msg);
 		else {
 			console.log('----------------------------------------------');
-			console.log('| not ok  --  ' + msg);
+			console.log(' not ok  --  ' + msg);
 			console.log('----------------------------------------------');
 		}
 	}
 }
 
 /**
- * 搜索本目录以test_开头的文件，执行其中以test_开头的函数
+ * 搜索本目录以test_开头的js文件
  */
 console.log('|----------------------  start  ----------------------|');
 try {
-	var files = fs.readdirSync(__dirname);
+	if (process.argv.length < 2) {
+		console.log(process.argv.length);
+		var files = fs.readdirSync(__dirname);
+	}
+	else {
+		var files = process.argv.slice(2);
+		files.forEach(function (v, i) {
+			if (v.substr(0, 5) != 'test_')
+				v = 'test_' + v;
+			if (v.substr(-3) != '.js')
+				v = v + '.js';
+			files[i] = v;
+		});
+	}
 	files.forEach(function (f) {
 		if (f.substr(0, 5) != 'test_')
 			return;
-			
-		console.log('\n--------  ' + f.substr(5, f.length - 8));
+		// console.log('\n--------  ' + f.substr(5, f.length - 8));
 		var m = require(path.resolve(__dirname, f));
-		for (var i in m) {
-			if (i.substr(0, 5) != 'test_')
-				continue;
-			if (typeof m[i] == 'function')
-				m[i]();
-		}
 	});
 }
 catch (err) {
-	console.log(err);
+	console.log('\nTEST ERROR:\n' + err.stack);
 }
 
 console.log('\n|--------------------  Finished.  --------------------|');
