@@ -5,11 +5,10 @@
  * @version 0.1
  */
 
-var plus = require('./core/plus');
-var web = require('./core/web');
+var web = require('../core/web');
 
 
-var PLUS_PATH = './plus';			// 插件目录
+var PLUS_PATH = '../plus';			// 插件目录
 var SERVER_PORT = 80;				// 服务器端口
 
 
@@ -19,6 +18,6 @@ web.set('code_path', './code');		// 程序目录
 
 
 // 载入插件并启动服务器
-plus.load(PLUS_PATH);
+web.loadPlus(PLUS_PATH);
 var s = web.create(SERVER_PORT);
 

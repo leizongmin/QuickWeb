@@ -1,4 +1,7 @@
 {
-   "name":"QuickWeb",
-   "main":"./start.js"
+   "name":			"QuickWeb",
+   "main":			"./core/web.js",
+   "dependencies":	{
+		"formidable":	"*"
+	}
 }

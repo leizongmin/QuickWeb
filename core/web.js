@@ -16,6 +16,7 @@ var http = require('http');
 var request = require('./request');
 var response = require('./response');
 var server = require('./server');
+var plus = require('./plus');
 
 /**
  * 创建服务器
@@ -60,4 +61,20 @@ web.set = function (name, value) {
  */
 web.get = function (name) {
 	return web._config[name];
+}
+
+/**
+ * 载入插件
+ *
+ * @param {array} plus_dir
+ */
+web.loadPlus = function (plus_dir) {
+	if (typeof plus_dir == 'string') {
+		plus.scan(plus_dir);
+	}
+	else {
+		for (var i in plus_dir)
+			plus.scan(plus_dir[i]);
+	}
+	plus.load();
 }
