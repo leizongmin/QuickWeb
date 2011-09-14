@@ -47,10 +47,7 @@ web.delete({
 });
 ```
 
-然而，在QuickWeb中，你只需要
-
-+ 将一个名叫delete.js的插件放在plus目录里面
-+ 然后在你的处理程序里面这样写：
+然而，在QuickWeb中，你只需要在你的处理程序里面这样写：
 
 ```javascript
 exports.paths = '/:filename';
@@ -59,7 +56,6 @@ exports.delete = function (server, request, response) {
 }
 ```
 
-当哪天你不想要这个处理DELETE方法的功能时，直接将那个delete.js删除就好了。
 如果你想要加上GET的处理代码，也只需要在后面加上下面代码：
 
 ```javascript
@@ -74,8 +70,6 @@ exports.get = function (server, request, response) {
 + 你可以很方便的根据自己的需求来量身定做适合自己业务的插件，**BigPipe**神马的，都不在话下
 + 为你的系统增加功能，你不需要修改任何核心代码，你只需要按照一定的格式写好你的
 插件，然后它复制到特定目录即可；哪天你不想要这个功能了，直接将那个插件程序删除就好了
-+ QuickWeb不要求你一定要用它的URL Router、Cookie、Session神马的，不想要就删除它，或者
-替换成你自己写的更牛B的插件
 
 
 ## QuickWeb的“简单化部署”
