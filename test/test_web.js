@@ -21,7 +21,8 @@ web.set('template_extname', 'html');	// 模板扩展名
 
 // 载入插件并启动服务器
 var PLUS_PATH = './plus/web';			// 自定义插件目录
-web.loadPlus(PLUS_PATH);				// 载入所有插件
+//web.loadPlus(PLUS_PATH);				// 载入所有插件
+web.loadPlus();							// 仅载入默认插件
 
 // 自定义文件类型，因为需要mime-type插件支持，所有必须等加载完插件之后
 web.setMimes('cool', 'text/html');

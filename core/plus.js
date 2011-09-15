@@ -42,19 +42,26 @@ plus.load = function () {
 	packages.forEach(function (v) {
 		debug('Load plus [' + v + '] @' + plus.packages[v].main);
 		
+		/** 插件调试输出函数 */
+		var plusDebug = function (msg) {
+			logger.log('plus:' + v, msg);
+		}
+		
+		/* 载入插件主文件 */
 		var m = require(plus.packages[v].main);
 		
+		/* 注册 */
 		if (typeof m.init_server == 'function') {
-			m.init_server(web, server, debug);
-			debug('    Register to [server].');
+			m.init_server(web, server, plusDebug);
+			plusDebug('Register to [server].');
 		}
 		if (typeof m.init_request == 'function') {
-			m.init_request(web, request, debug);
-			debug('    Register to [request].');
+			m.init_request(web, request, plusDebug);
+			plusDebug('Register to [request].');
 		}
 		if (typeof m.init_response == 'function') {
-			m.init_response(web, response, debug);
-			debug('    Register to [response].');
+			m.init_response(web, response, plusDebug);
+			plusDebug('Register to [response].');
 		}
 	});
 	
