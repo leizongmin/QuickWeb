@@ -1,6 +1,7 @@
 /**
  * 插件：静态文件服务插件
  *
+ * 通过web.set('wwwroot', '根目录') 来设置静态文件根目录
  */
  
 var fs = require('fs'); 
