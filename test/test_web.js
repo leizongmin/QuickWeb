@@ -2,7 +2,7 @@
  * QuickWeb start
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1
+ * @version 0.1.3
  */
 
 var web = require('../core/web');

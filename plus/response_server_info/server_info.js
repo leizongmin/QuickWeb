@@ -9,11 +9,11 @@ var os = require('os');
 exports.init_response = function (web, response, debug) {
 
 	/* 获取服务器运行环境 */
-	var server_info = '(Nodejs/' + process.version + '; ' + os.type() + ')';
+	var server_info = 'QuickWeb/' + web.version + ' (Nodejs/' + process.version + '; ' + os.type() + ')';
 
 	response.addListener('header', function (res) {
 		/* 设置服务器版本 */
-		res.setHeader('Server', 'QuickWeb/0.1 ' + server_info);
+		res.setHeader('Server', server_info);
 		
 		/* 设置内容编码 */
 		var charset = web.get('charset') || 'utf-8';

@@ -6,6 +6,14 @@
 npm install QuickWeb
 ```
 
+或者
+
+```javascript
+git clone git://github.com/leizongmin/QuickWeb.git
+npm install formidable
+npm install mustache
+```
+
 
 ## 测试地址：<http://quick.cnodejs.net/>
 
