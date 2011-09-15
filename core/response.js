@@ -116,13 +116,16 @@ response.ServerResponse.prototype.writeHead = function (statusCode, reasonPhrase
  */
 response.ServerResponse.prototype.write = function (data, encoding) {
 	var self = this;
+	
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
 			self.origin.write(data, encoding);
 		}
 		this.next();
 	}
-	this.origin.write(data, encoding);
+	else {
+		this.origin.write(data, encoding);
+	}
 }
 
 /**
@@ -133,16 +136,19 @@ response.ServerResponse.prototype.write = function (data, encoding) {
  */
 response.ServerResponse.prototype.end = function (data, encoding) {
 	var self = this;
+	
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
 			self.origin.end(data, encoding);
 		}
 		this.next();
 	}
-	this.origin.end(data, encoding);
-	this._listener_e = 'data';
-	this.ondataready = function () {}
-	this.next();
+	else {
+		this.origin.end(data, encoding);
+		this._listener_e = 'data';
+		this.ondataready = function () {}
+		this.next();
+	}
 }
 
 /** setHeader */
