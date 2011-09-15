@@ -10,23 +10,68 @@ var path = require('path');
 exports.init_server = function (web, server, debug) {
 	server.addListener(function (svr, req, res) {
 		try {
+			/* 获取绝对文件名 */
 			var wwwroot = web.get('wwwroot');
 			var filename = path.resolve((wwwroot ? wwwroot : '.') + req.filename);
-			fs.readFile(filename, function (err, data) {
+			
+			/* 取文件最后修改时间 */
+			fs.stat(filename, function (err, stat) {
 				if (err) {
-					res.writeHead(500, {'Content-type': 'text/html'});
-					res.end('<h3>' + err.toString() + '</h3>');
+					sendError(res, 404, 'File not found.');
+					debug('File not found: ' + err);
+					return;
 				}
-				else {
-					res.setHeader('Content-type', web.mimes(path.extname(filename).substr(1)));
-					res.end(data);
+				
+				try {
+					// 如果请求中包含If-Modified-Since信息
+					var since = req.headers['if-modified-since'];
+					if (typeof since == 'string') {
+						// 如果文件没有修改过，则返回304
+						if (new Date(stat.mtime).getTime() <= new Date(since).getTime()) {
+							res.writeHead(304);
+							res.end();
+							return;
+						}
+					}
+					
+					// 读取并发送文件
+					fs.readFile(filename, function (err, data) {
+						if (err)
+							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
+						else {
+							res.writeHead(200, {
+								'Content-type':		web.mimes(path.extname(filename).substr(1)),
+								'Last-Modified':	stat.mtime
+							});
+							res.end(data);
+						}
+					});
+				}
+				catch (err) {
+					sendError(res, 500, 'Read file error.');
+					debug('Read file error: ' + err);
 				}
 			});
 		}
 		catch (err) {
-			res.writeHead(404, {'Content-type': 'text/html'});
-			res.end('File not found.');
-			debug('Read file error: ' + err);
+			sendError(res, 500, 'Unknow error.');
+			debug('Unknow error: ' + err);
 		}
 	});
+}
+
+/**
+ * 向客户端发送出错信息
+ *
+ * @param {ServerResponse} res response实例
+ * @param {int} code 代码
+ * @param {string} msg 信息
+ */
+var sendError = function (res, code, msg) {
+	if (!code)
+		code = 404;
+	if (!msg)
+		msg = '';
+	res.writeHead(code, {'Content-type': 'text/html'});
+	res.end(msg);
 }
