@@ -82,9 +82,13 @@ web.loadPlus = function (plus_dir) {
 	if (typeof plus_dir == 'string') {
 		plus.scan(plus_dir);
 	}
-	else {
+	else if (plus_dir instanceof Array) {
 		for (var i in plus_dir)
 			plus.scan(plus_dir[i]);
 	}
 	plus.load();
 }
+
+
+/** 初始化，自动载入../plus里面的默认插件 */
+plus.scan('../plus');

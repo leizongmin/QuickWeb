@@ -40,7 +40,7 @@ plus.load = function () {
 	debug('Found ' + packages.length + ' packages.');
 	
 	packages.forEach(function (v) {
-		debug('Load plus [' + v + ']');
+		debug('Load plus [' + v + '] @' + plus.packages[v].main);
 		
 		var m = require(plus.packages[v].main);
 		
