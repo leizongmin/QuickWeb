@@ -10,7 +10,7 @@ exports.get = function (server, request, response) {
 	var tpl = '名称：{{name}}， 作者：{{author}}， 当前版本：{{version}}';
 	
 	if (request.get.op == 'file') {
-		server.renderFile('render', view);
+		response.renderFile('render', view, 'text/html');
 	}
 	else {
 		var html = server.render(tpl, view);
