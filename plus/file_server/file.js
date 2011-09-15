@@ -5,8 +5,6 @@
  
 var fs = require('fs'); 
 var path = require('path');
-
-var mimes = require('./mimes');
  
 exports.init_server = function (web, server, debug) {
 	server.addListener(function (svr, req, res) {
@@ -19,7 +17,7 @@ exports.init_server = function (web, server, debug) {
 					res.end('<h3>' + err.toString() + '</h3>');
 				}
 				else {
-					res.setHeader('Content-type', mimes.get(path.extname(filename).substr(1)));
+					res.setHeader('Content-type', web.mimes(path.extname(filename).substr(1)));
 					res.end(data);
 				}
 			});

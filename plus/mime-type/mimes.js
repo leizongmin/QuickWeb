@@ -5,19 +5,34 @@
  * @version 0.1
  */
 
-/**
- * 查询文件MIME类型
- *
- * @param {string} type 文件类型
- * @return {string}
- */
-exports.get = function (type) {
-	var ret = exports.mimes[type.toString().trim()];
-	// console.log(type + '=> ' + ret);
-	return ret ? ret : 'text/plain';
+exports.init_server = function (web, server, debug) {
+
+	/**
+	 * 获取MIME-TYPE
+	 *
+	 * @param {string} extname 扩展名
+	 * @return {string}
+	 */
+	server.ServerInstance.prototype.mimes = web.mimes = function (extname) {
+		var ret = mimes[extname.toLowerCase()];
+		if (typeof ret == 'undefined')
+			ret = 'text/plain';
+		return ret;
+	}
+	
+	/**
+	 * 设置MIME-TYPE
+	 *
+	 * @param {string} extname 扩展名
+	 * @param {string} type 类型
+	 */
+	server.ServerInstance.prototype.setMimes = web.setMimes = function (extname, type) {
+		mimes[extname.toLowerCase()] = type.toLowerCase();
+	}
 }
+
  
-exports.mimes = {
+var mimes = {
 	"3gp"   : "video/3gpp",
 	"a"	 : "application/octet-stream",
 	"ai"	: "application/postscript",

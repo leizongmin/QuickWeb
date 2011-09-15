@@ -22,5 +22,8 @@ web.set('template_extname', 'html');	// 模板扩展名
 
 // 载入插件并启动服务器
 web.loadPlus(PLUS_PATH);
+
+web.setMimes('cool', 'text/html');		// 自定义文件类型
+
 var s = web.create(SERVER_PORT);
 
