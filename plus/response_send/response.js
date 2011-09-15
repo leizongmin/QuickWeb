@@ -17,6 +17,7 @@ exports.init_response = function (web, response, debug) {
 	response.ServerResponse.prototype.sendJSON = function (data) {
 		try {
 			var json = JSON.stringify(data);
+			this.writeHead(200, {'Content-Type': 'application/json'});
 			this.end(json.toString());
 		}
 		catch (err) {
