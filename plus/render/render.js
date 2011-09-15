@@ -71,3 +71,19 @@ exports.init_server = function (web, server, debug) {
 		}
 	}
 }
+
+exports.init_response = function (web, response, debug) {
+	
+	/**
+	 * 渲染文件并响应给客户端
+	 *
+	 * @param {string} filename 文件名
+	 * @param {object} view 视图
+	 * @param {string} type MIME-TYPE
+	 */
+	response.ServerResponse.prototype.renderFile = function (filename, view, content_type) {
+		if (typeof content_type == 'string')
+			this.setHeader('Content-Type', content_type);
+		this._link.server.renderFile(filename, view);
+	}
+}
