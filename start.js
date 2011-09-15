@@ -6,7 +6,7 @@
  */
 
 // require QuickWeb module 
-var web = require('QuickWeb');
+var web = require('./core/web');
 
 // settings
 web.set('wwwroot', './test/www');				// file path (file_server plus)

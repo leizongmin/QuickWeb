@@ -122,9 +122,10 @@ response.ServerResponse.prototype.write = function (data, encoding) {
 			self.origin.write(data, encoding);
 		}
 		this.next();
+		return true;
 	}
 	else {
-		this.origin.write(data, encoding);
+		return this.origin.write(data, encoding);
 	}
 }
 

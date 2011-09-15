@@ -17,8 +17,6 @@ exports.get = function (server, request, response) {
 			server.session.count = 0;
 			
 		response.write('刷新页面，以下计数会递增\r\n\r\n');
-		response.write('ddsdsdsds');
-		response.end();
-		//response.end('第' + (++ server.session.count) + '次');
+		response.end('第' + (++ server.session.count) + '次');
 	}
 }
