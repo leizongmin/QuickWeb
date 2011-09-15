@@ -1,8 +1,14 @@
 # QuickWeb [Web框架中的中国军铲](http://video.baidu.com/v?ct=301989888&rn=20&pn=0&db=0&s=8&word=%D6%D0%B9%FA%BE%FC%B2%F9&fr=ala0)
 
-## _QuickWeb现在连测试版都还没出来，不保证代码向后兼容，使用需谨慎呐_
+## 安装
+
+```javascript
+npm install QuickWeb
+```
+
 
 ## 测试地址：<http://quick.cnodejs.net/>
+
 
 ## 为什么要写QuickWeb
 
@@ -87,12 +93,9 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 ```javascript
 var web = require('./core/web');
 
-var PLUS_PATH = './plus';			// 插件目录
-var SERVER_PORT = 80;				// 服务器端口
-
 // 载入插件并启动服务器
-web.loadPlus(PLUS_PATH);
-var s = web.create(SERVER_PORT);
+web.loadPlus();
+var s = web.create(80);
 ```
 
 

@@ -13,6 +13,7 @@ var debug = web.logger = function (msg) {
 }
 
 var http = require('http');
+var path = require('path');
 var request = require('./request');
 var response = require('./response');
 var server = require('./server');
@@ -91,4 +92,4 @@ web.loadPlus = function (plus_dir) {
 
 
 /** 初始化，自动载入../plus里面的默认插件 */
-plus.scan('../plus');
+plus.scan(path.resolve(__dirname, '../plus'));
