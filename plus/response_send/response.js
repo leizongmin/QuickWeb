@@ -54,4 +54,14 @@ exports.init_response = function (web, response, debug) {
 			self.end(err.toString());
 		}
 	}
+	
+	/**
+	 * 重定向
+	 *
+	 * @param {string} target 目标
+	 */
+	response.ServerResponse.prototype.redirect = function (target) {
+		this.writeHead(302, {'Location': target});
+		this.end('Redirect to ' + target);
+	}
 }
