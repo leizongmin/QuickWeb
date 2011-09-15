@@ -43,6 +43,7 @@ exports.init_response = function (web, response, debug) {
 					self.end(err.toString());
 				}
 				else {
+					self.writeHead(200, {'Content-Type': web.mimes(path.extname(filename).substr(1))});
 					self.end(data);
 				}
 			});
