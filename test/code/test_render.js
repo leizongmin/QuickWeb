@@ -10,12 +10,7 @@ exports.get = function (server, request, response) {
 	var tpl = '名称：{{name}}， 作者：{{author}}， 当前版本：{{version}}';
 	
 	if (request.get.op == 'file') {
-		server.renderFile('render.html', view, function (html) {
-			if (typeof html == 'undefined')
-				response.end('渲染文件出错！');
-			else
-				response.end(html);
-		});
+		server.renderFile('render', view);
 	}
 	else {
 		var html = server.render(tpl, view);
