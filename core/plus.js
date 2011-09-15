@@ -44,7 +44,7 @@ plus.load = function () {
 		
 		/** 插件调试输出函数 */
 		var plusDebug = function (msg) {
-			logger.log('plus:' + v, msg);
+			logger.log('plus] [' + v, msg);
 		}
 		
 		/* 载入插件主文件 */
