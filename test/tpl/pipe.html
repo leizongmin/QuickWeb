@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>pipe 测试页面</title>
+<meta charset="utf-8" />
+</head>
+<style>
+td {
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	border: 2px solid blue;
+}
+</style>
+<body>
+<h1>Pipe 测试页面</h1>
+以下方格会按顺序自动填充颜色
+<hr>
+<table>
+	<tr>
+		<td id="block_1">红色</td>
+		<td id="block_2">黄色</td>
+		<td id="block_3">蓝色</td>
+	</tr>
+	<tr>
+		<td id="block_4">黑色</td>
+		<td id="block_5">绿色</td>
+		<td id="block_6">紫色</td>
+	</tr>
+	<tr>
+		<td id="block_7">青色</td>
+		<td id="block_8">棕色</td>
+		<td id="block_9">灰色</td>
+	</tr>
+</table>
+
+</body>
+<script>
+/**
+ * 给方格填充颜色
+ *
+ * @param {int} id 方格ID
+ * @param {string} color 颜色值
+ */
+var fill = function (id, color) {
+	var n = document.getElementById('block_' + id);
+	n.setAttribute('style', 'background-color:' + color);
+}
+
+/** 为各个方格设置颜色 */
+var fill_1 = function (color) { fill(1, color)}
+var fill_2 = function (color) { fill(2, color)}
+var fill_3 = function (color) { fill(3, color)}
+var fill_4 = function (color) { fill(4, color)}
+var fill_5 = function (color) { fill(5, color)}
+var fill_6 = function (color) { fill(6, color)}
+var fill_7 = function (color) { fill(7, color)}
+var fill_8 = function (color) { fill(8, color)}
+var fill_9 = function (color) { fill(9, color)}
+
+/** 完成 */
+var finished = function (err) {
+	alert(err ? '出错了：' + err : 'OK');
+}
+</script>
+</html>
