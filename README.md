@@ -255,7 +255,7 @@ request.ServerInstance.prototype.sessionStart = function () {
 加载Cookie插件之后，可以通过`request.cookie`来获取Cookie，通过`response.setCookie()`和`response.clearCookie()`
 来设置或清除Cookie。
 
-[Cookie插件说明](https://github.com/leizongmin/QuickWeb/tree/master/plus/session)
+[Cookie插件说明](https://github.com/leizongmin/QuickWeb/tree/master/plus/cookie)
 
 
 ### GET
