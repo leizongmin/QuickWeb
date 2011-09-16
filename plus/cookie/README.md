@@ -1,6 +1,8 @@
 # Cookie插件
 
-+ **读取Cookie** 可以通过`ServerRequest.cookie`来访问该次请求的Cookie
+## 读取Cookie
+
+可以通过`ServerRequest.cookie`来访问该次请求的Cookie
 
 ```javascript
 for (var i in request.cookie)
@@ -8,8 +10,8 @@ for (var i in request.cookie)
 ```
 
 
-+ **设置Cookie** 可以通过`ServerResponse.setCookie('name', 'value', options)`
-来设置Cookie
+## 设置Cookie
+可以通过`ServerResponse.setCookie('name', 'value', options)`来设置Cookie
 
 ```javascript
 response.setCookie('key', 'fhdkjshjkhgjkhfkj', {
@@ -22,7 +24,8 @@ response.setCookie('key', 'fhdkjshjkhgjkhfkj', {
 ```
 
 
-+ **清除Cookie** 可以通过`ServerResponse.clearCookie(name, [options])`来清除Cookie
+##清除Cookie
+可以通过`ServerResponse.clearCookie(name, [options])`来清除Cookie
 
 ```javascript
 response.clearCookie('key', {
