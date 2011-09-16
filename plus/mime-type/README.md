@@ -13,7 +13,7 @@ response.writeHead(200, {
 
 ## 自定义MIME-TYPE
 
-可以通过`web.setMimes(extname, mime_type)`或ServerInstance.setMimes(extname, mime_type)`
+可以通过`web.setMimes(extname, mime_type)`或`ServerInstance.setMimes(extname, mime_type)`
 来设置自定义的MIME-TYPE（必须在`web.loadPlus()`之后设置）
 
 ```javascript

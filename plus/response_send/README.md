@@ -11,7 +11,7 @@ web.set('wwwroot', './www');
 
 ## 依赖
 
-需要**mime-type**插件来获取文件的MIME-TYPE类型
++ **mime-type**插件
 
 
 ## 响应JSON字符串

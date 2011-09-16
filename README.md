@@ -262,10 +262,14 @@ request.ServerInstance.prototype.sessionStart = function () {
 加载Cookie插件之后，可以通过`request.cookie`来获取Cookie，通过`response.setCookie()`和`response.clearCookie()`
 来设置或清除Cookie。
 
+[Cookie插件说明](QuickWeb/tree/master/plus/session)
+
 
 ### GET
 
 加载Get插件之后，可以通过`request.get`来获取?后面的CET参数，以及`request.filename`来获取?前面部分。
+
+[Get插件说明](QuickWeb/tree/master/plus/get)
 
 
 ### POST
@@ -273,10 +277,21 @@ request.ServerInstance.prototype.sessionStart = function () {
 加载POST插件之后，如果请求的方法为POST，则可以通过`request.post`来获取提交的POST参数，以及`request.file`来
 获取上传上来的文件。
 
+[POST插件说明](QuickWeb/tree/master/plus/post)
+
 
 ### Response_send
 
 加载Response插件之后，可以通过`response.sendJSON()`，`response.sendFile()`来简化返回数据操作。
+
+[response_send插件说明](QuickWeb/tree/master/plus/response_send)
+
+
+### mime-type
+
+加载mime-type插件之后，可以通过`web.mimes()`，`web.setMimes()`来查询或自定义文件的MIME-TYPE
+
+[mime-type插件说明](QuickWeb/tree/master/plus/mime-type)
 
 
 ### file_server
@@ -285,6 +300,8 @@ request.ServerInstance.prototype.sessionStart = function () {
 当其他插件无法处理某一请求时，会尝试检查request.filename是否为网站目录下的一个文件，并返回相应的
 结果。
 
+[静态文件服务插件说明](QuickWeb/tree/master/plus/file_server)
+
 
 ### session
 
@@ -292,11 +309,15 @@ request.ServerInstance.prototype.sessionStart = function () {
 访问session数据。可以通过`web.set('session_maxage', 'session存活时间ms')`，
 `web.set('session_recover', '回收扫描周期ms')`来进行设置。
 
+[session插件说明](QuickWeb/tree/master/plus/session)
+
 
 ### render
 
 加载render插件之后，可以通过`server.render()`或`server.renderFile()`来使用mustache引擎渲染模板。
 可以通过`web.set('template_path', '模板目录')`来设置模板所在目录。
+
+[render插件说明](QuickWeb/tree/master/plus/render)
 
 
 ### RESTful_router
@@ -304,6 +325,16 @@ request.ServerInstance.prototype.sessionStart = function () {
 加载router插件之后，在启动QuickWeb服务器前，通过`web.set('code_path', '程序目录')`来设置你的处理程序
 所在的目录。在QuickWeb初始化新请求中的ServerRequest，ServerResponse实例后，将控制权交给router时，它会
 尝试匹配你注册的路径处理程序，如果匹配成功，则执行你注册的代码。（后面将详细介绍）
+
+[restful_router插件说明](QuickWeb/tree/master/plus/restful_router)
+
+
+### response_pipe
+
+加载respones_pipe插件之后，可以通过`response.pipe()`来简化在一次请求中分批渲染网页，类似于
+**BigPipe**
+
+[response_pipe插件说明](QuickWeb/tree/master/plus/response_pipe)
 
 
 ## 路由及处理程序
