@@ -17,6 +17,7 @@ web.set('code_path', './code');			// 程序目录
 web.set('session_maxage', 600000);		// session存活时间10分钟
 web.set('template_path', './tpl');		// 模板目录
 web.set('template_extname', 'html');	// 模板扩展名
+web.set('tmp_path', './tmp');			// 临时目录，用于POST文件上传
 
 
 // 载入插件并启动服务器
