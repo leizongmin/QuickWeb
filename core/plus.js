@@ -39,6 +39,7 @@ plus.load = function () {
 	var packages = plus.order();
 	debug('Found ' + packages.length + ' packages.');
 	
+	/* 开始载入各插件包 */
 	packages.forEach(function (v) {
 		debug('Load plus [' + v + '] @' + plus.packages[v].main);
 		
@@ -64,6 +65,13 @@ plus.load = function () {
 			plusDebug('Register to [response].');
 		}
 	});
+	
+	/* 输出载入结果 */
+	debug(	'Load plus finished!   Listener: ' +
+			'ServerInstance(' + server.ServerInstance.prototype._listener.length + '), ' +
+			'ServerRequest(' + request.ServerRequest.prototype._listener.length + '), ' +
+			'ServerResponse(' + (response.ServerResponse.prototype._listener.header.length + response.ServerResponse.prototype._listener.data.length) + ')'
+		);
 	
 }
 
