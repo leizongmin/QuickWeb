@@ -64,7 +64,7 @@ exports.init_response = function (web, response, debug) {
  * @param {object} options 选项，包括 path, expires, domain, secure
  * @return {string}
  */
-serializeCookie = function (name, val, options) {
+var serializeCookie = function (name, val, options) {
     var ret = name + '=' + escape(val) + ';';
 	if (options.path)
 		ret += ' path=' + options.path + ';';
@@ -83,7 +83,7 @@ serializeCookie = function (name, val, options) {
  * @param {string} cookies Cookie字符串
  * @return {object}
  */
-unserializeCookie = function (cookies) {
+var unserializeCookie = function (cookies) {
 	if (!cookies)
 		return {}
 	var cookieline = cookies.toString().split(';');
