@@ -354,7 +354,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 + 复制**QuickWeb**的**/plus/render**目录（模板渲染插件）到你的项目的**./plus**目录里面
 
-+ 编辑**render**目录下的**render.js**文件，安装提示修改成要使用的模板引擎：
++ 编辑**render**目录下的**render.js**文件，按照提示修改成要使用的模板引擎：
 
 ```
 	/**
