@@ -231,6 +231,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **Cookie插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/cookie>
 
+=====
 
 ### GET
 
@@ -238,6 +239,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **Get插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/get>
 
+=====
 
 ### POST
 
@@ -246,6 +248,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **POST插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/post>
 
+=====
 
 ### Response_send
 
@@ -253,6 +256,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **response_send插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/response_send>
 
+=====
 
 ### mime-type
 
@@ -260,6 +264,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **mime-type插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/mime-type>
 
+=====
 
 ### file_server
 
@@ -269,6 +274,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **静态文件服务插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/file_server>
 
+=====
 
 ### session
 
@@ -278,6 +284,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **session插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/session>
 
+=====
 
 ### render
 
@@ -288,6 +295,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **[使用其他模板引擎](#use_other_render)**
 
+=====
 
 ### RESTful_router
 
@@ -297,6 +305,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 **restful_router插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/restful_router>
 
+=====
 
 ### response_pipe
 
@@ -304,6 +313,8 @@ ServerResponse实例，如session插件中的代码如下：
 **BigPipe**
 
 **response_pipe插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/response_pipe>
+
+=====
 
 
 ## 路由及处理程序
@@ -345,6 +356,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 + 编辑**render**目录下的**render.js**文件，安装提示修改成要使用的模板引擎：
 
+```
 	/**
 	 * 渲染模板接口
 	 *
@@ -358,6 +370,7 @@ ServerResponse实例，如session插件中的代码如下：
 		return mustache.to_html(template, view);
 	}
 	var mustache = require('mustache');
+```
 
 + 在启动QuickWeb时，将原来的`web.loadPlus()`改成`web.loadPlus('./plus')`（**./plus**即刚才新修改的render插件所在的目录）
 
