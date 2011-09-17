@@ -45,6 +45,8 @@ exports.init_server = function (web, request, debug) {
 	 * 清除session
 	 */
 	request.ServerInstance.prototype.clearSession = function () {
+		if (!this.session)
+			this.sessionStart();
 		this._link.response.clearCookie('_session_id');
 		delete session_data[this.session._session_id];
 	}
