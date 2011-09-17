@@ -1,14 +1,28 @@
 /**
  * 插件：渲染模板
  *
- * 需要安装 mustache 模块
  * 程序默认会以web参数中的 template_path 作为模板的目录
  * 如果指定了 template_extname 参数，则会自动在模板文件名后面加上该扩展名（不带前面的小数点）
  */
  
-var mustache = require('mustache');
 var fs = require('fs');
 var path = require('path');
+
+/**
+ * 渲染模板接口
+ *
+ * 请根据自己实际采用的模板引擎来修改to_html()内部的代码
+ *
+ * @param {string} template 模板内容
+ * @param {string} view 视图
+ * @return {string}
+ */
+var to_html = function (template, view) {
+	return mustache.to_html(template, view);
+}
+var mustache = require('mustache');
+
+//----------------------------------------------------------------------------
 
 exports.init_server = function (web, server, debug) {
 
@@ -19,7 +33,7 @@ exports.init_server = function (web, server, debug) {
 	 * @param {object} view 视图
 	 */
 	server.ServerInstance.prototype.render = function (template, view) {
-		return mustache.to_html(template, view);
+		return to_html(template, view);
 	}
 	
 	/**
@@ -60,7 +74,7 @@ exports.init_server = function (web, server, debug) {
 					callback();
 				}
 				else {
-					var ret = mustache.to_html(data.toString(), view);
+					var ret = to_html(data.toString(), view);
 					callback(ret);
 				}
 			});
