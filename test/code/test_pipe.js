@@ -4,7 +4,6 @@
  */
  
 exports.paths = '/pipe';
-
 exports.get = function (server, request, response) {
 	
 	// 初始化pipe
@@ -13,15 +12,18 @@ exports.get = function (server, request, response) {
 	// 载入模板
 	response.pipe_tpl('pipe', {}, function () {
 		
+        // 生成随机的时间
+        var random = function () { return Math.random() * 4000; }
+        
 		// 开始
-		setTimeout(function () { response.pipe('fill_1', 'red'); }, 200);
-		setTimeout(function () { response.pipe('fill_2', 'yellow'); }, 400);
-		setTimeout(function () { response.pipe('fill_3', 'blue'); }, 600);
-		setTimeout(function () { response.pipe('fill_4', 'black'); }, 800);
-		setTimeout(function () { response.pipe('fill_5', 'green'); }, 1000);
-		setTimeout(function () { response.pipe('fill_6', 'magenta'); }, 1200);
-		setTimeout(function () { response.pipe('fill_7', 'seagreen'); }, 1400);
-		setTimeout(function () { response.pipe('fill_8', 'darkgoldenrod'); }, 1600);
-		setTimeout(function () { response.pipe('fill_9', 'silver'); }, 1800);
+		setTimeout(function () { response.pipe('fill_1', 'red'); }, random());
+		setTimeout(function () { response.pipe('fill_2', 'yellow'); }, random());
+		setTimeout(function () { response.pipe('fill_3', 'blue'); }, random());
+		setTimeout(function () { response.pipe('fill_4', 'black'); }, random());
+		setTimeout(function () { response.pipe('fill_5', 'green'); }, random());
+		setTimeout(function () { response.pipe('fill_6', 'magenta'); }, random());
+		setTimeout(function () { response.pipe('fill_7', 'seagreen'); }, random());
+		setTimeout(function () { response.pipe('fill_8', 'darkgoldenrod'); }, random());
+		setTimeout(function () { response.pipe('fill_9', 'silver'); }, random());
 	});
 }
