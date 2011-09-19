@@ -69,7 +69,8 @@ exports.init_response = function (web, response, debug) {
  * @return {string}
  */
 var serializeCookie = function (name, val, options) {
-    var ret = name + '=' + escape(val) + ';';
+	options = options || {}
+	var ret = name + '=' + escape(val) + ';';
 	if (options.path)
 		ret += ' path=' + options.path + ';';
 	if (options.expires)

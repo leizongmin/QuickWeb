@@ -65,11 +65,13 @@ exports.init_server = function (web, request, debug) {
 		if (typeof cookie == 'undefined')
 			cookie = {}
 		else if (typeof cookie == 'string')
-			cookie = web.util.serializeCookie(cookie);
+			cookie = web.util.unserializeCookie(cookie);
+		
 		// 检查session_id
 		var session_id = cookie._session_id;
-		if (!session_id)
+		if (typeof session_id == 'undefined')
 			return false
+			
 		// 查询session	
 		var sessionObj = session_data[session_id];
 		if (sessionObj) {
@@ -80,7 +82,7 @@ exports.init_server = function (web, request, debug) {
 			session_data[session_id] = {
 				data: {}, timestamp: new Date().getTime()
 				}
-			return session_data[session_id];
+			return session_data[session_id].data;
 		}
 	}
 	
