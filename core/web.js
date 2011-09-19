@@ -22,6 +22,9 @@ var response = require('./response');
 var server = require('./server');
 var plus = require('./plus');
 
+/** 工具集 */
+web.util = {}
+
 /**
  * 创建服务器
  *

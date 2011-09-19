@@ -51,6 +51,40 @@ exports.init_server = function (web, request, debug) {
 		delete session_data[this.session._session_id];
 	}
 	
+	/** 扩展web.session */
+	web.session = {}
+	
+	/**
+	 * 根据cookie获取session
+	 *
+	 * @param {string} cookie
+	 * @return {object}
+	 */
+	web.session.getByCookie = function (cookie) {
+		// 解析cookie
+		if (typeof cookie == 'undefined')
+			cookie = {}
+		else if (typeof cookie == 'string')
+			cookie = web.util.serializeCookie(cookie);
+		// 检查session_id
+		var session_id = cookie._session_id;
+		if (!session_id)
+			return false
+		// 查询session	
+		var sessionObj = session_data[session_id];
+		if (sessionObj) {
+			sessionObj.timestamp = new Date().getTime();
+			return sessionObj.data;
+		}
+		else {
+			session_data[session_id] = {
+				data: {}, timestamp: new Date().getTime()
+				}
+			return session_data[session_id];
+		}
+	}
+	
+	/*********************************************************************************************************/
 	/**
 	 * 扫描已过期的session，并清空
 	 */

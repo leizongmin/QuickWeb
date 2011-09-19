@@ -51,6 +51,10 @@ exports.init_response = function (web, response, debug) {
 	response.ServerResponse.prototype.clearCookie = function (name, options) {
 		this.setCookie(name, '', options);
 	}
+	
+	/** 扩展web.util */
+	web.util.serializeCookie = serializeCookie;
+	web.util.unserializeCookie = unserializeCookie;
 }
 
 
