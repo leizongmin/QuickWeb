@@ -12,7 +12,6 @@
 		"node": ">= 0.4.7"
 	},
 	"dependencies":	{
-		"formidable":	"*",
-		"mustache":		"*"
+		"formidable":	"*"
 	}
 }
