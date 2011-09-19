@@ -268,7 +268,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 ### file_server
 
-加载file_server插件之后，在启动QuickWeb服务器前，通过`web.set('wwwroot', '网站目录')`来设置网站的目录，
+加载file_server插件之后，在启动QuickWeb服务器前，通过`web.set('home_path', '网站目录')`来设置网站的目录，
 当其他插件无法处理某一请求时，会尝试检查request.filename是否为网站目录下的一个文件，并返回相应的
 结果。
 

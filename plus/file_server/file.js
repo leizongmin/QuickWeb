@@ -1,7 +1,7 @@
 /**
  * 插件：静态文件服务插件
  *
- * 通过web.set('wwwroot', '根目录') 来设置静态文件根目录
+ * 通过web.set('home_path', '根目录') 来设置静态文件根目录
  */
  
 var fs = require('fs'); 
@@ -11,8 +11,8 @@ exports.init_server = function (web, server, debug) {
 	server.addListener(function (svr, req, res) {
 		try {
 			/* 获取绝对文件名 */
-			var wwwroot = web.get('wwwroot');
-			var filename = path.resolve((wwwroot ? wwwroot : '.') + req.filename);
+			var home_path = web.get('home_path');
+			var filename = path.resolve((home_path ? home_path : '.') + req.filename);
 			
 			/* 取文件最后修改时间 */
 			fs.stat(filename, function (err, stat) {

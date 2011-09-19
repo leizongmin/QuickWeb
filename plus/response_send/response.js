@@ -1,7 +1,7 @@
 /**
  * 插件：response常用函数
  *
- * sendFile() 默认会以web参数中的wwwroot作为文件目录
+ * sendFile() 默认会以web参数中的home_path作为文件目录
  */
  
 var path = require('path');
@@ -34,11 +34,11 @@ exports.init_response = function (web, response, debug) {
 	 */
 	response.ServerResponse.prototype.sendFile = function (filename) {
 		var self = this;
-		var wwwroot = web.get('wwwroot');
-		if (typeof wwwroot == 'undefined')
-			wwwroot = '.';
+		var home_path = web.get('home_path');
+		if (typeof home_path == 'undefined')
+			home_path = '.';
 		try {
-			fs.readFile(path.resolve(wwwroot, filename), function (err, data) {
+			fs.readFile(path.resolve(home_path, filename), function (err, data) {
 				if (err) {
 					self.writeHead(500);
 					self.end(err.toString());

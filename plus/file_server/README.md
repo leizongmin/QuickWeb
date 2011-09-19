@@ -2,10 +2,10 @@
 
 ## 设置
 
-需要设置参数**wwwroot**为静态文件的根目录
+需要设置参数**home_path**为静态文件的根目录
 
 ```javascript
-web.set('wwwroot', './www');
+web.set('home_path', './www');
 ```
 
 
