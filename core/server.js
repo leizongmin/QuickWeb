@@ -20,13 +20,14 @@ var web = require('./web');
 /**
  * Server对象
  *
- * @param {request} request
- * @param {response} response
+ * @param {ServerRequest} request 本次请求的ServerRequest实例
+ * @param {ServerResponse} response 本次请求的ServerResponse实例
  */
 server.ServerInstance = function (request, response) {
 	this.request = request;
 	this.response = response;
 	
+	// 初始化Listener
 	this._listener_i = 0;
 	
 	if (this._listener.length < 1) {
