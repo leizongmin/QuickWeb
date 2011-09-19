@@ -59,19 +59,18 @@ web.createHttps = function (options, port, hostname) {
 var requestHandle = function (req, _res) {
 	var req = new request.ServerRequest(req);
 	req.onready = function () {
+		// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
 		var res = new response.ServerResponse(_res);
 		var si = new server.ServerInstance(req, res);
 				
 		/* 用于在request, response, server中访问另外的对象 */
-		var _link = {
-			request:	req,
-			response:	res,
-			server:		si
-		}
+		var _link = { request: req,	response: res,	server: si}
 		req._link = res._link = si._link = _link;
-				
+		
+		// 调用ServerInstance处理链来处理本次请求
 		si.next();
 	}
+	// 初始化ServerRequest
 	req.init();
 }
 
@@ -102,7 +101,7 @@ web.get = function (name) {
 /**
  * 载入插件
  *
- * @param {array} plus_dir
+ * @param {array} plus_dir 插件目录，可以为字符串或者字符串数组
  */
 web.loadPlus = function (plus_dir) {
 	if (typeof plus_dir == 'string') {
@@ -116,7 +115,7 @@ web.loadPlus = function (plus_dir) {
 }
 
 
-/** 初始化，自动载入../plus里面的默认插件 */
+// 初始化，自动载入../plus里面的默认插件
 plus.scan(path.resolve(__dirname, '../plus'));
 
 debug('QuickWeb ' + web.version);

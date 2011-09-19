@@ -21,11 +21,13 @@ var debug = response.logger = function (msg) {
  * @param {http.ServerResponse} origin 源response实例
  */
 response.ServerResponse = function (origin) {
+	// origin即原来的http.ServerResponse，特殊情况可以使用它来操作
 	this.origin = origin;
 	
 	this.statusCode = origin.statusCode;
 	this.headers = {}
 	
+	// 初始化Listener
 	this._listener_i = 0;
 	this._listener_e = 'header';
 }
@@ -33,6 +35,7 @@ response.ServerResponse = function (origin) {
 
 /** 监听链 */
 response.ServerResponse.prototype._listener = {header: [], data: []};
+// Listener分为header和data两种，header在输出响应头前调用，data在响应完毕后调用
 
 /**
  * 调用监听链
@@ -117,6 +120,7 @@ response.ServerResponse.prototype.writeHead = function (statusCode, reasonPhrase
 response.ServerResponse.prototype.write = function (data, encoding) {
 	var self = this;
 	
+	// 输出响应头之前要先检查是否已经处理完了head Listener，如果没有，则先处理Listener
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
 			self.origin.write(data, encoding);
@@ -138,6 +142,7 @@ response.ServerResponse.prototype.write = function (data, encoding) {
 response.ServerResponse.prototype.end = function (data, encoding) {
 	var self = this;
 	
+	// 输出响应头之前要先检查是否已经处理完了head Listener，如果没有，则先处理Listener
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
 			self.origin.end(data, encoding);
@@ -146,8 +151,11 @@ response.ServerResponse.prototype.end = function (data, encoding) {
 	}
 	else {
 		this.origin.end(data, encoding);
+		
+		// 处理data Listener
 		this._listener_e = 'data';
-		this.ondataready = function () {}
+		if (!this.ondataready)
+			this.ondataready = function () {}
 		this.next();
 	}
 }

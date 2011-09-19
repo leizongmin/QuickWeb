@@ -21,13 +21,15 @@ var debug = request.logger = function (msg) {
  * @param {http.ServerRequest} origin 源request实例
  */
 request.ServerRequest = function (origin) {
+	// origin即原来的http.ServerRquest，特殊情况可以使用它来操作
 	this.origin = origin;
 	
-	this.method = origin.method;			// 请求方法
+	this.method = origin.method;				// 请求方法
 	this.url = origin.url;					// 请求路径
 	this.headers = origin.headers;			// 请求头
 	this.httpVersion = origin.httpVersion;	// HTTP版本
 	
+	// 初始化Listener
 	this._listener_i = 0;
 }
 
@@ -35,6 +37,7 @@ request.ServerRequest = function (origin) {
  * 初始化
  */
 request.ServerRequest.prototype.init = function () {
+	// 依次调用各Listener
 	this.next();
 }
 
@@ -51,6 +54,8 @@ request.ServerRequest.prototype.next = function () {
 		h(self);
 	}
 	else {
+		// 处理完各Listener后，调用this.onready()，
+		// 如果在Listener里面要提前结束，则直接调用this.onready()
 		if (self.onready)
 			self.onready();
 		else
