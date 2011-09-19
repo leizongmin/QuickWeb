@@ -14,59 +14,6 @@
 ## 测试地址：<http://quick.cnodejs.net/>
 
 
-## 为什么要写QuickWeb
-
-在此之前，我用过小问的[Web.js](https://github.com/iwillwen/Web.js)，
-当写的处理程序逐渐增大时，那种将各个处理程序放在一个文件中注册的方式
-使代码显得有点凌乱。有时候我希望像PHP那样，直接复制一个文件到某个指
-定目录然后就能运行，要移除某个处理程序时，只需要删除相应的文件即可。
-
-Web.js的主旨是“简单化部署”，它的做法是尽可能的少的输入代码，将所有
-处理程序放在少数的几个文件里，以显出文件规模的小。我觉得它没有考虑
-到文件的组织问题。
-
-放弃Web.js的另一个原因是它不支持PUT、DELETE、HEAD这些请求方法，尽管
-这些不是很常用，但是当真要用到时，才发现要扩展起来不那么容易。Web.js
-中处理各个请求方法的代码如下：
-
-	if (req.method.toLowerCase() == 'post') {
-		var form = new formidable.IncomingForm();
-		form.parse(req, function (err, fields, files) {
-			req.data = fields;
-			for (var key in files) {
-				if (files[key].path)
-					req.data[key] = fs.readFileSync(files[key].path).toString('utf8');
-			}
-			router.postHandler(req, res, path, exports.server);
-		});
-	}
-	if (req.method == "GET") router.getHandler(req, res, path, exports.server);
-
-如果你要增加一个处理DELETE方法的功能，或许你需要这样做：
-
-+ 在后面多加一句`if (req.method == "DELETE") router.deleteHandler(req, res, path, exports.server);`
-+ 然后再在router.js文件里面加一个方法`router.deleteHandler`，
-+ 再在web.js文件里面加一个方法`web.delete`来注册PATH。
-+ 事情还没有结束呢，你还要在你的程序中写上
-
-	web.delete({
-		'/:filename': function () { /* 你的代码 */ }
-	});
-
-然而，在QuickWeb中，你只需要在你的处理程序里面这样写：
-
-	exports.paths = '/:filename';
-	exports.delete = function (server, request, response) {
-		// 你的处理代码
-	}
-
-如果你想要加上GET的处理代码，也只需要在后面加上下面代码：
-
-	exports.get = function (server, request, response) {
-		// 你的处理代码
-	}
-
-
 ## QuickWeb的“简单化部署”
 
 所有处理程序都放在相应独立的文件里，系统可以像搭积木一样任意增删各
@@ -79,18 +26,20 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 
 以下是一个最基本的QuickWeb启动代码：
 
+```javascript
 	var web = require('./core/web');
 	
 	// 载入插件并启动服务器
 	web.loadPlus();
 	var s = web.create(80);
-
+```
 
 ## 插件的加载
 
 在启动服务器时，你需要执行web.loadPlus(PLUS_PATH)来扫描插件包并加载。
 插件通过package.json文件来描述，其格式如下：
 
+```javascript
 	{
 		"name":			"file_server",
 		"main":			"./file.js",
@@ -99,6 +48,7 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 			"get":	"*"
 		}
 	}
+```
 
 + **name**：插件的名称
 + **main**：插件的主文件
@@ -113,7 +63,8 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 
 以下是解析GET参数的插件主要的代码：
 
-var url = require('url'); 
+```javascript
+	var url = require('url'); 
  
 	exports.init_request = function (web, request, debug) {
 		request.addListener(function (req) {
@@ -124,6 +75,7 @@ var url = require('url');
 			req.next();
 		}, true);
 	}
+```
 
 插件需要注册到那个对象上，是通过其输出的函数来确定的。如输出**init_request**表示需要注册到
 request对象上，相应地，注册到response对象需要输出**init_response**，注册到server对象需要输出
@@ -144,17 +96,21 @@ init_request函数接收三个参数：
 
 注册处理链通过被注册对象的**addListener**方法来进行，以request为例：
 
+```javascript
 	request.addListener(function (req) {
 		// 处理代码
 		req.next();
 	});
+```
 
 注册到处理链中的函数会在每次新请求开始时运行，相当于整个请求过程中的初始化阶段。处理函数
 接收一个参数，即当前的ServerRequest实例。如上例中的代码：
 
+```javascript
 	var v = url.parse(req.url, true);
 	req.get = v.query || {};				// 问号后面的参数
-	req.filename = v.pathname || '/';		// 文件名
+	req.filename = v.pathname || '/';	// 文件名
+```
 
 该插件运行完毕之后，会为该ServerRequest实例增加了两个属性：
 
@@ -167,6 +123,7 @@ init_request函数接收三个参数：
 比如Web.js中，response对象有cookie、clearCookie、sendJSON、sendFile这些方法，在QuickWeb
 中是通过注册静态方法来完成的。以下是一个注册sendJSON方法的例子：
 
+```javascript
 	/**
 	 * 发送JSON数据
 	 *
@@ -183,6 +140,7 @@ init_request函数接收三个参数：
 			this.end(err.toString());
 		}
 	}
+```
 
 其原理是：在ServerResponse对象的原型中增加一个sendJSON方法，在实际运行时，就可以通过this来
 访问当前的ServerRequest实例。
@@ -193,6 +151,7 @@ init_request函数接收三个参数：
 在注册的静态方法里面，可以通过this._link来访问当前请求的ServerInstance、ServerRequest、
 ServerResponse实例，如session插件中的代码如下：
 
+```javascript
 	request.ServerInstance.prototype.sessionStart = function () {
 		// 必须要有Cookie模块的支持
 		if (typeof this._link.request.cookie == 'undefined') {
@@ -219,7 +178,7 @@ ServerResponse实例，如session插件中的代码如下：
 		this.session = session_data[session_id].data;
 		session_data[session_id].timestamp = new Date().getTime();
 	}
-
+```
 
 
 ## 内置的插件
@@ -290,6 +249,7 @@ ServerResponse实例，如session插件中的代码如下：
 
 加载render插件之后，可以通过`server.render()`或`server.renderFile()`来使用mustache引擎渲染模板。
 可以通过`web.set('template_path', '模板目录')`来设置模板所在目录。
+可以通过`web.set('render_to_html, 渲染函数)`来设置渲染函数，不限制使用任何模板引擎
 
 **render插件说明** <https://github.com/leizongmin/QuickWeb/tree/master/plus/render>
 
@@ -323,6 +283,7 @@ ServerResponse实例，如session插件中的代码如下：
 在启动QuickWeb时，需要设置一个名为'code_path'的属性来指示处理程序所在的目录。加载router插件时，它会
 扫描code_path目录下的.js文件，并尝试加载它。以下是一个简单的示例代码：
 
+```javascript
 	exports.paths = '/:username/:filename';
 
 	exports.get = function (server, request, response) {
@@ -331,6 +292,7 @@ ServerResponse实例，如session插件中的代码如下：
 			html += i + ' = ' + request.path[i] + '\n';
 		response.end(html);
 	}
+```
 
 在模块中，通过输出字符串类型paths来说明其要匹配的请求路径，然后输出相应的get、post、delete、put、head
 函数来注册对应的请求方法。
@@ -349,28 +311,14 @@ ServerResponse实例，如session插件中的代码如下：
 
 ## 使用其他模板引擎
 
-**QuickWeb**的模板渲染插件以**mustache**作为默认的渲染引擎，如果需要更改为其他的渲染引擎，可以通过重载
-**render**插件来完成。具体操作如下：
+**QuickWeb**默认不使用任何的模板引擎，因此你调用`server.render()` 或`server.renderFile()`时，只是简单地
+返回原来的模板内容，如果想加入要使用的模板引擎，可以通过设置**render_to_html**参数来实现：
 
-+ 复制**QuickWeb**的**/plus/render**目录（模板渲染插件）到你的项目的**./plus**目录里面
-
-+ 编辑**render**目录下的**render.js**文件，按照提示修改成要使用的模板引擎：
-
-```
-	/**
-	 * 渲染模板接口
-	 *
-	 * 请根据自己实际采用的模板引擎来修改to_html()内部的代码
-	 *
-	 * @param {string} template 模板内容
-	 * @param {string} view 视图
-	 * @return {string}
-	 */
-	var to_html = function (template, view) {
-		return mustache.to_html(template, view);
-	}
+```javascript
+	// 定义模板渲染函数
 	var mustache = require('mustache');
+	web.set('render_to_html', function (str, view) {
+		return mustache.to_html(str, view);
+	});
 ```
-
-+ 在启动QuickWeb时，将原来的`web.loadPlus()`改成`web.loadPlus('./plus')`（**./plus**即刚才新修改的render插件所在的目录）
 

@@ -72,6 +72,16 @@ exports.init_server = function (web, request, debug) {
 		if (typeof session_id == 'undefined')
 			return false
 			
+		return web.session.get(session_id);
+	}
+	
+	/**
+	 * 根据ID获取session
+	 *
+	 * @param {int} session_id
+	 * @return {object}
+	 */
+	web.session.get = web.session.getById = function (session_id) {
 		// 查询session	
 		var sessionObj = session_data[session_id];
 		if (sessionObj) {

@@ -14,7 +14,7 @@
 调用该方法，然后才能访问Session数据
 
 ```javascript
-server.sessionStart();
+	server.sessionStart();
 ```
 
 
@@ -23,8 +23,8 @@ server.sessionStart();
 可以通过`ServerInstance.session`来访问session数据
 
 ```javascript
-for (var i in server.session)
-	response.write('Session   ' + i + ' = ' + server.session[i]);
+	for (var i in server.session)
+		response.write('Session   ' + i + ' = ' + server.session[i]);
 ```
 
 
@@ -33,5 +33,23 @@ for (var i in server.session)
 可以通过`ServerInstance.clearSession`来情况当前客户端的Session数据
 
 ```javascript
-server.clearSession();
+	server.clearSession();
+```
+
+
+## 通过cookie字符串访问Session
+
+如果程序无法访问ServerRequest实例（如在socket.io程序里面），可以通过客户端的cookie字符串来获取其对应的session数据
+
+```javascript
+	var session = web.session.getByCookie(request.headers.cookie);
+```
+
+
+## 通过session_id来访问session
+
+如果程序无法访问ServerRequest实例（如在socket.io程序里面），可以通过客户端的cookie字符串来获取其对应的session数据
+
+```javascript
+	var session = web.session.get(session_id);
 ```

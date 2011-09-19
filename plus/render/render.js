@@ -23,11 +23,12 @@ exports.init_server = function (web, server, debug) {
 	if (typeof to_html == 'function')
 		web.render.to_html = to_html;
 	else {
-		to_html = web.render.to_html = function (template, view) {
+		web.render.to_html = function (template, view) {
 			debug('No render engineer.');
 			return template;
 		}
 	}
+	// 通过 web.render.to_html()来渲染
 	
 
 	/**
@@ -37,7 +38,7 @@ exports.init_server = function (web, server, debug) {
 	 * @param {object} view 视图
 	 */
 	server.ServerInstance.prototype.render = function (template, view) {
-		return to_html(template, view);
+		return web.render.to_html(template, view);
 	}
 	
 	/**
@@ -78,7 +79,7 @@ exports.init_server = function (web, server, debug) {
 					callback();
 				}
 				else {
-					var ret = to_html(data.toString(), view);
+					var ret = web.render.to_html(data.toString(), view);
 					callback(ret);
 				}
 			});
