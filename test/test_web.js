@@ -19,6 +19,11 @@ web.set('template_path', './tpl');		// 模板目录
 web.set('template_extname', 'html');		// 模板扩展名
 web.set('tmp_path', './tmp');			// 临时目录，用于POST文件上传
 web.set('page_404', '文件没找到！');		// 404出错页面HTML代码
+// 定义模板渲染函数
+var mustache = require('mustache');
+web.set('render_to_html', function (str, view) {
+	return mustache.to_html(str, view);
+});
 
 
 // 载入插件并启动服务器

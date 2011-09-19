@@ -3,28 +3,32 @@
  *
  * 程序默认会以web参数中的 template_path 作为模板的目录
  * 如果指定了 template_extname 参数，则会自动在模板文件名后面加上该扩展名（不带前面的小数点）
+ *
+ * 默认不使用任何模板渲染引擎，直接返回原字符串
+ * 需要指定 render_to_html 参数为渲染函数，格式为 function (str, view); str为模板内容, view为模板里面用到的数据, 函数返回字符串类型
  */
  
 var fs = require('fs');
 var path = require('path');
 
-/**
- * 渲染模板接口
- *
- * 请根据自己实际采用的模板引擎来修改to_html()内部的代码
- *
- * @param {string} template 模板内容
- * @param {string} view 视图
- * @return {string}
- */
-var to_html = function (template, view) {
-	return mustache.to_html(template, view);
-}
-var mustache = require('mustache');
-
 //----------------------------------------------------------------------------
-
+// 注册ServerInstance
 exports.init_server = function (web, server, debug) {
+	
+	// 扩展web.render
+	web.render = {}
+	
+	// 通过设置render_to_html参数来注册自己的模板引擎，如果没有注册，则默认使用mustache
+	var to_html = web.get('render_to_html');
+	if (typeof to_html == 'function')
+		web.render.to_html = to_html;
+	else {
+		to_html = web.render.to_html = function (template, view) {
+			debug('No render engineer.');
+			return template;
+		}
+	}
+	
 
 	/**
 	 * 渲染模板
@@ -86,6 +90,7 @@ exports.init_server = function (web, server, debug) {
 	}
 }
 
+// 注册ServerResponse
 exports.init_response = function (web, response, debug) {
 	
 	/**
@@ -99,5 +104,15 @@ exports.init_response = function (web, response, debug) {
 		if (typeof content_type == 'string')
 			this.setHeader('Content-Type', content_type);
 		this._link.server.renderFile(filename, view);
+	}
+	
+	/**
+	 * 渲染模板
+	 *
+	 * @param {string} template 模板内容
+	 * @param {object} view 视图
+	 */
+	response.ServerResponse.prototype.render = function (template, view) {
+		return this._link.server.render(template, view);
 	}
 }
