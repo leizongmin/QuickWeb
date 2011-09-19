@@ -2,7 +2,7 @@
  * QuickWeb start for npm install test
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.3
+ * @version 0.1.5
  */
 
 // require QuickWeb module 

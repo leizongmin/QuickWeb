@@ -2,7 +2,6 @@
  * QuickWeb 单元测试
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.3
  */
 
 var fs = require('fs');

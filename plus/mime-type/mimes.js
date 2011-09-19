@@ -2,7 +2,6 @@
  * QuickWeb MIME TYPE
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.3
  */
 
 exports.init_server = function (web, server, debug) {

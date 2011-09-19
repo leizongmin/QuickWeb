@@ -2,7 +2,6 @@
  * QuickWeb 路由管理器
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.3
  */
  
 var router = module.exports;
