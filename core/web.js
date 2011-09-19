@@ -15,7 +15,6 @@ var debug = web.logger = function (msg) {
 	logger.log('web', msg);
 }
 
-var http = require('http');
 var path = require('path');
 var request = require('./request');
 var response = require('./response');
@@ -28,32 +27,52 @@ web.util = {}
 /**
  * 创建服务器
  *
- * @param {int} port 端口
+ * @param {int} port 端口，默认80
  * @param {int} hostname 主机
  * @return {http.Server}
  */
 web.create = function (port, hostname) {
-	var s = new http.Server(function (req, _res) {
-		var req = new request.ServerRequest(req);
-		req.onready = function () {
-			var res = new response.ServerResponse(_res);
-			var si = new server.ServerInstance(req, res);
-			
-			/* 用于在request, response, server中访问另外的对象 */
-			var _link = {
-				request:	req,
-				response:	res,
-				server:		si
-			}
-			req._link = res._link = si._link = _link;
-			
-			si.next();
-		}
-		req.init();
-	});
-	
+	var http = require('http');
+	var s = new http.Server(requestHandle);
+	port = port || 80;
 	s.listen(port, hostname);
 	return s;
+}
+
+/**
+ * 创建HTTPS服务器
+ *
+ * @param {object} options 证书选项，包括key, cert
+ * @param {int} port 端口，默认443
+ * @param {int} hostname 主机
+ * @return {https.Server}
+ */
+web.createHttps = function (options, port, hostname) {
+	var https = require('https');
+	var s = new https.Server(options, requestHandle);
+	port = port || 443;
+	s.listen(port, hostname);
+	return s;
+}
+
+/** request处理函数 */
+var requestHandle = function (req, _res) {
+	var req = new request.ServerRequest(req);
+	req.onready = function () {
+		var res = new response.ServerResponse(_res);
+		var si = new server.ServerInstance(req, res);
+				
+		/* 用于在request, response, server中访问另外的对象 */
+		var _link = {
+			request:	req,
+			response:	res,
+			server:		si
+		}
+		req._link = res._link = si._link = _link;
+				
+		si.next();
+	}
+	req.init();
 }
 
 /** 服务器配置 */

@@ -29,4 +29,3 @@ web.loadPlus();							// 仅载入默认插件
 web.setMimes('cool', 'text/html');
 
 var s = web.create(SERVER_PORT);
-
