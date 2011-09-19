@@ -2,6 +2,7 @@
  * 插件：静态文件服务插件
  *
  * 通过web.set('home_path', '根目录') 来设置静态文件根目录
+ * 通过web.set('page_404', 'HTML代码')来设置404出错页面HTML代码
  */
  
 var fs = require('fs'); 
@@ -17,7 +18,8 @@ exports.init_server = function (web, server, debug) {
 			/* 取文件最后修改时间 */
 			fs.stat(filename, function (err, stat) {
 				if (err) {
-					sendError(res, 404, 'File not found.');
+					var html_404 = web.get('page_404');
+					sendError(res, 404, html_404 || 'File not found.');
 					debug('File not found: ' + err);
 					return;
 				}
