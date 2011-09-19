@@ -42,7 +42,7 @@ exports.init_server = function (web, server, debug) {
 							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
 						else {
 							res.writeHead(200, {
-								'Content-type':		web.mimes(path.extname(filename).substr(1)),
+								'Content-Type':		web.mimes(path.extname(filename).substr(1)),
 								'Last-Modified':	stat.mtime
 							});
 							res.end(data);
