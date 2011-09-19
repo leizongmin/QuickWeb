@@ -10,9 +10,9 @@ var web = require('./core/web');
 
 // settings
 web.set('home_path', './test/www');				// file path (file_server plus)
-web.set('code_path', './test/code');			// code path (restful router plus)
+web.set('code_path', './test/code');				// code path (restful router plus)
 web.set('template_path', './test/tpl');			// template path (render plus)
-web.set('template_extname', 'html');			// template extname (render plus)
+web.set('template_extname', 'html');				// template extname (render plus)
 
 // load all plus
 web.loadPlus();
