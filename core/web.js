@@ -32,6 +32,11 @@ web.util = {}
  * @return {http.Server}
  */
 web.create = function (port, hostname) {
+	// 如果还没有载入插件，则自动载入
+	if (plus_never_loaded)
+		web.loadPlus();
+		
+	// 创建http.Server
 	var http = require('http');
 	var s = new http.Server(requestHandle);
 	port = port || 80;
@@ -48,6 +53,11 @@ web.create = function (port, hostname) {
  * @return {https.Server}
  */
 web.createHttps = function (options, port, hostname) {
+	// 如果还没有载入插件，则自动载入
+	if (plus_never_loaded)
+		web.loadPlus();
+		
+	// 创建https.Server	
 	var https = require('https');
 	var s = new https.Server(options, requestHandle);
 	port = port || 443;
@@ -104,6 +114,7 @@ web.get = function (name) {
  * @param {array} plus_dir 插件目录，可以为字符串或者字符串数组
  */
 web.loadPlus = function (plus_dir) {
+	// 搜索插件
 	if (typeof plus_dir == 'string') {
 		plus.scan(plus_dir);
 	}
@@ -111,11 +122,14 @@ web.loadPlus = function (plus_dir) {
 		for (var i in plus_dir)
 			plus.scan(plus_dir[i]);
 	}
+	// 载入插件
 	plus.load();
+	plus_never_loaded = false;
 }
 
 
 // 初始化，自动载入../plus里面的默认插件
 plus.scan(path.resolve(__dirname, '../plus'));
+var plus_never_loaded = true;
 
 debug('QuickWeb ' + web.version);
