@@ -84,13 +84,20 @@ exports.init_server = function (web, request, debug) {
 	web.session.get = web.session.getById = function (session_id) {
 		// 查询session	
 		var sessionObj = session_data[session_id];
+		
+		// 生成_hold()方法用于维持session
+		var _hold = function () {
+			session_data[session_id].timestamp = new Date().getTime();
+		}
+		
 		if (sessionObj) {
 			sessionObj.timestamp = new Date().getTime();
+			sessionObj.data._hold = _hold;
 			return sessionObj.data;
 		}
 		else {
 			session_data[session_id] = {
-				data: {}, timestamp: new Date().getTime()
+				data: {_hold: _hold}, timestamp: new Date().getTime()
 				}
 			return session_data[session_id].data;
 		}
