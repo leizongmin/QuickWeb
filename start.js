@@ -19,8 +19,5 @@ web.set('render_to_html', function (str, view) {
 	return str;
 });
 
-// load all plus
-web.loadPlus();
-
 // create server and listening on port 80
 var s = web.create(80);
