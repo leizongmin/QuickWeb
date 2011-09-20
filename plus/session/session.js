@@ -87,7 +87,12 @@ exports.init_server = function (web, request, debug) {
 		
 		// 生成_hold()方法用于维持session
 		var _hold = function () {
-			session_data[session_id].timestamp = new Date().getTime();
+			if (session_data[session_id] && session_data[session_id].timestamp) {
+				session_data[session_id].timestamp = new Date().getTime();
+				return true;
+			}
+			else
+				return false;
 		}
 		
 		if (sessionObj) {
