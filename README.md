@@ -29,8 +29,7 @@ http.ServerResponse，以及一个简单的插件管理器，它要处理HTTP请
 ```javascript
 	var web = require('./core/web');
 	
-	// 载入插件并启动服务器
-	web.loadPlus();
+	// 启动服务器
 	var s = web.create(80);
 ```
 
