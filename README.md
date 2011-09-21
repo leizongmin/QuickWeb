@@ -171,7 +171,7 @@
 	}
 ```
 
-### 使用Session
+### 5.使用Session
 
 在每个处理函数内，可以通过**server.sessionStart()**来开启session，然后就可以通过**server.session**来
 访问session数据。例：
@@ -190,3 +190,59 @@
 	}
 ```
 
+### 6.返回处理结果
+
+在每个处理函数内，可以通过**response.write()**和**response.end()**来返回处理结果。
+
+* **response.write()**向客户端输出数据，仍然保持连接
+
+* **response.end()**向客户端输出数据，并关闭连接
+
+例：
+
+```javascript
+	exports.paths = '/example';
+	exports.get = function (server, request, response) {
+		for (var i = 0; i < 10; i++)
+			response.write('i=' + i);		// 循环输出，但不关闭连接
+			
+		response.end('没有了！');			// 输出数据，并关闭连接
+	}
+```
+
+### 7.返回JSON数据
+
+在每个处理函数内，可以通过**response.sendJSON()**来返回JSON格式的数据，以简化操作。
+例：
+
+```javascript
+	exports.paths = '/example-json';
+	exports.get = function (server, request, response) {
+		// 返回JSON格式结果，并关闭连接
+		response.sendJSON({name: '老雷', cool: true});
+	}
+```
+
+### 8.发送文件
+
+在每个处理函数内，可以通过**response.sendFile()**来返回一个文件(以**www_path**为根目录）例：
+
+```javascript
+	exports.paths = '/example-file';
+	exports.get = function (server, request, response) {
+		// 返回一个文件，并关闭连接
+		response.sendFile('index.html');
+	}
+```
+
+### 9.302重定向
+
+在每个处理函数内，可以通过**response.redirect()**来重定向当前请求。例：
+
+```javascript
+	exports.paths = '/example-redirect';
+	exports.get = function (server, request, response) {
+		// 重定向
+		response.redirect('/home');
+	}
+```
