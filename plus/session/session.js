@@ -88,17 +88,15 @@ var delSession = function (session_id) {
 /**
  * 扫描已过期的session，并清空
  */
-var recoverSession = function () {
-	var maxAge = web.get('session_maxage');
-	if (isNaN(maxAge) || maxAge < 1)
-		maxAge = 600000;
-		
+var recoverSession = function () {		
 	var deadline = new Date().getTime() - maxAge;
 	for (var i in session_data) {
 		if (session_data[i].timestamp < deadline)
 			delSession(i);
 	}
 }
+/** Session生存周期 */
+var session_maxage = 600000;
 
 
  
@@ -208,8 +206,15 @@ exports.init_server = function (web, request, debug) {
 	
 	/*********************************************************************************************************/
 	// 启动session回收
+	// 获取Session生存周期
+	var maxAge = web.get('session_maxage');
+	if (isNaN(maxAge) || maxAge < 1)
+		maxAge = 600000;
+	session_maxage = maxAge;
+	// 获取回收扫描周期
 	var recoverCycle = web.get('session_recover');
 	if (isNaN(recoverCycle) || recoverCycle < 1)
 		recoverCycle = 60000
+	// 启动
 	setInterval(recoverSession, recoverCycle);
 }
