@@ -11,10 +11,14 @@
 ## 开启Session
 
 可以通过`ServerInstance.sessionStart()`来开启Session。在每次请求处理中，必须
-调用该方法，然后才能访问Session数据
+调用该方法，然后才能访问Session数据。如果注册了第三方session，则应该设置一个
+回调函数。
 
 ```javascript
-	server.sessionStart();
+	server.sessionStart(function () {
+		// session初始化完成，可以通过server.session来访问session数据
+		// 或者server.sessionObject来访问SessionObject实例
+	});
 ```
 
 
@@ -34,6 +38,19 @@
 
 ```javascript
 	server.clearSession();
+```
+
+
+## 更新Session数据
+
+默认情况下，QuickWeb的Session是存储在内存中的，因此你对server.session的修改会自动
+保存起来。如果注册了自己的Session存储方式，则需要调用`server.sessionObject.update()`来
+完成更新。
+
+```javascript
+server.sessionObject.update(function () {
+	// 更新完成
+});
 ```
 
 
