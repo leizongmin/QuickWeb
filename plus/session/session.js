@@ -89,7 +89,7 @@ var delSession = function (session_id) {
  * 扫描已过期的session，并清空
  */
 var recoverSession = function () {		
-	var deadline = new Date().getTime() - maxAge;
+	var deadline = new Date().getTime() - session_maxage;
 	for (var i in session_data) {
 		if (session_data[i].timestamp < deadline)
 			delSession(i);
