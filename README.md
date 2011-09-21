@@ -246,3 +246,62 @@
 		response.redirect('/home');
 	}
 ```
+
+
+## 高级功能
+
+### 1.使用模板引擎
+
+默认情况下，QuickWeb没有加载任何模板引擎，可以通过以下步骤来注册模板引擎：
+
+* 在启动QuickWeb服务器前，设置参数**template_path**为模板文件所在的目录；
+
+* 同时注册模板处理函数，通过设置参数**render_to_html**来完成：模板处理函数接收两个
+参数：**str**和*view*，str为模板内容，view为视图（即用于渲染模板的数据），处理函数
+处理后的结果；
+
+* 可以通过设置参数**template_extname**为模板文件默认的扩展名，以简化操作；
+
+例：
+
+```javascript
+	// 模板目录 ./tpl
+	web.set('template_path', './tpl');
+	// 模板文件默认扩展名 .html
+	web.set('template_extname', 'html');
+	// 定义模板渲染函数
+	var mustache = require('mustache');
+	web.set('render_to_html', function (str, view) {
+		// 使用mustache模板引擎来完成渲染
+		return mustache.to_html(str, view);
+	});
+```
+
+在注册完模板引擎之后，可以通过**server.render()**来渲染模板字符串，或者通过
+**response.renderFile()**来渲染模板文件并返回结果给客户端。
+例：
+
+```javascript
+	exports.paths = '/example-render';
+	exports.get = function (server, request, response) {
+		// 渲染字符串
+		var html = server.render('{{name}}，你好！', {name: '老雷'});
+		// ... 其他程序 ...
+	}
+```
+
+```javascript
+	exports.paths = '/example-renderFile';
+	exports.get = function (server, request, response) {
+		// 渲染文件并关闭连接
+		response.renderFile('users', {name: '老雷'}, 'text/html');
+	}
+```
+
+### 2.自定义Session引擎
+
+默认情况下，QuickWeb使用的Session将数据存储在本机的内存里，只能由本实例的访问。
+如果你的程序需要在多个QuickWeb实例上共享Session数据，可以通过SessionObject提供
+的接口来完成：
+
+* 
