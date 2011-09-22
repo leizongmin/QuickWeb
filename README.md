@@ -440,3 +440,24 @@
 
 ### 3.与socket.io共享Session数据
 
+如果需要在QuickWeb路由处理程序外部访问其中的Session数据，可以通过**web.session.get()**
+和**web.session.getByCookie()**来获取指定的SessionObject实例：
+
+* **web.session.get()**根据Session Id来获取其SessionObject实例；
+
+* **web.session.getByCookie()**根据含有**_session_id**的Cookie字符串来获取其SessionObject实例；
+
+而在socket.io中，我们在socket.io的连接验证时取得客户端的cookie字符串，从而获取相应的SessionObject实例，
+达到共享Session的目的：
+
+```javascript
+	io.set('authorization', function (handshakeData, callback) {
+		// 通过客户端的cookie字符串来获取其SessionObject实例
+		var sessionObject = handshakeData.sessionObject = web.session.getByCookie(handshakeData.headers.cookie);
+		// SessionObject.data即映射到内存中的session数据
+		var session = sessionObject.data;
+		
+		// ... 其他程序 ...
+		callback(null, true);
+	});
+```
