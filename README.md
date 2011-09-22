@@ -475,8 +475,8 @@
 ### 4.BigPipe输出模式
 
 QuickWeb内置了类似于
-[BigPipe(https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919)]
-的输出模式：
+[**BigPipe**](https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919)
+的输出模式，可用于在一次页面请求中，需要同时进行多个数据查询，并返回结果的情况：
 
 * 将网页分成多个小块，首先载入网页的整体框架：通过**response.pipe_init()**来初始化，
 通过**response.pipe_tpl()**来载入网页整体框架；
@@ -492,9 +492,12 @@ QuickWeb内置了类似于
 	exports.get = function (server, request, response) {
 		
 		// 初始化pipe
-		response.pipe_init(['fill_1', 'fill_2', 'fill_3', 'fill_4', 'fill_5', 'fill_6', 'fill_7', 'fill_8', 'fill_9'], 'finished');
+		response.pipe_init(['fill_1', 'fill_2', 'fill_3', 'fill_4', 'fill_5', 'fill_6', 'fill_7', 'fill_8', 'fill_9'],
+						'finished'		// 输出完成后调用的函数名（客户端）
+						300000);			// 超时时间，单位为毫秒，当超过此时间仍然未完成所有pipe输出时，则强制结束
+										// 并在客户端回调函数中设置错误信息为“timeout”
 		
-		// 载入模板
+		// 载入模板，调用response.renderFile()来进行
 		response.pipe_tpl('pipe', {}, function () {
 			
 			// 生成随机的时间
