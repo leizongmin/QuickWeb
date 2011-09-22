@@ -1,5 +1,5 @@
 {
-   "name":			"QuickWeb 默认功能演示",
+   "name":			"QuickWeb 榛樿鍔熻兘婕旂ず",
    "main":			"./start.js",
 	"engines": {
 		"node": ">= 0.4.7"

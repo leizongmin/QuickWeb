@@ -1,5 +1,5 @@
 {
-   "name":			"QuickWeb 自定义Session引擎测试",
+   "name":			"QuickWeb 鑷畾涔塖ession寮曟搸娴嬭瘯",
    "main":			"./start.js",
 	"engines": {
 		"node": ">= 0.4.7"

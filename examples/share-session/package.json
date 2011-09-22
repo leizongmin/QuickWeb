@@ -1,5 +1,5 @@
 {
-   "name":			"QuickWeb ¹²ÏísessionÊ¾Àý",
+   "name":			"QuickWeb å…±äº«sessionç¤ºä¾‹",
    "main":			"./start.js",
 	"engines": {
 		"node": ">= 0.4.7"
