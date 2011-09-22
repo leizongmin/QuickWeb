@@ -1,0 +1,133 @@
+.room {
+	width: 960px;
+	bottom: 0px;
+	padding: 20px;
+	margin: auto;
+	box-shadow: 1px 2px 10px #B0D5FF;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+}
+.room #connecting {
+	
+}
+.room #connecting .wrap {
+	padding-top: 200px;
+	text-align: center;
+}
+.room #chat {
+	display: none;
+}
+.room #chat #messages {
+	float: left;
+	width: 800px;
+}
+.room #chat #messages #lines {
+	overflow-y: scroll;
+}
+.room #chat #online {
+	float: right;
+	width: 140px;
+}
+.room #chat #send-message {
+	position: fixed;
+	width: 960px;
+	height: 30px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	margin: auto;
+	font-size: 14px;
+}
+.room #chat #send-message #message {
+	border: 2px solid #0087BC;
+	padding: 4px;
+	width: 880px;
+}
+.room #chat #send-message button {
+	padding: 4px 10px;
+	background-color: #0087BC;
+	border: 2px solid #0087BC;
+	color: white;
+	font-weight: bold;
+	border-radius: 6px;
+}
+.room #chat #messages #lines .line {
+	font-size: 14px;
+	margin: 10px 0px;
+	border: 1px solid #F2F2F2;
+	padding: 8px;
+	border-radius: 10px;
+	margin-right: 12px;
+}
+.line .message-header {
+	padding-bottom: 8px;
+}
+.line .message-from {
+	font-weight: bold;
+	color: #00781E;
+	padding-right: 20px;
+}
+.line .message-timestamp {
+	color: #989898;
+	font-weight: bold;
+	font-size: 12px;
+}
+.line .message-text {
+	font-size: 14px;
+}
+.type-error {
+	background-color: #FFECE4;
+}
+.type-own {
+	background-color: #F3FFF0;
+}
+.type-system {
+	background-color: #FFECE4;
+}
+.type-private {
+	background-color: #ECF3FF;
+}
+.room #chat #online #nicknames {
+	overflow-y: scroll;
+}
+.room #chat #online #nicknames .line {
+	font-weight: bold;
+	color: #00781E;
+	padding: 4px 0px;
+	font-size: 12px;
+	cursor: pointer;
+}
+.room #chat #online .title {
+	padding-bottom: 10px;
+	font-size: 14px;
+	font-weight: bold;
+}
+/* 滚动条样式 */
+.scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar::-webkit-scrollbar-button:start:decrement,
+.scrollbar::-webkit-scrollbar-button:end:increment {
+  display: block;
+  height: 10px;
+}
+.scrollbar::-webkit-scrollbar-button:vertical:increment {
+  background-color: #fff;
+}
+.scrollbar::-webkit-scrollbar-track-piece {
+  background-color: #fff;
+  -webkit-border-radius: 3px;
+}
+.scrollbar::-webkit-scrollbar-thumb:vertical {
+  height: 50px;
+  background-color: #ccc;
+  -webkit-border-radius: 3px;
+}
+.scrollbar::-webkit-scrollbar-thumb:horizontal {
+  width: 50px;
+  background-color: #fff;
+  -webkit-border-radius: 3px;
+}

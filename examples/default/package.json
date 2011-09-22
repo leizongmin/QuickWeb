@@ -1,0 +1,11 @@
+{
+   "name":			"QuickWeb 默认功能演示",
+   "main":			"./start.js",
+	"engines": {
+		"node": ">= 0.4.7"
+	},
+	"dependencies":	{
+		"QuickWeb":	"*",
+		"mustache":	"*"
+	}
+}

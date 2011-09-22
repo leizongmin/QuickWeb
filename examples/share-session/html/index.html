@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>聊天室演示程序</title>
+<base charset="utf-8" />
+<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+</head>
+<body>
+<h1>QuickWeb 与 socket.io 演示</h1>
+源代码请看这里：
+<a href="https://github.com/leizongmin/QuickWeb-examples">
+https://github.com/leizongmin/QuickWeb-examples
+</a>
+
+<hr>
+<form>
+	{{#islogin}}
+		<h3>你已登录，<a href="/room/nodejs">点这里进入房间</a></h3>
+	{{/islogin}}
+	
+	<h3>昵称：
+		<input type="text" name="nickname" value="{{nickname}}" />
+	</h3>
+	<h3>密码：
+		<input type="text" name="password" value="123456" />
+		(所有用户的密码都是：123456)
+	</h3>
+	<input type="submit" value="登录" />
+</form>
+
+</body>
+</html>

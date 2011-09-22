@@ -1,0 +1,4 @@
+<h1>自定义文件类型 .cool, 为 text/html</h1>
+<script>
+alert('OK!');
+</script>
