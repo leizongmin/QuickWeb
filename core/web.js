@@ -2,7 +2,7 @@
  * QuickWeb web
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.5
+ * @version 0.1.6
  */
  
 var web = module.exports;

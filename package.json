@@ -1,7 +1,7 @@
 {
    "name":			"QuickWeb",
    "main":			"./core/web.js",
-   "version":		"0.1.5",
+   "version":		"0.1.6",
    "description":	"A quick web framework, plug-in management style, easy to extend.",
    "author": "leizongmin <leizongmin@gmail.com> (http://lab.ucdok.com)",
    "repository": {
