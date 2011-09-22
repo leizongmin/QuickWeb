@@ -347,37 +347,92 @@
 内存里面的Session数据通过**session_update**注册的处理函数来更新到自定义的Session引擎。
 
 注册的session_pull、session_update、session_free处理函数均接收一个参数（有时候没有回调函数），用作回调函数。
-在处理函数里面，可以通过**this.id**来获取当前Session id，通过**this.data**来获取或设置映射到内存中的Session数据，
-通过**this.timestamp**来获取或设置最后一次访问session的时间戳（此时间戳决定Session什么时候被回收）。
+在处理函数里面：
+
+* 通过**this.id**来获取当前Session id；
+
+* 通过**this.data**来获取射到内存中的Session数据；
+
+* 通过**this.fill**来将Session数据映射到内存中；
+
+* 通过**this.timestamp**来获取或设置最后一次访问session的时间戳（此时间戳决定Session什么时候被回收）;
+
+* 通过**this.callback()**来调用回调函数（表示该次处理完毕）
+
 例：
 
 ```javascript
+	// 自定义Session引擎处理函数
+	// 连接MongoDB数据库
+	var CustomSession = require('./config').db.collection('session');
+
+	/** 获取数据 */
 	web.set('session_pull', function (callback) {
-		// 获取session数据的代码
-		mysession.get(this.id, function (data) {
-			this.data = data;
-			if (typeof callback == 'function')
-				callback();
+		debug('session_pull');
+		var self = this;
+		// 从数据库中查找指定ID的Session数据
+		CustomSession.findOne({_id: self.id}, function (err, d) {
+			if (err)
+				console.log(err);
+			if (!d)
+				d = {data: {}}
+			// 通过SessionObject.fill()来设置Session数据
+			self.fill(d.data || {});
+			// 通过SessionObject.callback()来调用回调函数及处理结果（可选）
+			self.callback(callback, true);
 		});
 	});
-```
 
-```javascript
+	/** 更新数据 */
 	web.set('session_update', function (callback) {
-		// 更新session数据的代码
-		mysession.set(this.id, this.data, function () {
-			if (typeof callback == 'function')
-				callback();
+		debug('session_update');
+		var self = this;
+		debug(self);
+		// 保存Session数据到数据库中，通过SessionObject.data来获取内存映射中的数据
+		CustomSession.save({_id: self.id, data: self.data, timestamp: new Date().getTime()}, function (err) {
+			if (err)
+				console.log(err);
+			self.callback(callback, err ? false : true);
+		});
+	});
+
+	/** 释放数据 */
+	web.set('session_free', function (callback) {
+		debug('session_free');
+		var self = this;
+		// 从数据库中删除指定的Session数据，一般由Session回收管理器来自动调用
+		// 对于多个Web实例共享Session的应用，因为此回收机制仅针对当前QuickWeb实例的
+		// 为了避免误删除数据，在删除前最后判断一下其他Web实例最后从数据库访问此Sesison
+		// 的时间，以确定是否真的过期了
+		CustomSession.remove({_id: self.id}, function (err) {
+			if (err)
+				console.log(err);
+			self.callback(callback, err ? false : true);
 		});
 	});
 ```
 
+由于定义的Session引擎一般都是异步获取数据的，因此，在编写路由处理程序时，有少许变动：
+
 ```javascript
-	web.set('session_free', function (callback) {
-		// 释放session数据的代码
-		mysession.free(this.id, function () {
-			if (typeof callback == 'function')
-				callback();
+	exports.paths = '/';
+
+	exports.get = function (server, request, response) {
+		// 开启Session，待初始化完成后再访问Sesison数据
+		server.sessionStart(function () {
+			
+			// 修改Session数据
+			if (isNaN(server.session.count))
+				server.session.count = 0;
+			server.session.count ++;
+			
+			// 更新到自定义Session引擎，如果不调用此方法，将无法保存修改结果
+			server.sessionObject.update();
+			
+			response.end('第' + server.session.count + '次');
 		});
-	});
+	}
 ```
+
+### 3.与socket.io共享Session数据
+
