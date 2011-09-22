@@ -296,6 +296,17 @@
 	web.set('page_404', fs.readFileSync('404.html'));	// 直接设置成HTML代码，而不是文件名
 ```
 
+### 12.自定义文件MIME类型
+
+如果需要加入自定义文件MIME类型，可以在启动QuickWeb实例后通过**web.setMimes()**来完成：
+
+```javascript
+	// 先创建Http服务器
+	web.create();
+	// 在设置文件MIME类型
+	web.setMimes('cool', 'text/html');
+```
+
 =====
 
 **示例程序可看这里**：<https://github.com/leizongmin/QuickWeb/tree/master/examples/default>
