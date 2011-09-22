@@ -11,7 +11,7 @@ var response = module.exports;
 
 var logger = require('./logger');
 var debug = response.logger = function (msg) {
-	logger.log('response', msg);
+	logger.log('response', msg, 'info');
 }
 
 

@@ -11,7 +11,7 @@ var request = module.exports;
 
 var logger = require('./logger');
 var debug = request.logger = function (msg) {
-	logger.log('request', msg);
+	logger.log('request', msg, 'info');
 }
 
 

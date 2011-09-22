@@ -8,6 +8,9 @@
 // require QuickWeb module 
 var web = require('./core/web');
 
+// setting logger level
+web.setLoggerLevel(3);
+
 // settings
 web.set('home_path', './examples/default/www');			// file path (file_server plus)
 web.set('code_path', './examples/default/code');			// code path (restful router plus)

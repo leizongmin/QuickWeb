@@ -6,8 +6,10 @@
  
 var router = module.exports;
 
+var web = require('../../core/web');
+
 var debug = function (msg) {
-	console.log('[router] ' + msg);
+	web.log('router', msg, 'debug');
 }
 
 /** 允许注册的请求类型 */

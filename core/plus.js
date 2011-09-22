@@ -9,7 +9,7 @@ var plus = module.exports;
 
 var logger = require('./logger');
 var debug = plus.logger = function (msg) {
-	logger.log('plus', msg);
+	logger.log('plus', msg, 'info');
 }
 
 var fs = require('fs');
@@ -45,7 +45,7 @@ plus.load = function () {
 		
 		/** 插件调试输出函数 */
 		var plusDebug = function (msg) {
-			logger.log('plus: ' + v, msg);
+			logger.log('plus: ' + v, msg, 'info');
 		}
 		
 		/* 载入插件主文件 */
@@ -109,12 +109,12 @@ plus.scan = function (plus_dir) {
 				}
 			}
 			catch (err) {
-				debug('load package file error: ' + err);
+				logger.log('plus', 'load package file error: ' + err, 'error');
 			}
 		});
 	}
 	catch (err) {
-		debug('Scan plus file error: ' + err);
+		logger.log('plus', 'Scan plus file error: ' + err, 'error');
 	}
 }
 

@@ -11,7 +11,7 @@ var server = module.exports;
 
 var logger = require('./logger');
 var debug = server.logger = function (msg) {
-	logger.log('server', msg);
+	logger.log('server', msg, 'info');
 }
 
 var web = require('./web');

@@ -11,9 +11,10 @@ var web = module.exports;
 web.version = 'v0.1.7-pre';
 
 var logger = require('./logger');
-var debug = web.logger = function (msg) {
-	logger.log('web', msg);
+var debug = function (msg) {
+	logger.log('web', msg, 'info');
 }
+web.log = logger.log;
 
 var path = require('path');
 var request = require('./request');
@@ -125,6 +126,15 @@ web.loadPlus = function (plus_dir) {
 	// 载入插件
 	plus.load();
 	plus_never_loaded = false;
+}
+
+/**
+ * 设置调试输出等级
+ *
+ * @param {int} level
+ */
+web.setLoggerLevel = function (level) {
+	logger.setLevel(level);
 }
 
 
