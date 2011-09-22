@@ -328,9 +328,11 @@
 	}
 ```
 
+=====
+
 ### 2.自定义Session引擎
 
-默认情况下，QuickWeb使用的Session将数据存储在本机的内存里，只能由本实例的访问。
+默认情况下，QuickWeb使用的Session将数据存储在本机的内存里，只能由本实例的程序访问。
 如果你的程序需要在多个QuickWeb实例上共享Session数据，可以通过SessionObject提供
 的接口来完成：
 
@@ -353,7 +355,7 @@
 
 * 通过**this.data**来获取射到内存中的Session数据；
 
-* 通过**this.fill**来将Session数据映射到内存中；
+* 通过**this.fill()**来将Session数据映射到内存中；
 
 * 通过**this.timestamp**来获取或设置最后一次访问session的时间戳（此时间戳决定Session什么时候被回收）;
 
@@ -433,6 +435,8 @@
 		});
 	}
 ```
+
+=====
 
 ### 3.与socket.io共享Session数据
 
