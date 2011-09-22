@@ -287,6 +287,15 @@
 	}
 ```
 
+### 11.404错误页面
+
+如果要自定义404错误页面，可以在启动QuickWeb实例前设置参数**page_404**来完成：
+
+```javascript
+	var fs = require('fs');
+	web.set('page_404', fs.readFileSync('404.html'));	// 直接设置成HTML代码，而不是文件名
+```
+
 =====
 
 **示例程序可看这里**：<https://github.com/leizongmin/QuickWeb/tree/master/examples/default>
