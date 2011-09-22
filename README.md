@@ -36,6 +36,16 @@
 
 程序目录为**./code**，网站服务器端的处理程序将放在这个目录里面。
 
+如果要创建HTTPS服务器，则使用以下语句：
+
+```javascript
+	var s = web.createHttps({
+			key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),		// 设置证书
+			cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+		}, 443);
+```
+
+
 ### 2.编写程序
 
 在**./code**目录中新建一个js文件，比如“index.js”，然后输入以下代码：
@@ -457,6 +467,14 @@
 达到共享Session的目的：
 
 ```javascript
+	// 创建QuickWeb服务器
+	var web = require('QuickWeb');
+	var s = web.create();
+	
+	// 创建socket.io服务器
+	var io = require('socket.io');
+	io = io.listen(s);					// web.create()返回的是http.Server，可以直接与socket.io结合
+	
 	io.set('authorization', function (handshakeData, callback) {
 		// 通过客户端的cookie字符串来获取其SessionObject实例
 		var sessionObject = handshakeData.sessionObject = web.session.getByCookie(handshakeData.headers.cookie);
@@ -578,4 +596,9 @@ QuickWeb内置了类似于
 	</script>
 	</html>
 ```
+
+
+## 扩展QuickWeb
+
+### 1.QuickWeb运行机制
 
