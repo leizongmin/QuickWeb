@@ -8,7 +8,7 @@
 var web = module.exports;
 
 /** 版本号 */
-web.version = 'v0.1.6';
+web.version = 'v0.1.7-pre';
 
 var logger = require('./logger');
 var debug = web.logger = function (msg) {
