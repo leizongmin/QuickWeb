@@ -277,6 +277,10 @@
 	}
 ```
 
+=====
+
+**示例程序可看这里**：<https://github.com/leizongmin/QuickWeb/tree/master/examples/default>
+
 
 ## 高级功能
 
@@ -436,6 +440,8 @@
 	}
 ```
 
+**示例程序可看这里**：<https://github.com/leizongmin/QuickWeb/tree/master/examples/custom-session>
+
 =====
 
 ### 3.与socket.io共享Session数据
@@ -462,12 +468,14 @@
 	});
 ```
 
+**示例程序可看这里**：<https://github.com/leizongmin/QuickWeb/tree/master/examples/share-session>
+
 =====
 
 ### 4.BigPipe输出模式
 
 QuickWeb内置了类似于
-[**BigPipe**(https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919)]
+[BigPipe(https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919)]
 的输出模式：
 
 * 将网页分成多个小块，首先载入网页的整体框架：通过**response.pipe_init()**来初始化，
