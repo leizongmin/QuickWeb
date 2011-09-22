@@ -76,13 +76,13 @@
 	// 删除文件
 	exports.delete = function (server, request, response) {
 		err = fs.unlinkSync(request.path.filename);
-		response.end(err ? '成功！' : err);
+		response.end(err ? err : '成功！');
 	}
 ```
 
 ### 1.路由处理程序的编程环境
 
-每个请求处理函数都接收3个参数，分别为**server**、**request**、**response**：
+每个请求处理函数都接收3个参数，依次为**server**、**request**、**response**：
 
 * **server**是**ServerInstance**的实例，可以通过它来进行一些公共的操作；
 
@@ -165,7 +165,7 @@
 	exports.paths = '/cookie-example3';
 	exports.get = function (server, request, response) {
 		response.clearCookie('名称', {
-			path: 	'/',
+			path: 	'/',				// 选项同setCookie()
 			domain:	'xxx.com'
 		});
 	}
@@ -210,7 +210,37 @@
 	}
 ```
 
-### 7.返回JSON数据
+### 7.设置响应头
+
+在调用response.write()或response.end()之前，还可以通过**response.setHeader()**和
+**response.writeHead()**来设置响应头。例：
+
+* **response.setHeader()**设置响应头，必须在response.writeHead()前调用
+
+* **response.writeHead()**输出响应头，必须在输出数据前调用
+
+```javascript
+	exports.paths = '/example';
+	exports.get = function (server, request, response) {
+		// 设置响应头
+		response.setHeader('header-1', '自定义header');
+		// ... 其他程序 ...
+	}
+```
+
+```javascript
+	exports.paths = '/example';
+	exports.get = function (server, request, response) {
+		// 输出响应头
+		response.writeHead(200, {
+			'header-1': '自定义header',
+			'header-2': '自定义header'
+			});
+		// ...其他程序 ...
+	}
+```
+
+### 8.返回JSON数据
 
 在每个处理函数内，可以通过**response.sendJSON()**来返回JSON格式的数据，以简化操作。
 例：
@@ -223,7 +253,7 @@
 	}
 ```
 
-### 8.发送文件
+### 9.发送文件
 
 在每个处理函数内，可以通过**response.sendFile()**来返回一个文件(以**www_path**为根目录）例：
 
@@ -235,7 +265,7 @@
 	}
 ```
 
-### 9.302重定向
+### 10.重定向
 
 在每个处理函数内，可以通过**response.redirect()**来重定向当前请求。例：
 
@@ -257,7 +287,7 @@
 * 在启动QuickWeb服务器前，设置参数**template_path**为模板文件所在的目录；
 
 * 同时注册模板处理函数，通过设置参数**render_to_html**来完成：模板处理函数接收两个
-参数：**str**和*view*，str为模板内容，view为视图（即用于渲染模板的数据），处理函数
+参数：**str**和**view**，str为**模板内容**，view为**视图**（即用于渲染模板的数据），处理函数
 处理后的结果；
 
 * 可以通过设置参数**template_extname**为模板文件默认的扩展名，以简化操作；
@@ -277,7 +307,7 @@
 	});
 ```
 
-在注册完模板引擎之后，可以通过**server.render()**来渲染模板字符串，或者通过
+在注册完模板引擎之后，可以通过**response.render()**来渲染模板字符串，或者通过
 **response.renderFile()**来渲染模板文件并返回结果给客户端。
 例：
 
@@ -285,7 +315,7 @@
 	exports.paths = '/example-render';
 	exports.get = function (server, request, response) {
 		// 渲染字符串
-		var html = server.render('{{name}}，你好！', {name: '老雷'});
+		var html = response.render('{{name}}，你好！', {name: '老雷'});
 		// ... 其他程序 ...
 	}
 ```
@@ -304,4 +334,50 @@
 如果你的程序需要在多个QuickWeb实例上共享Session数据，可以通过SessionObject提供
 的接口来完成：
 
-* 
+* 设置参数**session_pull**为获取Session数据的初始化函数
+
+* 设置参数**session_update**为更新Session数据到Session引擎的处理函数
+
+* 设置参数**session_free**为Session过期后释放Session数据的处理函数
+
+* 设置参数**session_hold**为刷新Session时间戳的处理函数
+
+在使用自定义的Session引擎时，当程序调用server.sessionStart()后，QuickWeb实际上是通过注册的**session_pull**函数
+来获取Session数据，然后映射到内存里面。当程序对Session进行了修改，需要调用server.sessionObject.update()来
+内存里面的Session数据通过**session_update**注册的处理函数来更新到自定义的Session引擎。
+
+注册的session_pull、session_update、session_free处理函数均接收一个参数（有时候没有回调函数），用作回调函数。
+在处理函数里面，可以通过**this.id**来获取当前Session id，通过**this.data**来获取或设置映射到内存中的Session数据，
+通过**this.timestamp**来获取或设置最后一次访问session的时间戳（此时间戳决定Session什么时候被回收）。
+例：
+
+```javascript
+	web.set('session_pull', function (callback) {
+		// 获取session数据的代码
+		mysession.get(this.id, function (data) {
+			this.data = data;
+			if (typeof callback == 'function')
+				callback();
+		});
+	});
+```
+
+```javascript
+	web.set('session_update', function (callback) {
+		// 更新session数据的代码
+		mysession.set(this.id, this.data, function () {
+			if (typeof callback == 'function')
+				callback();
+		});
+	});
+```
+
+```javascript
+	web.set('session_free', function (callback) {
+		// 释放session数据的代码
+		mysession.free(this.id, function () {
+			if (typeof callback == 'function')
+				callback();
+		});
+	});
+```

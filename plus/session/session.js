@@ -1,8 +1,8 @@
 /**
  * 插件： session
  *
- * 需要设置web参数 	session_maxage = session存活时间，单位为ms，默认为10分钟
- * 					session_recover = 回收扫描周期，单位为ms，默认为1分钟
+ * 需要设置web参数 	session_maxage = session存活时间，单位为s，默认为10分钟
+ * 					session_recover = 回收扫描周期，单位为s，默认为1分钟
  */
  
 /** SESSION数据 */ 
@@ -25,20 +25,28 @@ SessionObject.prototype.hold = function () {
 /** 获取数据，用于第三方session插件映射session数据 */
 SessionObject.prototype.pull = function (callback) {
 	// 通过重装此方法来实现第三方session，更新完成后调用callback
-	if (typeof callback == 'function')
-		callback();
+	this.callback(callback);
 }
 /** 更新数据，用于第三方session插件更新session数据 */
 SessionObject.prototype.update = function (callback) {
 	// 通过重装此方法来实现第三方session，更新完成后调用callback
-	if (typeof callback == 'function')
-		callback();
+	this.callback(callback);
 }
 /** 过期，用于第三方session插件更新session数据 */
 SessionObject.prototype.free = function (callback) {
 	// 通过重装此方法来实现第三方session，更新完成后调用callback
-	if (typeof callback == 'function')
-		callback();
+	this.callback(callback);
+}
+/** 回调函数 */
+SessionObject.prototype.callback = function (callback, isOk) {
+	if (typeof callback == 'function') {
+		callback(typeof isOk == 'undefined' ? true : isOk);
+	}
+}
+/** 填充数据，用于第三方Session插件将其数据映射到内存中 */
+SessionObject.prototype.fill = function (data) {
+	for (var i in data)
+		this.data[i] = data[i];
 }
 
 /**
@@ -164,12 +172,15 @@ exports.init_server = function (web, request, debug) {
 	var so_pull = web.get('session_pull');
 	var so_update = web.get('session_update');
 	var so_free = web.get('session_free');
+	var so_hold = web.get('session_hold');
 	if (typeof so_pull == 'function')
 		SessionObject.prototype.pull = so_pull;
 	if (typeof so_update == 'function')
 		SessionObject.prototype.update = so_update;
 	if (typeof so_free == 'function')
 		SessionObject.prototype.free = so_free;
+	if (typeof so_hold == 'function')
+		SessionObject.prototype.hold = so_hold;
 	
 	
 	/**
@@ -209,12 +220,13 @@ exports.init_server = function (web, request, debug) {
 	// 获取Session生存周期
 	var maxAge = web.get('session_maxage');
 	if (isNaN(maxAge) || maxAge < 1)
-		maxAge = 600000;
-	session_maxage = maxAge;
+		maxAge = 600;
+	session_maxage = maxAge * 1000;
 	// 获取回收扫描周期
 	var recoverCycle = web.get('session_recover');
 	if (isNaN(recoverCycle) || recoverCycle < 1)
-		recoverCycle = 60000
+		recoverCycle = 60;
+	recoverCycle *= 1000;
 	// 启动
 	setInterval(recoverSession, recoverCycle);
 }
