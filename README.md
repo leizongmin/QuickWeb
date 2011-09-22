@@ -602,3 +602,32 @@ QuickWeb内置了类似于
 
 ### 1.QuickWeb运行机制
 
+QuickWeb是基于Nodejs内置的http模块来创建服务器的，在接管**http.Server**的**request**事件时，
+基于传入的http.ServerRequest和http.ServerResponse实例分别封装成了QuickWeb的**ServerRequest**
+和**ServerResponse**实例，以提供丰富的功能。
+
+在初始化ServerRequest、ServerResponse和ServerInstance后，QuickWeb将改此请求的控制权交给
+**ServerInstance**，由其来选择相应的处理程序来完成该次请求。
+
+```javascript
+	/** request处理函数 */
+	var requestHandle = function (req, _res) {
+		var req = new request.ServerRequest(req);
+		req.onready = function () {
+			// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
+			var res = new response.ServerResponse(_res);
+			var si = new server.ServerInstance(req, res);
+
+			/* 用于在request, response, server中访问另外的对象 */
+			var _link = { request: req,	response: res,	server: si}
+			req._link = res._link = si._link = _link;
+
+			// 调用ServerInstance处理链来处理本次请求
+			si.next();
+		}
+		// 初始化ServerRequest
+		req.init();
+	}
+```
+
+_待续_
