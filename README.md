@@ -461,3 +461,110 @@
 		callback(null, true);
 	});
 ```
+
+=====
+
+### 4.BigPipe输出模式
+
+QuickWeb内置了类似于
+[**BigPipe**(https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919)]
+的输出模式：
+
+* 将网页分成多个小块，首先载入网页的整体框架：通过**response.pipe_init()**来初始化，
+通过**response.pipe_tpl()**来载入网页整体框架；
+
+* 各小块网页的数据查询异步进行，每块查询完毕及输出其结果，通过**response.pipe()**来输出结果；
+
+* 待所有块均完成输出后才结束本次请求；
+
+例：
+
+```javascript
+	exports.paths = '/pipe';
+	exports.get = function (server, request, response) {
+		
+		// 初始化pipe
+		response.pipe_init(['fill_1', 'fill_2', 'fill_3', 'fill_4', 'fill_5', 'fill_6', 'fill_7', 'fill_8', 'fill_9'], 'finished');
+		
+		// 载入模板
+		response.pipe_tpl('pipe', {}, function () {
+			
+			// 生成随机的时间
+			var random = function () { return Math.random() * 4000; }
+			
+			// 模拟数据查询，并返回结果
+			setTimeout(function () { response.pipe('fill_1', 'red'); }, random());
+			setTimeout(function () { response.pipe('fill_2', 'yellow'); }, random());
+			setTimeout(function () { response.pipe('fill_3', 'blue'); }, random());
+			setTimeout(function () { response.pipe('fill_4', 'black'); }, random());
+			setTimeout(function () { response.pipe('fill_5', 'green'); }, random());
+			setTimeout(function () { response.pipe('fill_6', 'magenta'); }, random());
+			setTimeout(function () { response.pipe('fill_7', 'seagreen'); }, random());
+			setTimeout(function () { response.pipe('fill_8', 'darkgoldenrod'); }, random());
+			setTimeout(function () { response.pipe('fill_9', 'silver'); }, random());
+		});
+	}
+```
+
+模板**pipe**的代码如下：
+
+```html
+	<html>
+	<head><title>pipe 测试页面</title><meta charset="utf-8" /></head>
+	<style>
+	td { width: 100px; height: 100px; text-align: center; border: 2px solid blue; }
+	</style>
+	<body>
+	<h1>Pipe 测试页面</h1>
+	以下方格会按顺序自动填充颜色
+	<hr>
+	<table>
+		<tr>
+			<td id="block_1">红色</td>
+			<td id="block_2">黄色</td>
+			<td id="block_3">蓝色</td>
+		</tr>
+		<tr>
+			<td id="block_4">黑色</td>
+			<td id="block_5">绿色</td>
+			<td id="block_6">紫色</td>
+		</tr>
+		<tr>
+			<td id="block_7">青色</td>
+			<td id="block_8">棕色</td>
+			<td id="block_9">灰色</td>
+		</tr>
+	</table>
+
+	</body>
+	<script>
+	/**
+	 * 给方格填充颜色
+	 *
+	 * @param {int} id 方格ID
+	 * @param {string} color 颜色值
+	 */
+	var fill = function (id, color) {
+		var n = document.getElementById('block_' + id);
+		n.setAttribute('style', 'background-color:' + color);
+	}
+
+	/** 为各个方格设置颜色 */
+	var fill_1 = function (color) { fill(1, color)}
+	var fill_2 = function (color) { fill(2, color)}
+	var fill_3 = function (color) { fill(3, color)}
+	var fill_4 = function (color) { fill(4, color)}
+	var fill_5 = function (color) { fill(5, color)}
+	var fill_6 = function (color) { fill(6, color)}
+	var fill_7 = function (color) { fill(7, color)}
+	var fill_8 = function (color) { fill(8, color)}
+	var fill_9 = function (color) { fill(9, color)}
+
+	/** 完成 */
+	var finished = function (err) {
+		alert(err ? '出错了：' + err : 'OK');
+	}
+	</script>
+	</html>
+```
+
