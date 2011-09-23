@@ -5,6 +5,8 @@
  * 					session_recover = 回收扫描周期，单位为s，默认为1分钟
  */
  
+var web = require('../../core/web'); 
+ 
 /** SESSION数据 */ 
 var session_data = {} 
 
@@ -32,10 +34,12 @@ var getSession = function (session_id, init_if_undefined) {
 	// 获取session
 	if (session_id in session_data) {
 		var session = session_data[session_id];
+		web.log('get session', 'session_id=' + session_id, 'debug');
 	}
 	else {
 		var session = new SessionObject(session_id);
 		session_data[session_id] = session;
+		web.log('get session', 'create: session_id=' + session_id, 'debug');
 	}
 	return session;
 }
@@ -52,6 +56,7 @@ var delSession = function (session_id) {
 	if (session_id in session_data) {
 		session_data[session_id].free();
 		delete session_data[session_id];
+		web.log('delete session', 'session_id=' + session_id, 'debug');
 	}
 }
 
@@ -70,7 +75,7 @@ var session_maxage = 600000;
 
 
  
-exports.init_server = function (web, request, debug) {
+exports.init_server = function (web, request) {
 	
 	/**
 	 * 开启session
@@ -81,7 +86,7 @@ exports.init_server = function (web, request, debug) {
 	request.ServerInstance.prototype.sessionStart = function (callback) {
 		// 必须要有Cookie模块的支持
 		if (typeof this._link.request.cookie == 'undefined') {
-			debug('sessionStart error: cookie disable!');
+			web.log('session start', 'cookie disable!', 'error');
 			return;
 		}
 		
@@ -90,9 +95,12 @@ exports.init_server = function (web, request, debug) {
 			var session_id = new Date().getTime() * 100000 + Math.floor(Math.random() * 100000);
 			this._link.response.setCookie('_session_id', session_id, { maxAge: 3600 });
 			this._link.request.cookie._session_id = session_id;
+			
+			web.log('session start', 'assign session_id ' + session_id, 'debug');
 		}
 		else {
 			var session_id = this._link.request.cookie._session_id;
+			web.log('session start', 'use session_id ' + session_id, 'debug');
 		}
 		
 		// 获取session
@@ -112,7 +120,7 @@ exports.init_server = function (web, request, debug) {
 	request.ServerInstance.prototype.clearSession = function () {
 		// 必须要有Cookie模块的支持
 		if (typeof this._link.request.cookie == 'undefined') {
-			debug('sessionStart error: cookie disable!');
+			web.log('clear session', 'cookie disable!', 'error');
 			return;
 		}
 		
@@ -135,14 +143,22 @@ exports.init_server = function (web, request, debug) {
 	var so_update = web.get('session_update');
 	var so_free = web.get('session_free');
 	var so_hold = web.get('session_hold');
-	if (typeof so_pull == 'function')
+	if (typeof so_pull == 'function') {
 		SessionObject.prototype.pull = so_pull;
-	if (typeof so_update == 'function')
+		web.log('session init', 'customize session_pull', 'info');
+	}
+	if (typeof so_update == 'function') {
 		SessionObject.prototype.update = so_update;
-	if (typeof so_free == 'function')
+		web.log('session init', 'customize session_update', 'info');
+	}
+	if (typeof so_free == 'function') {
 		SessionObject.prototype.free = so_free;
-	if (typeof so_hold == 'function')
+		web.log('session init', 'customize session_free', 'info');
+	}
+	if (typeof so_hold == 'function') {
 		SessionObject.prototype.hold = so_hold;
+		web.log('session init', 'customize session_hold', 'info');
+	}
 	
 	
 	/**
@@ -152,6 +168,8 @@ exports.init_server = function (web, request, debug) {
 	 * @return {SessionObject}
 	 */
 	web.session.getByCookie = function (cookie) {
+		web.log('get session', 'by cookie: ' + cookie, 'debug');
+		
 		// 解析cookie
 		if (typeof cookie == 'undefined')
 			cookie = {}

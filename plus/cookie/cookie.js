@@ -4,16 +4,17 @@
  */
  
 
-exports.init_request = function (web, request, debug) {
+exports.init_request = function (web, request) {
 	request.addListener(function (req) {
 		// 解析cookie
 		req.cookie = unserializeCookie(req.headers['cookie']);
+		web.log('cookie', req.cookie, 'debug');
 		
 		req.next();
 	});
 }
 
-exports.init_response = function (web, response, debug) {
+exports.init_response = function (web, response) {
 
 	/**
 	 * 设置Cookie
@@ -34,6 +35,7 @@ exports.init_response = function (web, response, debug) {
 		options.expires.setTime(options.expires.getTime() + options.maxAge * 1000);
 			
 		var cookie = serializeCookie(name, val, options);
+		web.log('set cookie', cookie, 'debug');
 		
 		var oldcookie = this.getHeader('Set-Cookie');
 		if (typeof oldcookie != 'undefined')
@@ -50,6 +52,7 @@ exports.init_response = function (web, response, debug) {
 	 */
 	response.ServerResponse.prototype.clearCookie = function (name, options) {
 		this.setCookie(name, '', options);
+		web.log('clear cookie', name, 'debug');
 	}
 	
 	/** 扩展web.util */

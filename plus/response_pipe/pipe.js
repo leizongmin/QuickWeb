@@ -5,10 +5,11 @@
  * response.pipe_tpl() 使用 render插件来渲染模板
  */
  
-exports.init_response = function (web, response, debug) {
+exports.init_response = function (web, response) {
 
 	/** 生成pipe结束回调函数 */
 	var callback_end = function (cb, data) {
+		web.log('pipe finish', cb + '(' + (typeof data == 'undefined' ? '' : data) + ')', 'debug');
 		return cb ? '<script>' + cb + '(' + JSON.stringify(data) + ');</script>' : '';
 	}
 
@@ -34,10 +35,12 @@ exports.init_response = function (web, response, debug) {
 			setTimeout(function () {
 				self.end(callback_end(self._pipes_end));
 			}, timeout);
+			
+			web.log('pipe init', 'pipes: ' + pipes + ', end: ' + cb_end + ', timeout: ' + timeout, 'debug');
 		}
 		else {
 			self.end(callback_end(self._pipes_end, 'error'));
-			debug('init pipe error!');
+			web.log('pipe init', 'init pipe error: argument pipes must be Array!', 'error');
 		}
 		
 		// 设置响应头
@@ -69,6 +72,9 @@ exports.init_response = function (web, response, debug) {
 	 */
 	response.ServerResponse.prototype.pipe = function (pipe, data) {
 		var self = this;
+		
+		web.log('pipe output', pipe, 'debug');
+		web.log('pipe output data', data, 'debug');
 		
 		for (var i in self._pipes)
 			if (self._pipes[i] == pipe) {

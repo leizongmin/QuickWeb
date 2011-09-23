@@ -8,7 +8,7 @@
 var fs = require('fs'); 
 var path = require('path');
  
-exports.init_server = function (web, server, debug) {
+exports.init_server = function (web, server) {
 	server.addListener(function (svr, req, res) {
 		try {
 			/* 获取绝对文件名 */
@@ -20,7 +20,7 @@ exports.init_server = function (web, server, debug) {
 				if (err) {
 					var html_404 = web.get('page_404');
 					sendError(res, 404, html_404 || 'File not found.');
-					debug('File not found: ' + err);
+					web.log('file', 'File not found: ' + err, 'info');
 					return;
 				}
 				
@@ -32,32 +32,36 @@ exports.init_server = function (web, server, debug) {
 						if (new Date(stat.mtime).getTime() <= new Date(since).getTime()) {
 							res.writeHead(304);
 							res.end();
+							web.log('file', 'not modified: mtime(' + stat.mtime + ') since(' + since + ')', 'debug');
 							return;
 						}
 					}
 					
 					// 读取并发送文件
 					fs.readFile(filename, function (err, data) {
-						if (err)
+						if (err) {
 							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
+							web.log('file', err, 'error');
+						}
 						else {
 							res.writeHead(200, {
 								'Content-Type':		web.mimes(path.extname(filename).substr(1)),
 								'Last-Modified':	stat.mtime
 							});
 							res.end(data);
+							web.log('file', 'send file: ' + filename, 'debug');
 						}
 					});
 				}
 				catch (err) {
 					sendError(res, 500, 'Read file error.');
-					debug('Read file error: ' + err);
+					web.log('file', 'Read file error: ' + err, 'error');
 				}
 			});
 		}
 		catch (err) {
 			sendError(res, 500, 'Unknow error.');
-			debug('Unknow error: ' + err);
+			web.log('file', 'Unknow error: ' + err, 'error');
 		}
 	});
 }

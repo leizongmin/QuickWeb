@@ -3,21 +3,18 @@
  *
  */
  
-var logger;
-
 var router = require('./router');
  
 var fs = require('fs');
 var path = require('path'); 
  
-exports.init_server = function (web, server, debug) {
-	logger = debug;
+exports.init_server = function (web, server) {
 	
 	/** ¼ÓÔØpathÄ£¿é */
 	var code_path =  web.get('code_path');
 	var files = scanCodeFiles(code_path);
 	files.forEach(function (v) {
-		debug('Load code file [' + v + ']');
+		web.log('router', 'Load code file [' + v + ']', 'debug');
 		var m = require(v);
 		if (typeof m.paths != 'string')
 			return;
@@ -33,11 +30,10 @@ exports.init_server = function (web, server, debug) {
 		if (typeof m.head == 'function')
 			router.register('head', m.paths, m.head);
 	});
-	// debug(router.handlers);
+	
 	
 	/** ×¢²á¼àÌýÆ÷ */
 	server.addListener(function (svr, req, res) {
-		// debug(req.method + '  ' + req.filename);
 		var h = router.handler(req.method, req.filename);
 		if (h) {
 			req.path = h.value;
@@ -69,7 +65,7 @@ var scanCodeFiles = function (code_path) {
 		return ret;
 	}
 	catch (err) {
-		logger('Read code file error: ' + err);
+		web.log('router', 'read code file error: ' + err, 'error');
 		return [];
 	}
 }

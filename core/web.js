@@ -14,6 +14,13 @@ var logger = require('./logger');
 var debug = function (msg) {
 	logger.log('web', msg, 'info');
 }
+/**
+ * 记录日志
+ *
+ * @param {string} source 来源
+ * @param {string} msg 消息
+ * @param {string} type 类型，可以为debug, info, error，默认为debug
+ */
 web.log = logger.log;
 
 var path = require('path');
@@ -68,6 +75,7 @@ web.createHttps = function (options, port, hostname) {
 
 /** request处理函数 */
 var requestHandle = function (req, _res) {
+	web.log('request', '-----------------------------------------------', 'debug');
 	var req = new request.ServerRequest(req);
 	req.onready = function () {
 		// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
@@ -135,6 +143,7 @@ web.loadPlus = function (plus_dir) {
  */
 web.setLoggerLevel = function (level) {
 	logger.setLevel(level);
+	web.log = logger.log;
 }
 
 

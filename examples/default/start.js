@@ -6,6 +6,9 @@
 
 var web = require('QuickWeb');
 
+// 定义日志输出等级
+web.setLoggerLevel(3);
+
 // 服务器端口
 var SERVER_PORT = 80;
 

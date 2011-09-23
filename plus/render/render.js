@@ -13,7 +13,7 @@ var path = require('path');
 
 //----------------------------------------------------------------------------
 // 注册ServerInstance
-exports.init_server = function (web, server, debug) {
+exports.init_server = function (web, server) {
 	
 	// 扩展web.render
 	web.render = {}
@@ -24,7 +24,7 @@ exports.init_server = function (web, server, debug) {
 		web.render.to_html = to_html;
 	else {
 		web.render.to_html = function (template, view) {
-			debug('No render engineer.');
+			web.log('render', 'No render engineer.', 'info');
 			return template;
 		}
 	}
@@ -38,6 +38,8 @@ exports.init_server = function (web, server, debug) {
 	 * @param {object} view 视图
 	 */
 	server.ServerInstance.prototype.render = function (template, view) {
+		web.log('render string', template, 'debug');
+		web.log('render view', view, 'debug');
 		return web.render.to_html(template, view);
 	}
 	
@@ -71,11 +73,14 @@ exports.init_server = function (web, server, debug) {
 		if (typeof template_extname != 'undefined')
 			filename += '.' + template_extname;
 			
+		web.log('render file', filename, 'debug');
+		web.log('render view', view, 'debug');
+			
 		/* 读取并渲染文件 */
 		try {
 			fs.readFile(path.resolve(template_path, filename), function (err, data) {
 				if (err) {
-					debug('renderFile error:' + err);
+					web.log('render', 'renderFile error:' + err, 'error');
 					callback();
 				}
 				else {
@@ -85,14 +90,14 @@ exports.init_server = function (web, server, debug) {
 			});
 		}
 		catch (err) {
-			debug('renderFile error:' + err);
+			web.log('render', 'renderFile error:' + err, 'error');
 			callback();
 		}
 	}
 }
 
 // 注册ServerResponse
-exports.init_response = function (web, response, debug) {
+exports.init_response = function (web, response) {
 	
 	/**
 	 * 渲染文件并响应给客户端

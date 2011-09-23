@@ -4,13 +4,9 @@
  * @author leizongmin<leizongmin@gmail.com>
  */
  
-var router = module.exports;
-
 var web = require('../../core/web');
-
-var debug = function (msg) {
-	web.log('router', msg, 'debug');
-}
+ 
+var router = module.exports;
 
 /** 允许注册的请求类型 */
 router.limitMethods = ['get', 'post', 'delete', 'put', 'head'];
@@ -30,19 +26,21 @@ for (var i in router.limitMethods)
  * @return {bool}
  */
 router.register = function (method, paths, handler) {
+	web.log('router register', '[' + method + '] ' + paths, 'debug');
+	
 	// 参数检查
 	if (typeof method != 'string' || typeof paths != 'string' || typeof handler != 'function') {
-		debug('register fail: arguments data type error.');
+		web.log('router register', 'argument data type error.', 'error');
 		return false;
 	}
 	method = method.toLowerCase().trim();
 	if (!(method in router.handlers)) {
-		debug('Method [' + method + '] not limited.');
+		web.log('router register', 'method [' + method + '] not limited.', 'error');
 		return false;
 	}
 	paths = paths.trim();
 	if (paths == '') {
-		debug('Paths could not be empty.');
+		web.log('router register', 'argument paths could not be empty.', 'error');
 		return false;
 	}
 	
@@ -66,6 +64,7 @@ router.register = function (method, paths, handler) {
 		handler:	handler		// 处理函数
 	});
 	
+	web.log('router register', '\t' + paths, 'debug');
 	return true;
 }
 
@@ -77,19 +76,21 @@ router.register = function (method, paths, handler) {
  * @return {object} 返回格式：{handler:处理函数, value:解析处理的键值} 
  */
 router.handler = function (method, paths) {
+	web.log('router handler', '[' + method + '] ' + paths, 'debug');
+	
 	// 参数检查
 	if (typeof method != 'string' || typeof paths != 'string') {
-		debug('get handler fail: arguments data type error.');
+		web.log('router handler', 'arguments data type error.', 'error');
 		return false;
 	}
 	method = method.toLowerCase().trim();
 	if (!(method in router.handlers)) {
-		debug('Method [' + method + '] not limited.');
+		web.log('router handler', 'method [' + method + '] not limited.', 'error');
 		return false;
 	}
 	paths = paths.trim();
 	if (paths == '') {
-		debug('Paths could not be empty.');
+		web.log('router handler', 'argument paths could not be empty.', 'error');
 		return false;
 	}
 	
@@ -99,7 +100,7 @@ router.handler = function (method, paths) {
 		var r = handlers[i];
 		var pv = r.path.exec(paths);
 		if (pv) {
-			debug('match ' + paths);	// debug(pv);
+			web.log('router match', r.path, 'debug');
 			// 填充匹配的PATH值
 			var ret = {
 				handler: r.handler,
@@ -114,5 +115,6 @@ router.handler = function (method, paths) {
 	}
 	
 	// 没有符合条件的处理函数
+	web.log('router handler', 'not match.', 'debug');
 	return false;
 }

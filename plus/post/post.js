@@ -7,7 +7,7 @@
 var formidable = require('formidable');
 var path = require('path');
 
-exports.init_request = function (web, request, debug) {
+exports.init_request = function (web, request) {
 
 	request.addListener(function (req) {
 		var method = req.method.toLowerCase();
@@ -24,6 +24,9 @@ exports.init_request = function (web, request, debug) {
 			form.parse(req.origin, function (err, fields, files) {
 				req.post = fields;
 				req.file = files;
+				
+				web.log('POST data', req.post, 'debug');
+				web.log('POST file', req.file, 'debug');
 				
 				// 通知下一个监听器
 				req.next();
