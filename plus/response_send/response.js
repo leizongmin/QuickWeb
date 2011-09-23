@@ -5,7 +5,6 @@
  */
  
 var path = require('path');
-var fs = require('fs'); 
  
 exports.init_response = function (web, response) {
 	
@@ -42,7 +41,7 @@ exports.init_response = function (web, response) {
 		if (typeof home_path == 'undefined')
 			home_path = '.';
 		try {
-			fs.readFile(path.resolve(home_path, filename), function (err, data) {
+			web.file.read(path.resolve(home_path, filename), function (err, data) {
 				if (err) {
 					self.writeHead(500);
 					self.end(err.toString());
