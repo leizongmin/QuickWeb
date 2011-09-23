@@ -43,7 +43,7 @@ exports.init_server = function (web, server) {
 			file.data = fs.readFileSync(filename);
 			
 			web.file.cache[filename] = file;
-			web.log('file cache', filename + '  size: ' + stat.size + ', mtime: ' + file.mtime, 'info');
+			web.log('cache file', filename + '  size: ' + stat.size + ', mtime: ' + file.mtime, 'info');
 			
 			// 检查是否自动更新
 			if (auto_update) {
@@ -52,11 +52,11 @@ exports.init_server = function (web, server) {
 					web.log('file cache', 'file has changed: ' + filename, 'debug');
 					web.file.load(filename, true);
 				});
-				web.log('file cache', 'watch file: ' + filename, 'debug');
+				web.log('cache file', 'watch file: ' + filename, 'debug');
 			}
 		}
 		catch (err) {
-			web.log('file cache', err, 'error');
+			web.log('cache file', err, 'error');
 		}
 	}
 	
@@ -96,6 +96,7 @@ exports.init_server = function (web, server) {
 					fs.stat(filename, function (err, stat) {
 						if (err) {
 							web.log('cache file', err, 'error');
+							callback(err);
 							return;
 						}
 						var file = {}
@@ -104,6 +105,9 @@ exports.init_server = function (web, server) {
 						file.timestamp = new Date().getTime();			// 时间戳
 						file.data = data;								// 文件内容
 						file_cache[filename] = file;
+						
+						// 返回数据
+						callback(err, data);
 					});
 					// 如果文件修改了，则删除缓存
 					fs.unwatchFile(filename);
@@ -112,9 +116,6 @@ exports.init_server = function (web, server) {
 						if (filename in file_cache)
 							delete file_cache[filename];
 					});
-					
-					// 返回数据
-					callback(err, data);
 				}
 			});
 		}

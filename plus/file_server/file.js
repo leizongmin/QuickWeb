@@ -44,7 +44,7 @@ exports.init_server = function (web, server) {
 				try {
 					if (ifFileModified(res, stat.mtime, since)) {
 						// 读取并发送文件
-						fs.readFile(filename, function (err, data) {
+						web.file.read(filename, function (err, data) {
 							if (err) {
 								sendError(res, 500, '<h3>' + err.toString() + '</h3>');
 								web.log('file', err, 'error');
@@ -107,7 +107,7 @@ var ifFileModified = function (res, mtime, since) {
 	else {
 		res.writeHead(304);
 		res.end();
-		web.log('request file', 'not modified: mtime ' + mtime + ' / since ' + since, 'debug');
+		web.log('file not modified', 'mtime ' +  mtime + ' / since ' + since, 'debug');
 		return false;
 	}
 }
