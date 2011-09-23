@@ -31,3 +31,6 @@ var s = web.create(SERVER_PORT);
 
 // 自定义文件类型，因为需要mime-type插件支持，所有必须等加载完插件之后
 web.setMimes('cool', 'text/html');
+
+// 缓存文件
+web.file.load('index.html');
