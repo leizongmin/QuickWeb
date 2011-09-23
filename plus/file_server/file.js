@@ -42,19 +42,20 @@ exports.init_server = function (web, server) {
 					return;
 				}
 				try {
-					if (ifFileModified(res, stat.mtime, since)) {
-						// 读取并发送文件
-						web.file.read(filename, function (err, data) {
-							if (err) {
-								sendError(res, 500, '<h3>' + err.toString() + '</h3>');
-								web.log('file', err, 'error');
-							}
-							else {
+					// 读取并发送文件
+					web.file.read(filename, function (err, data) {
+						if (err) {
+							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
+							web.log('file', err, 'error');
+						}
+						else {
+							// 如果文件未修改，则响应304，否则返回该文件内容
+							if (ifFileModified(res, stat.mtime, since)) {
 								responseFile(res, filename, data, stat.mtime);
 								web.log('file', 'send file: ' + filename, 'debug');
 							}
-						});
-					}
+						}
+					});
 				}
 				catch (err) {
 					sendError(res, 500, 'Read file error.');
