@@ -25,8 +25,7 @@ exports.init_server = function (web, server) {
 	web.file.load = function(filename, auto_update) {
 		if (typeof auto_update == 'undefined')
 			auto_update = true;
-		var home_path = web.get('home_path');
-		filename = path.resolve((home_path ? home_path : '.'), filename);	
+		filename = path.resolve(filename);	
 		
 		try {
 			var file = {}

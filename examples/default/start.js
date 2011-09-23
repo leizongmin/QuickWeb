@@ -33,4 +33,4 @@ var s = web.create(SERVER_PORT);
 web.setMimes('cool', 'text/html');
 
 // 缓存文件
-web.file.load('index.html');
+web.file.load('./www/index.html');
