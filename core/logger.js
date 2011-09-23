@@ -38,17 +38,17 @@ logger.setLevel = function (level) {
 
 // 输出info
 logger.info = function (source, msg) {
-	var type = ' - \033[0;' + colors.info + 'minfo: \033[0m';
+	var type = '   \033[0;' + colors.info + 'minfo: \033[0m';
 	logger.print(source, msg, type);
 }
 // 输出debug
 logger.debug = function (source, msg) {
-	var type = '- \033[0;' + colors.debug + 'mdebug: \033[0m';
+	var type = ' \033[0;' + colors.debug + 'mdebug: \033[0m';
 	logger.print(source, msg, type);
 }
 // 输出error
 logger.error = function (source, msg) {
-	var type = '  - \033[0;' + colors.error + 'merror: \033[0m';
+	var type = '     \033[0;' + colors.error + 'merror: \033[0m';
 	logger.print(source, msg, type);
 }
 // 打印到屏幕

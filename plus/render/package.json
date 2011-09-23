@@ -1,1 +1,1 @@
-{	"name":			"render",	"main":			"./render.js"}
+{	"name":			"render",	"main":			"./render.js",	"dependencies":	{		"file_cache":	"*"	}}
