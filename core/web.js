@@ -75,7 +75,8 @@ web.createHttps = function (options, port, hostname) {
 
 /** request处理函数 */
 var requestHandle = function (req, _res) {
-	web.log('request', '-----------------------------------------------', 'debug');
+	web.log('request', '================== ' + new Date() + ' ==================', 'debug');
+	
 	var req = new request.ServerRequest(req);
 	req.onready = function () {
 		// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance

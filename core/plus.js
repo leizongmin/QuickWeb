@@ -7,11 +7,6 @@
  
 var plus = module.exports;
 
-var logger = require('./logger');
-var debug = plus.logger = function (msg) {
-	logger.log('plus', msg, 'info');
-}
-
 var fs = require('fs');
 var path = require('path');
 
@@ -37,41 +32,37 @@ plus.load = function () {
 	
 	// 排序
 	var packages = plus.order();
-	debug('Found ' + packages.length + ' packages.');
+	web.log('plus', 'Found ' + packages.length + ' packages.', 'info');
 	
 	/* 开始载入各插件包 */
 	packages.forEach(function (v) {
-		debug('Load plus [' + v + '] @' + plus.packages[v].main);
-		
-		/** 插件调试输出函数 */
-		var plusDebug = function (msg) {
-			logger.log('plus: ' + v, msg, 'info');
-		}
+		web.log('load plus', '[' + v + '] @' + plus.packages[v].main, 'debug');
 		
 		/* 载入插件主文件 */
 		var m = require(plus.packages[v].main);
 		
 		/* 注册 */
+		var logtitle = 'plus [' + v + ']';
 		if (typeof m.init_server == 'function') {
-			m.init_server(web, server, plusDebug);
-			plusDebug('Register to [server].');
+			m.init_server(web, server);
+			web.log(logtitle, 'register to [server].', 'info');
 		}
 		if (typeof m.init_request == 'function') {
-			m.init_request(web, request, plusDebug);
-			plusDebug('Register to [request].');
+			m.init_request(web, request);
+			web.log(logtitle, 'register to [request].', 'info');
 		}
 		if (typeof m.init_response == 'function') {
-			m.init_response(web, response, plusDebug);
-			plusDebug('Register to [response].');
+			m.init_response(web, response);
+			web.log(logtitle, 'register to [response].', 'info');
 		}
 	});
 	
 	/* 输出载入结果 */
-	debug(	'Load plus finished!   Listener: ' +
+	web.log('load plus finished',	' Listener: ' +
 			'ServerInstance(' + server.ServerInstance.prototype._listener.length + '), ' +
 			'ServerRequest(' + request.ServerRequest.prototype._listener.length + '), ' +
 			'ServerResponse(' + (response.ServerResponse.prototype._listener.header.length + response.ServerResponse.prototype._listener.data.length) + ')'
-		);
+		, 'info');
 	
 }
 
@@ -109,12 +100,12 @@ plus.scan = function (plus_dir) {
 				}
 			}
 			catch (err) {
-				logger.log('plus', 'load package file error: ' + err, 'error');
+				web.log('load plus package', err, 'error');
 			}
 		});
 	}
 	catch (err) {
-		logger.log('plus', 'Scan plus file error: ' + err, 'error');
+		web.log('scan plus package', err, 'error');
 	}
 }
 
