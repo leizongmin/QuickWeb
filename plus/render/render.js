@@ -8,7 +8,6 @@
  * 需要指定 render_to_html 参数为渲染函数，格式为 function (str, view); str为模板内容, view为模板里面用到的数据, 函数返回字符串类型
  */
  
-var fs = require('fs');
 var path = require('path');
 
 //----------------------------------------------------------------------------
@@ -78,7 +77,10 @@ exports.init_server = function (web, server) {
 			
 		/* 读取并渲染文件 */
 		try {
-			fs.readFile(path.resolve(template_path, filename), function (err, data) {
+			// 获取绝对文件名
+			filename = path.resolve(template_path, filename);
+			
+			web.file.read(filename, function (err, data) {
 				if (err) {
 					web.log('render', 'renderFile error:' + err, 'error');
 					callback();
