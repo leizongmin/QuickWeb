@@ -58,12 +58,10 @@ plus.load = function () {
 	});
 	
 	/* 输出载入结果 */
-	web.log('load plus finished',	' Listener: ' +
-			'ServerInstance(' + server.ServerInstance.prototype._listener.length + '), ' +
+	var msg = ' Listener: ' + 'ServerInstance(' + server.ServerInstance.prototype._listener.length + '), ' +
 			'ServerRequest(' + request.ServerRequest.prototype._listener.length + '), ' +
-			'ServerResponse(' + (response.ServerResponse.prototype._listener.header.length + response.ServerResponse.prototype._listener.data.length) + ')'
-		, 'info');
-	
+			'ServerResponse(' + (response.ServerResponse.prototype._listener.header.length + response.ServerResponse.prototype._listener.data.length) + ')';
+	web.log('load plus finished', msg, 'info');
 }
 
 
@@ -139,7 +137,7 @@ plus.order = function () {
 	var last = [];
 	var middle = [];
 	
-	// 初步排序
+	/* 初步排序，分开front、last和未指定顺序的包 */
 	for (var i in packages) {
 		var p = packages[i];
 		if (p.sequence == 'front')
@@ -150,18 +148,41 @@ plus.order = function () {
 			middle.push(p);
 	}
 	
-	// 根据依赖关系排序
-	var all = front.concat(middle, last);
+	// web.log('plus package [front]', front, 'debug');
+	// web.log('plus package [middle]', middle, 'debug');
+	// web.log('plus package [last]', last, 'debug');
+	
+	/* 根据依赖关系排序 */
+	// 按front、middle、last的顺序合并各包
 	var ret = [];
+	var all = [];
+	for (var i in front) {
+		var v = front[i].name;
+		ret.push(v);
+		all.push(v);
+	}
+	for (var i in middle) {
+		var v = middle[i].name;
+		ret.push(v);
+		all.push(v);
+	}
+	for (var i in last) {
+		var v = last[i].name;
+		ret.push(v);
+		all.push(v);
+	}
+	// web.log('plus package', all, 'debug');
+	
+	// 将各个包移动到其依赖的包后面
 	all.forEach(function (v) {
-		ret.push(v.name);
+		var p = packages[v];
+		for (var i in p.dependencies) {
+			web.log('plus dependencies', v + ' => ' + i, 'debug');
+			ret = move_after(ret, i, v);
+		}
 	});
-	// debug(ret);
-	all.forEach(function (v) {
-		for (var i in v.dependencies)
-			ret = move_after(ret, i, v.name);
-	});
-	// debug(ret);
+	
+	// web.log('plus package', ret, 'debug');
 	return ret;
 }
 
@@ -177,18 +198,17 @@ var move_after = function (arr, a, b) {
 	var ai = indexOf(arr, a);
 	var bi = indexOf(arr, b);
 	// debug(a + ' = ' + ai + ',    ' + b + ' = ' + bi);
+	
+	// 如果没有A元素或B元素，则不作修改
+	if (ai == -1 || bi == -1)
+		return arr;
+	
 	// 如果B元素本来就在A元素后面，则不作任何修改
 	if (bi > ai)
 		return arr;
-	// 如果存在B元素，则先将其删除
-	if (bi != -1)
-		arr.splice(bi, 1);
-	// 如果没有A元素，则将B元素加到末尾
-	if (ai == -1) {
-		arr.push(bi);
-		return arr;
-	}
-	// 将B元素换到A元素后面
+		
+	// 否则，删除原来的B元素，并在A元素后面插入
+	arr.splice(bi, 1);
 	arr.splice(ai, 0, b);
 	return arr;
 }
