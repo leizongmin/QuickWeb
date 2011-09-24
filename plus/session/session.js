@@ -118,7 +118,7 @@ exports.init_server = function (web, server) {
 			}
 			
 			// 更新session_id的Cookie生存期
-			response.setCookie(SESSION_TAG, session_id, { maxAge: web.get('session_maxage') });
+			response.setCookie(SESSION_TAG, session_id, { maxAge: session_maxage });
 		}
 		
 		// 根据session_id获取session
