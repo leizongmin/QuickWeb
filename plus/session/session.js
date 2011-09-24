@@ -32,7 +32,7 @@ var getSession = function (session_id, init_if_undefined) {
 		init_if_undefined = true;
 	
 	// 如果session不存在且不自动创建，则返回fasle
-	if (!(session_id in session_data) && !init_if_undefined)
+	if (!(session_id in session_data) && init_if_undefined != true)
 		return false;
 		
 	// 获取session
@@ -195,7 +195,7 @@ exports.init_server = function (web, server) {
 			cookie = web.util.unserializeCookie(cookie);
 		
 		// 检查session_id
-		var session_id = cookie._session_id;
+		var session_id = cookie[SESSION_TAG];
 		if (typeof session_id == 'undefined')
 			return false
 			

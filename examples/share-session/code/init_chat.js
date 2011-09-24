@@ -20,7 +20,7 @@ module.exports = function (web, io, room) {
 	io.set('authorization', function (handshakeData, callback) {
 		// 通过客户端的cookie字符串来获取其session数据
 		var sessionObject = handshakeData.sessionObject = web.session.getByCookie(handshakeData.headers.cookie);
-		
+		console.log(sessionObject);
 		// 必须设置了名称，且不能与其他人的名称重复
 		var nickname = sessionObject.data.nickname;
 		if (nickname && !(nickname in nicknames))
