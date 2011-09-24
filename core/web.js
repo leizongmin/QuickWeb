@@ -35,7 +35,7 @@ web.util = {}
 /**
  * 创建服务器
  *
- * @param {int} port 端口，默认80
+ * @param {int} port 端口，默认80，如果为false表示不自动监听
  * @param {int} hostname 主机
  * @return {http.Server}
  */
@@ -47,8 +47,13 @@ web.create = function (port, hostname) {
 	// 创建http.Server
 	var http = require('http');
 	var s = new http.Server(requestHandle);
-	port = port || 80;
-	s.listen(port, hostname);
+	
+	// 如果端口为false，不自动监听
+	if (port !== false) {
+		port = port || 80;
+		s.listen(port, hostname);
+	}
+	
 	return s;
 }
 
@@ -56,7 +61,7 @@ web.create = function (port, hostname) {
  * 创建HTTPS服务器
  *
  * @param {object} options 证书选项，包括key, cert
- * @param {int} port 端口，默认443
+ * @param {int} port 端口，默认443，如果为false表示不自动监听
  * @param {int} hostname 主机
  * @return {https.Server}
  */
@@ -68,8 +73,13 @@ web.createHttps = function (options, port, hostname) {
 	// 创建https.Server	
 	var https = require('https');
 	var s = new https.Server(options, requestHandle);
-	port = port || 443;
-	s.listen(port, hostname);
+	
+	// 如果端口为false，不自动监听
+	if (port !== false) {
+		port = port || 443;
+		s.listen(port, hostname);
+	}
+	
 	return s;
 }
 
