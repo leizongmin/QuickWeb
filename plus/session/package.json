@@ -1,1 +1,1 @@
-{	"name":			"session",	"main":			"./session.js",	"dependencies":	{		"cookie":	"*"	}}
+{	"name":			"session",	"main":			"./session.js",	"dependencies":	{		"get":		"*",		"cookie":	"*"	}}

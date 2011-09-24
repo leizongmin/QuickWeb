@@ -1,14 +1,18 @@
 /**
  * 插件： session
  *
- * 需要设置web参数 	session_maxage = session存活时间，单位为s，默认为10分钟
+ * 需要设置web参数 	session_maxage = session存活时间，单位为s，默认为30分钟
  * 					session_recover = 回收扫描周期，单位为s，默认为1分钟
  */
  
 var web = require('../../core/web'); 
+var md5 = require('./md5');
  
 /** SESSION数据 */ 
 var session_data = {} 
+
+/** SESSION标识符 */
+var SESSION_TAG = 'SESSIONID';
 
 /** Session对象 */
 var SessionObject = require('./SessionObject');
@@ -72,11 +76,11 @@ var recoverSession = function () {
 	}
 }
 /** Session生存周期 */
-var session_maxage = 600000;
+var session_maxage = 1800000;
 
 
  
-exports.init_server = function (web, request) {
+exports.init_server = function (web, server) {
 	
 	/**
 	 * 开启session
@@ -84,27 +88,40 @@ exports.init_server = function (web, request) {
 	 *
 	 * @param {function} callback 回调函数，如果是第三方Session，则需要设置回调函数以确保session同步
 	 */
-	request.ServerInstance.prototype.sessionStart = function (callback) {
+	server.ServerInstance.prototype.sessionStart = function (callback) {
+		var request = this._link.request;
+		var response = this._link.response;
+		
 		// 必须要有Cookie模块的支持
-		if (typeof this._link.request.cookie == 'undefined') {
+		if (typeof request.cookie == 'undefined') {
 			web.log('session start', 'cookie disable!', 'error');
 			return;
 		}
 		
-		// 如果为首次打开SESSION
-		if (typeof this._link.request.cookie._session_id == 'undefined') {
-			var session_id = new Date().getTime() * 100000 + Math.floor(Math.random() * 100000);
-			this._link.response.setCookie('_session_id', session_id, { maxAge: 3600 });
-			this._link.request.cookie._session_id = session_id;
-			
-			web.log('session start', 'assign session_id ' + session_id, 'debug');
+		// 如果GET参数中有session_id，则优先
+		if (typeof request.get[SESSION_TAG] == 'string' && request.get[SESSION_TAG] != '') {
+			var session_id = request.get[SESSION_TAG];
+			web.log('session start', 'session_id from GET: ' + session_id, 'debug');
 		}
+		// 否则使用Cookie中的session_id
 		else {
-			var session_id = this._link.request.cookie._session_id;
-			web.log('session start', 'use session_id ' + session_id, 'debug');
+			// 如果为首次打开SESSION，则分配一个session_id
+			if (typeof request.cookie[SESSION_TAG] == 'undefined') {
+				// 生成session_id
+				var session_id = md5('' + new Date().getTime() * 100000 + Math.floor(Math.random() * 100000));
+				request.cookie[SESSION_TAG] = session_id;
+				web.log('session start', 'assign session_id ' + session_id, 'debug');
+			}
+			else {
+				var session_id = request.cookie[SESSION_TAG];
+				web.log('session start', 'use session_id ' + session_id, 'debug');
+			}
+			
+			// 更新session_id的Cookie生存期
+			response.setCookie(SESSION_TAG, session_id, { maxAge: web.get('session_maxage') });
 		}
 		
-		// 获取session
+		// 根据session_id获取session
 		var session = getSession(session_id);
 		session.hold();
 		
@@ -118,7 +135,7 @@ exports.init_server = function (web, request) {
 	/**
 	 * 清除session
 	 */
-	request.ServerInstance.prototype.clearSession = function () {
+	server.ServerInstance.prototype.clearSession = function () {
 		// 必须要有Cookie模块的支持
 		if (typeof this._link.request.cookie == 'undefined') {
 			web.log('clear session', 'cookie disable!', 'error');
@@ -201,12 +218,12 @@ exports.init_server = function (web, request) {
 	// 获取Session生存周期
 	var maxAge = web.get('session_maxage');
 	if (isNaN(maxAge) || maxAge < 1)
-		maxAge = 600;
+		maxAge = 1800;		// 默认生存30分钟
 	session_maxage = maxAge * 1000;
 	// 获取回收扫描周期
 	var recoverCycle = web.get('session_recover');
 	if (isNaN(recoverCycle) || recoverCycle < 1)
-		recoverCycle = 60;
+		recoverCycle = 60;	// 默认1分钟回收一次
 	recoverCycle *= 1000;
 	// 启动
 	setInterval(recoverSession, recoverCycle);
