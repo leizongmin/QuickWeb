@@ -4,6 +4,7 @@
  */
  
 var router = require('./router');
+var web = require('../../core/web');
  
 var fs = require('fs');
 var path = require('path'); 
