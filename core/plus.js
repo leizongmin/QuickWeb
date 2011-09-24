@@ -223,6 +223,6 @@ var move_after = function (arr, a, b) {
 var indexOf = function (arr, v) {
 	for (var i in arr)
 		if (arr[i] == v)
-			return i;
+			return parseInt(i);
 	return -1;
 }
