@@ -628,6 +628,31 @@ QuickWeb内置了类似于
 	</html>
 ```
 
+=====
+
+### 5.与Multi-node结合
+
+在创建QuickWeb实例时，设置端口号为**false**可以使QuickWeb返回一个未调用
+listen()的http.Server实例。
+例：
+
+```javascript
+	var web = require('QuickWeb');
+	// 创建QuickWeb实例，但不自动调用listen()
+	// 返回的server供multi-node来使用
+	var server = web.create(false);
+	
+	var nodes = require('multi-node');
+	// 创建multi-node
+	nodes.listen({
+			port: 80,		// 监听端口
+			nodes: 4		// 线程数
+		}, server);
+```
+
+**Multi-node**项目地址：<https://github.com/kriszyp/multi-node>
+
+
 
 ## 扩展QuickWeb
 
