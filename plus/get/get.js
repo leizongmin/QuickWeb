@@ -15,5 +15,5 @@ exports.init_request = function (web, request) {
 		web.log('GET filename', req.filename, 'debug');
 		
 		req.next();
-	}, true);
+	});
 }

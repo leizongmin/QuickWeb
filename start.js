@@ -9,7 +9,7 @@
 var web = require('./core/web');
 
 // setting logger level
-web.setLoggerLevel(3);
+web.setLoggerLevel(2);
 
 // settings
 web.set('home_path', './examples/default/www');			// file path (file_server plus)
