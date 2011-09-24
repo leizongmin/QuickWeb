@@ -49,7 +49,7 @@ logger.debug = function (source, msg) {
 // 输出error
 logger.error = function (source, msg) {
 	var type = '     \033[0;' + colors.error + 'merror: \033[0m';
-	logger.print(source, msg, type);
+	logger.print(source, (msg.stack ? msg.stack : msg), type);
 }
 // 打印到屏幕
 logger.print = function (source, msg, type) {
