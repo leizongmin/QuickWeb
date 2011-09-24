@@ -19,17 +19,12 @@ exports.init_server = function (web, server) {
 		var m = require(v);
 		if (typeof m.paths != 'string')
 			return;
-			
-		if (typeof m.get == 'function')
-			router.register('get', m.paths, m.get);
-		if (typeof m.post == 'function')
-			router.register('post', m.paths, m.post);
-		if (typeof m.delete == 'function')
-			router.register('delete', m.paths, m.delete);
-		if (typeof m.put == 'function')
-			router.register('put', m.paths, m.put);
-		if (typeof m.head == 'function')
-			router.register('head', m.paths, m.head);
+		
+		// 注册处理程序
+		registerCodeFile(m);
+		
+		// 监视文件改动
+		watchCodeFile(v);
 	});
 	
 	
@@ -69,4 +64,53 @@ var scanCodeFiles = function (code_path) {
 		web.log('router', 'read code file error: ' + err, 'error');
 		return [];
 	}
+}
+
+/**
+ * 注册程序文件
+ *
+ * @param {object} m 模块
+ */
+var registerCodeFile = function (m) {
+	if (typeof m.get == 'function')
+		router.register('get', m.paths, m.get);
+		
+	if (typeof m.post == 'function')
+		router.register('post', m.paths, m.post);
+		
+	if (typeof m.delete == 'function')
+		router.register('delete', m.paths, m.delete);
+		
+	if (typeof m.put == 'function')
+		router.register('put', m.paths, m.put);
+		
+	if (typeof m.head == 'function')
+		router.register('head', m.paths, m.head);
+}
+
+/**
+ * 监视已注册的程序文件，有修改自动重新载入
+ *
+ * @param {string} filename 文件名
+ */
+var watchCodeFile = function (filename) {
+	fs.unwatchFile(filename);
+	fs.watchFile(filename, function () {
+		try {
+			// 删除之前的缓存
+			if (filename in require.cache)
+				delete require.cache[filename];
+			// 重新载入模块
+			var m = require(filename);
+			web.log('reload code file', filename, 'info');
+			// 注册
+			if (typeof m.paths != 'string')
+				return;
+			registerCodeFile(m);
+			watchCodeFile(filename);
+		}
+		catch (err) {
+			web.log('reload code file', err, 'error');
+		}
+	});
 }

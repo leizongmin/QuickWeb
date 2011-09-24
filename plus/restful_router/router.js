@@ -58,11 +58,24 @@ router.register = function (method, paths, handler) {
 	var pathreg = new RegExp(paths);
 	
 	// 注册处理函数
-	router.handlers[method].push({
+	var p = {
 		path:		pathreg,	// RegExp实例
 		names:		names,		// 变量名称
 		handler:	handler		// 处理函数
-	});
+	}
+	// 查找是否有重复的路径处理函数，有则先将其删除
+	var _is_splice = false;
+	for (var i in router.handlers[method]) {
+		var v  = router.handlers[method][i];
+		if (v.path.toString() == p.path.toString()) {
+			router.handlers[method].splice(i, 1, p);
+			_is_splice = true;
+			break;
+		}
+	}
+	if (!_is_splice) {
+		router.handlers[method].push(p);
+	}
 	
 	web.log('router register', '\t' + paths, 'debug');
 	return true;
@@ -109,7 +122,7 @@ router.handler = function (method, paths) {
 			r.names.forEach(function (v, i) {
 				ret.value[v] = pv[i + 1];
 			});
-			
+			//console.log(ret.handler.toString());
 			return ret;
 		}
 	}
