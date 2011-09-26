@@ -8,7 +8,7 @@
 var web = module.exports;
 
 /** 版本号 */
-web.version = 'v0.1.7';
+web.version = 'v0.1.8-pre';
 
 var logger = require('./logger');
 var debug = function (msg) {
@@ -150,7 +150,7 @@ web.loadPlus = function (plus_dir) {
  *
  * @param {int} level
  */
-web.setLoggerLevel = function (level) {
+web.setLoggerLevel = web.setLogLevel = function (level) {
 	logger.setLevel(level);
 	web.log = logger.log;
 }

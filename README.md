@@ -66,11 +66,11 @@
 ### 3.调试输出
 
 默认情况下，QuickWeb会输出所有调试信息，这会影响程序的运行效率。在启动QuickWeb实例时，可以
-通过**web.setLoggerLevel()**来设置调试输出等级：
+通过**web.setLogLevel()**来设置调试输出等级：
 
 ```javascript
 	// 设置输出等级， 0:不输出  1:仅输出error   2:仅输出error和info   3:输出所有信息
-	web.setLoggerLevel(1);
+	web.setLogLevel(1);
 ```
 
 
