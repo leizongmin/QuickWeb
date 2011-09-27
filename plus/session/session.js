@@ -139,7 +139,7 @@ exports.init_server = function (web, server) {
 	/**
 	 * 清除session
 	 */
-	server.ServerInstance.prototype.clearSession = function () {
+	server.ServerInstance.prototype.sessionEnd = function () {
 		// 必须要有Cookie模块的支持
 		if (typeof this._link.request.cookie == 'undefined') {
 			web.log('clear session', 'cookie disable!', 'error');
@@ -153,6 +153,7 @@ exports.init_server = function (web, server) {
 		// 删除cookie
 		this._link.response.clearCookie('_session_id');
 	}
+	server.ServerInstance.prototype.clearSession = server.ServerInstance.prototype.sessionEnd;
 	
 	/*********************************************************************************************************/
 	/** 扩展web.session */
