@@ -5,6 +5,9 @@
 需要设置参数**session_maxage**为session的存活时间，单位为秒，默认为10分钟
 （当客户端在超过指定时候没有活动时，则删除该session）
 
+设置参数**session_cookie_maxage**为session的cookie标记存活时间，单位为秒，
+默认与**session_maxage**的时间相同
+
 设置参数**session_recover**为Session回收的扫描周期，单位为秒，默认为1分钟
 
 

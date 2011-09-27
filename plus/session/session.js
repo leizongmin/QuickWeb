@@ -14,6 +14,12 @@ var session_data = {}
 /** SESSION标识符 */
 var SESSION_TAG = 'SESSIONID';
 
+/** Session生存周期, ms */
+var session_maxage = 1800000;
+
+/** Session的Cookie生存周期，如果不设置则默认与Session生成周期相同, s */
+var session_cookie_maxage = session_maxage;
+
 /** Session对象 */
 var SessionObject = require('./SessionObject');
 
@@ -75,8 +81,6 @@ var recoverSession = function () {
 			delSession(i);
 	}
 }
-/** Session生存周期 */
-var session_maxage = 1800000;
 
 
  
@@ -118,7 +122,7 @@ exports.init_server = function (web, server) {
 			}
 			
 			// 更新session_id的Cookie生存期
-			response.setCookie(SESSION_TAG, session_id, { maxAge: session_maxage });
+			response.setCookie(SESSION_TAG, session_id, { maxAge: session_cookie_maxage });
 		}
 		
 		// 根据session_id获取session
@@ -220,11 +224,20 @@ exports.init_server = function (web, server) {
 	if (isNaN(maxAge) || maxAge < 1)
 		maxAge = 1800;		// 默认生存30分钟
 	session_maxage = maxAge * 1000;
+	
+	// 获取Session Cookie生存周期
+	var session_cookie_maxage = web.get('session_cookie_maxage');
+	if (isNaN(session_cookie_maxage) || session_cookie_maxage < 1)
+		session_cookie_maxage = session_maxage / 1000;
+		
 	// 获取回收扫描周期
 	var recoverCycle = web.get('session_recover');
 	if (isNaN(recoverCycle) || recoverCycle < 1)
 		recoverCycle = 60;	// 默认1分钟回收一次
 	recoverCycle *= 1000;
-	// 启动
+	
+	web.log('session setting', 'maxAge=' + session_maxage + ', cookie maxAge=' + session_cookie_maxage + ', recoverCycle=' + recoverCycle, 'debug');
+	
+	// 启动回收
 	setInterval(recoverSession, recoverCycle);
 }
