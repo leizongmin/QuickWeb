@@ -16,7 +16,16 @@ exports.init_server = function (web, server) {
 	
 	/** 加载路由处理程序 */
 	var code_path =  web.get('code_path');
-	var files = scanCodeFiles(code_path);
+	// 如果为数组，则加载多个目录
+	if (code_path instanceof Array) {
+		var files = [];
+		code_path.forEach(function (v) {
+			files = files.concat(scanCodeFiles(v));
+		});
+	}
+	else
+		var files = scanCodeFiles(code_path);
+		
 	loadCodeFiles(files);		// 载入代码
 	watchCodePath(code_path);	// 监视该目录的更新
 	
