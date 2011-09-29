@@ -2,13 +2,13 @@
  * QuickWeb web
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.7
+ * @version 0.1.8
  */
  
 var web = module.exports;
 
 /** 版本号 */
-web.version = 'v0.1.8-pre';
+web.version = 'v0.1.8';
 
 var logger = require('./logger');
 var debug = function (msg) {

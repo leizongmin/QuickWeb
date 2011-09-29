@@ -1,15 +1,15 @@
 {
    "name":			"QuickWeb",
    "main":			"./core/web.js",
-   "version":		"0.1.7",
-   "description":	"A quick web framework, plug-in management style, easy to extend.",
+   "version":		"0.1.8",
+   "description":	"A quick web framework, plug-in management style, easy to extend. Now support cookie, session, RESTful url, file cache, render, upload, work with socket.io and multi-node, etc.",
    "author": "leizongmin <leizongmin@gmail.com> (http://lab.ucdok.com)",
    "repository": {
 		"type": "git",
 		"url": "git://github.com/leizongmin/QuickWeb.git"
 	},
 	"engines": {
-		"node": ">= 0.4.7"
+		"node": ">= 0.4.1"
 	},
 	"dependencies":	{
 		"formidable":	"*"
