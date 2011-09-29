@@ -37,21 +37,21 @@
 
 ## 清空Session数据
 
-可以通过`ServerInstance.clearSession`来情况当前客户端的Session数据
+可以通过`ServerInstance.sessionEnd`来情况当前客户端的Session数据
 
 ```javascript
-	server.clearSession();
+	server.sessionEnd();
 ```
 
 
 ## 更新Session数据
 
 默认情况下，QuickWeb的Session是存储在内存中的，因此你对server.session的修改会自动
-保存起来。如果注册了自己的Session存储方式，则需要调用`server.sessionObject.update()`来
+保存起来。如果注册了自己的Session存储方式，则需要调用`server.sessionUpdate()`来
 完成更新。
 
 ```javascript
-server.sessionObject.update(function () {
+server.sessionUpdate(function () {
 	// 更新完成
 });
 ```

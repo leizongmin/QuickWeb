@@ -155,6 +155,15 @@ exports.init_server = function (web, server) {
 	}
 	server.ServerInstance.prototype.clearSession = server.ServerInstance.prototype.sessionEnd;
 	
+	/**
+	 * 更新Session（一般用于自定义Session引擎）
+	 *
+	 * @param {function} callback 回调函数
+	 */
+	server.ServerInstance.prototype.sessionUpdate = function (callback) {
+		this.sessionObject.update(callback);
+	}
+	
 	/*********************************************************************************************************/
 	/** 扩展web.session */
 	web.session = {}
