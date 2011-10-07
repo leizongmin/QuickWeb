@@ -652,6 +652,29 @@ listen()的http.Server实例。
 
 **Multi-node**项目地址：<https://github.com/kriszyp/multi-node>
 
+=====
+
+## 6.定制QuickWeb
+
+默认情况下，QuickWeb会自动载入所有的默认插件。你也可以通过**web.enable()**或**web.disable()**来
+设置需要加载的插件，根据实际情况来搭建QuickWeb环境。
+例：
+
+```javascript
+	// 将QuickWeb作为静态文件服务器
+	var web = require('QuickWeb');
+	web.set('home_path', './www');
+	web.enable('file_server');		// 仅启用file_server插件及其依赖的插件
+	web.create();
+```
+
+```javascript
+	// 不启用cookie, session, render插件
+	var web = require('QuickWeb');
+	web.set('home_path', './www');
+	web.disable('cookie', 'session', 'render');
+	web.create();
+```
 
 
 ## 扩展QuickWeb

@@ -22,5 +22,7 @@ web.set('render_to_html', function (str, view) {
 	return str;
 });
 
+//web.disable('file_server', 'restful_router');
+
 // create server and listening on port 80
 var s = web.create(80);

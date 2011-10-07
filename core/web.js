@@ -8,12 +8,13 @@
 var web = module.exports;
 
 /** 版本号 */
-web.version = 'v0.1.8';
+web.version = 'v0.1.9-pre';
 
 var logger = require('./logger');
 var debug = function (msg) {
 	logger.log('web', msg, 'info');
 }
+
 /**
  * 记录日志
  *
@@ -32,6 +33,7 @@ var plus = require('./plus');
 /** 工具集 */
 web.util = {}
 
+//--------------------------------------------------------------------------------------------------
 /**
  * 创建服务器
  *
@@ -102,6 +104,7 @@ var requestHandle = function (req, _res) {
 	req.init();
 }
 
+//--------------------------------------------------------------------------------------------------
 /** 服务器配置 */
 web._config = {}
 
@@ -126,6 +129,7 @@ web.get = function (name) {
 	return web._config[name];
 }
 
+//--------------------------------------------------------------------------------------------------
 /**
  * 载入插件
  *
@@ -145,6 +149,41 @@ web.loadPlus = function (plus_dir) {
 	plus_never_loaded = false;
 }
 
+/**
+ * 仅启用指定插件
+ *
+ * @param {array} p 插件名称数组
+*/
+web.enable = function (p) {
+	if (p instanceof Array)
+		plus._enable = p;
+	else {
+		plus._enable = [];
+		for (var i in arguments) {
+			console.log(arguments[i]);
+			plus._enable[i] = arguments[i];
+		}
+	}
+}
+
+/**
+ * 不启用指定插件
+*
+* @param {array} p 插件名称数组
+*/
+web.disable = function (p) {
+	if (p instanceof Array)
+		plus._disable = p;
+	else {
+		plus._disable = [];
+		for (var i in arguments) {
+			console.log(arguments[i]);
+			plus._disable[i] = arguments[i];
+		}
+	}
+}
+
+//--------------------------------------------------------------------------------------------------
 /**
  * 设置调试输出等级
  *

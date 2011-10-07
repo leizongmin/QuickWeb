@@ -30,6 +30,28 @@ plus.load = function () {
 		throw 'Load plus fail! need these plus: ' + needs;
 	}
 	
+	// 筛选出需要加载的插件
+	if (typeof plus._enable != 'undefined' && plus._enable instanceof Array) {
+		var p = [];
+		plus._enable.forEach(function (v) {
+			p = addTo(p, v);
+			if (typeof plus.packages[v] != 'undefined') {
+				for (var i in plus.packages[v].dependencies)
+					p = addTo(p, i);
+			}
+		});
+		// 删除不需要的插件
+		for (var i in plus.packages)
+			if (indexOf(p, i) < 0)
+				delete plus.packages[i];
+	}
+	else if (typeof plus._disable != 'undefined' && plus._disable instanceof Array) {
+		// 删除不需要的插件
+		plus._disable.forEach(function (v) {
+			delete plus.packages[v];
+		});
+	}
+	
 	// 排序
 	var packages = plus.order();
 	web.log('plus', 'Found ' + packages.length + ' packages.', 'info');
@@ -225,4 +247,33 @@ var indexOf = function (arr, v) {
 		if (arr[i] == v)
 			return parseInt(i);
 	return -1;
+}
+
+/**
+ * 如果数组中不存在该元素，则加入
+ *
+ * @param {array} arr 数组
+ * @param {string} v 元素
+ * @return {array} 结果
+ */
+var addTo = function (arr, v) {
+	if (indexOf(arr, v) < 0)
+		arr.push(v);
+	return arr;
+}
+
+/**
+ * 如果数组中存在该元素，则删除
+ *
+ * @param {array} a 数组A
+ * @param {array} b 数组B
+ * @return {array}
+ */
+var  subArray = function (a, b) {
+	b.forEach(function (v) {
+		var i = indexOf(a, v);
+		if (i >= 0)
+			a.splice(i, 1);
+	});
+	return a;
 }
