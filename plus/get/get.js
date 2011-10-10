@@ -11,8 +11,8 @@ exports.init_request = function (web, request) {
 		req.get = v.query || {};				// 问号后面的参数
 		req.filename = v.pathname || '/';		// 文件名
 		
-		web.log('GET params', req.get, 'debug');
-		web.log('GET filename', req.filename, 'debug');
+		// web.log('GET params', req.get, 'debug');
+		// web.log('GET filename', req.filename, 'debug');
 		
 		req.next();
 	});

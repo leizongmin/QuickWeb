@@ -39,20 +39,6 @@ logger.setLevel = function (level) {
 // 输出info
 logger.info = function (source, msg) {
 	var type = new Date().toUTCString() + ' \033[0;' + colors.info + 'm[info] \033[0m';
-	logger.print(source, msg, type);
-}
-// 输出debug
-logger.debug = function (source, msg) {
-	var type = ' \033[0;' + colors.debug + 'm[debug] \033[0m';
-	logger.print(source, msg, type);
-}
-// 输出error
-logger.error = function (source, msg) {
-	var type = new Date().toUTCString() + '  \033[0;' + colors.error + 'm[error] \033[0m';
-	logger.print(source, (msg.stack ? msg.stack : msg), type);
-}
-// 打印到屏幕
-logger.print = function (source, msg, type) {
 	var source = '\033[0;36m' + source + '\033[0m - ';
 	if (typeof msg == 'object') {
 		console.log(type + source);
@@ -60,6 +46,30 @@ logger.print = function (source, msg, type) {
 	}
 	else {
 		console.log(type + source + ' ' + msg);
+	}
+}
+// 输出debug
+logger.debug = function (source, msg) {
+	var type = ' \033[0;' + colors.debug + 'm[debug] \033[0m';
+	var source = '\033[0;36m' + source + '\033[0m - ';
+	if (typeof msg == 'object') {
+		console.log(type + source);
+		console.log(msg);
+	}
+	else {
+		console.log(type + source + ' ' + msg);
+	}
+}
+// 输出error
+logger.error = function (source, msg) {
+	var type = new Date().toUTCString() + '  \033[0;' + colors.error + 'm[error] \033[0m';
+	var source = '\033[0;36m' + source + '\033[0m - ';
+	if (typeof msg == 'object') {
+		console.error(type + source);
+		console.error(msg.stack || msg);
+	}
+	else {
+		console.error(type + source + ' ' + msg);
 	}
 }
 
