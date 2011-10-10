@@ -13,13 +13,16 @@ web.setLoggerLevel(3);
 var SERVER_PORT = 80;
 
 // 设置服务器
-web.set('home_path', './www');			// 网站目录
-web.set('code_path', ['./code']);		// 程序目录
-web.set('session_maxage', 600000);		// session存活时间10分钟
-web.set('template_path', './tpl');		// 模板目录
-web.set('template_extname', 'html');		// 模板扩展名
-web.set('tmp_path', './tmp');			// 临时目录，用于POST文件上传
-web.set('page_404', '文件没找到！');		// 404出错页面HTML代码
+var path = require('path');
+web.set({
+	'home_path':	 path.resolve(__dirname, './www'),		// 网站根目录
+	'code_path':	 path.resolve(__dirname, './code'),		// 程序目录
+	'template_path': path.resolve(__dirname, './tpl'),		// 模板目录
+	'tmp_path':		 path.resolve(__dirname, './tmp'),		// 临时目录，用于POST文件上传
+	'session_maxage':	600000,								// session存活时间10分钟
+	'template_extname':	'html',								// 模板扩展名
+	'page_404':		'文件没找到！'							// 404出错页面HTML代码
+});
 //web.set('file_cache_maxage', 10);		// 文件缓存存活时间
 //web.set('file_cache_recover', 30);		// 文件缓存回收周期
 

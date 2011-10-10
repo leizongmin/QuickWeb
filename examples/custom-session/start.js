@@ -5,8 +5,9 @@
  
 var web = require('QuickWeb');
 
-web.set('home_path', './www');
-web.set('code_path', './code');
+var path = require('path');
+web.set('home_path', path.resolve(__dirname, './www'));
+web.set('code_path', path.resolve(__dirname, './code'));
 
 var debug = console.log;
 

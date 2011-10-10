@@ -7,10 +7,15 @@
 
 /* 配置QuickWeb */
 var web = require('QuickWeb');
-web.set('home_path', './html');				// 网站根目录
-web.set('code_path', './code');				// 处理程序目录
-web.set('template_path', './html');			// 模板目录
-web.set('tmp_path',	'./tmp');				// 临时目录
+
+var path = require('path');
+web.set({
+	'home_path':	 path.resolve(__dirname, './html'),		// 网站根目录
+	'code_path':	 path.resolve(__dirname, './code'),		// 处理程序目录
+	'template_path': path.resolve(__dirname, './html'),		// 模板目录
+	'tmp_path':		path.resolve(__dirname, './tmp')			// 临时目录
+});
+			
 
 // 模板引擎
 var mustache = require('mustache');
