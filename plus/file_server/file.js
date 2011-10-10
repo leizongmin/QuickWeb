@@ -118,7 +118,7 @@ var ifFileModified = function (res, mtime, since) {
 }
 
 /**
- * 向客户端相应文件
+ * 向客户端响应文件
  *
  * @param {ServerResponse} res response实例
  * @param {string} filename 文件名
