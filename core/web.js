@@ -11,9 +11,7 @@ var web = module.exports;
 web.version = 'v0.1.9-pre';
 
 var logger = require('./logger');
-var debug = function (msg) {
-	logger.log('web', msg, 'info');
-}
+
 
 /**
  * 记录日志
@@ -41,7 +39,7 @@ web.util = {}
  * @param {int} hostname 主机
  * @return {http.Server}
  */
-web.create = function (port, hostname) {
+web.create = web.createHttp = function (port, hostname) {
 	// 如果还没有载入插件，则自动载入
 	if (plus_never_loaded)
 		web.loadPlus();
@@ -49,11 +47,13 @@ web.create = function (port, hostname) {
 	// 创建http.Server
 	var http = require('http');
 	var s = new http.Server(requestHandle);
+	web.log('QuickWeb', 'create http server', 'info');
 	
 	// 如果端口为false，不自动监听
 	if (port !== false) {
 		port = port || 80;
 		s.listen(port, hostname);
+		web.log('QuickWeb', 'listen on ' + (hostname ? hostname + ':' : '') + port, 'info');
 	}
 	
 	return s;
@@ -75,11 +75,13 @@ web.createHttps = function (options, port, hostname) {
 	// 创建https.Server	
 	var https = require('https');
 	var s = new https.Server(options, requestHandle);
+	web.log('QuickWeb', 'create https server', 'info');
 	
 	// 如果端口为false，不自动监听
 	if (port !== false) {
 		port = port || 443;
 		s.listen(port, hostname);
+		web.log('QuickWeb', 'listen on ' + (hostname ? hostname + ':' : '') + port, 'info');
 	}
 	
 	return s;
@@ -93,7 +95,7 @@ var requestHandle = function (req, _res) {
 		var res = new response.ServerResponse(_res);
 		var si = new server.ServerInstance(req, res);
 				
-		/* 用于在request, response, server中访问另外的对象 */
+		// 用于在request, response, server中访问另外的对象
 		var _link = { request: req,	response: res,	server: si}
 		req._link = res._link = si._link = _link;
 		
@@ -111,12 +113,20 @@ web._config = {}
 /**
  * 设置
  *
- * @param {string} name 名称
+ * @param {string|object} name 名称 如果第一个参数为对象类型，则表示同时设置多个参数： {'name': 'value', ...}
  * @param {object} value 值
  */
 web.set = function (name, value) {
-	web._config[name] = value;
-	debug('set ' + name + '=' + value);
+	if (typeof name == 'object') {
+		for (var i in name) {
+			web._config[i] = name[i];
+			web.log('web.set', i + ' = ' + name[i], 'debug');
+		}
+	}
+	else {
+		web._config[name] = value;
+		web.log('web.set', name + ' = ' + value, 'debug');
+	}
 }
 
 /**
@@ -199,4 +209,4 @@ web.setLoggerLevel = web.setLogLevel = function (level) {
 plus.scan(path.resolve(__dirname, '../plus'));
 var plus_never_loaded = true;
 
-debug('QuickWeb ' + web.version);
+web.log('QuickWeb',  web.version, 'info');

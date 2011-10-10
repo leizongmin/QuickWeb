@@ -26,6 +26,13 @@
 	// 设置
 	web.set('home_path', './www');			// 网站根目录
 	web.set('code_path', './code');			// 程序目录
+	/*
+	// 也可以这样设置
+	web.set({
+		home_path:		'./www',
+		code_path:		'./code'
+	});
+	*/
 
 	// 创建服务器，监听80端口
 	var s = web.create(80);
