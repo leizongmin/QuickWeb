@@ -1,1 +1,1 @@
-{	"name":			"restful_router",	"main":			"./index.js",	"sequence":		"front",	"dependencies":	{		"get":		"*"	}}
+{	"name":			"restful_router",	"main":			"./index.js",	"dependencies":	{		"get":			"*",		"response_server_info":	"*"	}}

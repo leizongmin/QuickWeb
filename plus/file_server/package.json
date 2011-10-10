@@ -1,1 +1,1 @@
-{	"name":			"file_server",	"main":			"./file.js",	"sequence":		"last",	"dependencies":	{		"mime-type":	"*",		"get":			"*",		"file_cache":	"*"	}}
+{	"name":			"file_server",	"main":			"./file.js",	"sequence":		"last",	"dependencies":	{		"mime-type":	"*",		"get":			"*",		"file_cache":	"*",		"response_server_info":	"*"	}}

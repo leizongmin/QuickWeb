@@ -1,1 +1,1 @@
-{	"name":		"response_server_info",	"main":		"./server_info.js",	"sequence":	"last"}
+{	"name":		"response_server_info",	"main":		"./server_info.js",	"sequence":	"front"}

@@ -23,11 +23,11 @@ exports.init_response = function (web, response) {
 		if (typeof content_type == 'undefined')
 			content_type = 'text/plain';
 		// 如果没有设置charset，则使用默认的编码
-		if (/charset\s*=\s*.+/.test(content_type) == false) {
+		if (/charset\s*=\s*.+/i.test(content_type) == false) {
 			var charset = web.get('charset') || 'utf-8';
 			content_type += '; charset=' + charset;
 		}
-			
+		
 		res.setHeader('Content-Type', content_type);
 		
 		web.log('Content-Type', content_type, 'debug');
