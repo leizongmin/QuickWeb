@@ -38,7 +38,7 @@ exports.init_server = function (web, server) {
 				if (err) {
 					var html_404 = web.get('page_404');
 					sendError(res, 404, html_404 || 'File not found.');
-					web.log('file', 'File not found: ' + err, 'info');
+					web.log('file not found', err.toString(), 'info');
 					return;
 				}
 				try {
