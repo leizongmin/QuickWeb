@@ -12,7 +12,7 @@ exports.init_server = function (web, server) {
 	 * @param {string} extname 扩展名
 	 * @return {string}
 	 */
-	server.ServerInstance.prototype.mimes = web.mimes = function (extname) {
+	server.ServerInstance.prototype.mimes = web.mimes = web.getMimes = function (extname) {
 		var ret = mimes[extname.toLowerCase()];
 		if (typeof ret == 'undefined')
 			ret = 'text/plain';
@@ -34,7 +34,7 @@ exports.init_server = function (web, server) {
 	}
 }
 
- 
+/* 默认的MIME类型 */ 
 var mimes = {
 	"3gp"		: "video/3gpp",
 	"a"			: "application/octet-stream",
