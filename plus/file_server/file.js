@@ -43,7 +43,7 @@ exports.init_server = function (web, server) {
 				}
 				try {
 					// 读取并发送文件
-					web.file.read(filename, function (err, data) {
+					web.file.read(filename, function (err, data, default_file) {
 						if (err) {
 							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
 							web.log('file', err, 'error');
@@ -51,7 +51,9 @@ exports.init_server = function (web, server) {
 						else {
 							// 如果文件未修改，则响应304，否则返回该文件内容
 							if (ifFileModified(res, stat.mtime, since)) {
-								responseFile(res, filename, data, stat.mtime);
+								//console.log(default_file);
+								//console.log(path.resolve(filename, default_file));
+								responseFile(res, path.resolve(filename, default_file), data, stat.mtime);
 								web.log('file', 'send file: ' + filename, 'debug');
 							}
 						}

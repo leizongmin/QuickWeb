@@ -6,16 +6,20 @@
 
 * 参数**file_cache_recover**表示缓存回收的扫描周期，单位为秒，默认为10分钟
 
+* 参数**default_file**定义默认文件名，当要读取的文件为目录时，会自动加上该文件名。默认为**index.html**
+
 
 ## 使用代理函数读取文件
 
 通过**web.file.read()**来代替fs.readFile()可以自动缓存文件，例：
 ```javascript
-	web.file.read(filename, function (err, data) {
+	web.file.read(filename, function (err, data, default_file) {
 		if (err)
 			console.log('读取文件出错');
 		else
 			console.log('文件内容：' + data);
+		if (default_file)
+			console.log('实际读取的文件是' + path.resolve(filename, default_file));
 	});
 ```
 
