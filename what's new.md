@@ -1,4 +1,17 @@
-## v0.1.8
+v0.1.9
+=========
+
+* `web.set()`可以一次设置多个参数；
+
+* 可以通过设置参数**default_file**来指定默认的首页文件，当读取的文件名是一个目录时，会自动加上该默认文件名。
+如果不设置，默认为**index.html**；
+
+* 可以通过`web.enable()`或`web.disable()`来设置加载哪些插件。比如要实现一个简单的静态文件服务器，
+设置`web.enable('file_server');`即可；
+
+
+v0.1.8
+=========
 
 * 自定义Session引擎支持，在程序中可以通过`server.sessionStart()`、
 `server.sessionUpdate()`、`server.serverEnd()`来操作；
@@ -6,7 +19,8 @@
 * 路由处理程序支持设置多个目录，`web.set('code_path', [..数组..])`;
 
 
-## v0.1.7
+v0.1.7
+=========
 
 * 增加调试输出等级切换：`web.setLogLevel(3)`;
 
