@@ -26,7 +26,7 @@ exports.init_server = function (web, server) {
 				var file = web.file.cache[filename];
 				// 如果请求中包含If-Modified-Since信息且未修改，则响应304，否则返回该文件内容
 				if (ifFileModified(res, file.mtime, since)) {
-					responseFile(res, filename, file.data, file.mtime);
+					responseFile(res, path.resolve(filename, file.default_file), file.data, file.mtime);
 				}
 				web.log('file form cache', filename, 'debug');
 				return;
@@ -50,8 +50,8 @@ exports.init_server = function (web, server) {
 						else {
 							// 如果文件未修改，则响应304，否则返回该文件内容
 							if (ifFileModified(res, stat.mtime, since)) {
-								//console.log(default_file);
-								//console.log(path.resolve(filename, default_file));
+								// console.log(default_file);
+								// console.log(path.resolve(filename, default_file));
 								responseFile(res, path.resolve(filename, default_file), data, stat.mtime);
 								web.log('file', 'send file: ' + filename, 'debug');
 							}
