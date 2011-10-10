@@ -2,7 +2,7 @@
  * QuickWeb 日志记录器
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.8
+ * @version 0.1.9
  */
  
 var logger = module.exports;

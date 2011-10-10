@@ -4,7 +4,7 @@
  * 用于HTTP响应时的预处理
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.8
+ * @version 0.1.9
  */
  
 var response = module.exports;
