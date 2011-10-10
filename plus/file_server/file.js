@@ -36,8 +36,7 @@ exports.init_server = function (web, server) {
 			/* 取文件最后修改时间 */
 			fs.stat(filename, function (err, stat) {
 				if (err) {
-					var html_404 = web.get('page_404');
-					sendError(res, 404, html_404 || 'File not found.');
+					sendError(res, 404, 'File not found.');
 					web.log('file not found', err.toString(), 'info');
 					return;
 				}
@@ -84,6 +83,9 @@ var sendError = function (res, code, msg) {
 		code = 404;
 	if (!msg)
 		msg = '';
+	// 如果定义了错误信息页面，则优先使用
+	msg = web.get('page_' + code) || msg;
+	
 	res.writeHead(code, {'Content-type': 'text/html'});
 	res.end(msg);
 }
