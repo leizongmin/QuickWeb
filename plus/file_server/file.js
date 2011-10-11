@@ -9,6 +9,7 @@ var web = require('../../core/web');
  
 var fs = require('fs'); 
 var path = require('path');
+
  
 exports.init_server = function (web, server) {
 	
@@ -16,8 +17,8 @@ exports.init_server = function (web, server) {
 	server.addListener(function (svr, req, res) {
 		try {
 			/* 获取绝对文件名 */
-			var home_path = web.get('home_path');
-			var filename = path.resolve((home_path ? home_path : '.'), req.filename.substr(1));
+			var filename = path.resolve(web.get('home_path'), req.filename.substr(1));
+			
 			// 如果请求中包含If-Modified-Since信息
 			var since = req.headers['if-modified-since'];
 			

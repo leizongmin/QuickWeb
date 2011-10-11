@@ -8,7 +8,7 @@
 var web = module.exports;
 
 /** 版本号 */
-web.version = 'v0.1.9';
+web.version = 'v0.1.10-pre';
 
 var logger = require('./logger');
 
@@ -40,6 +40,9 @@ web.util = {}
  * @return {http.Server}
  */
 web.create = web.createHttp = function (port, hostname) {
+	// 设置默认配置
+	setDefaultConfig();
+	
 	// 如果还没有载入插件，则自动载入
 	if (plus_never_loaded)
 		web.loadPlus();
@@ -68,6 +71,9 @@ web.create = web.createHttp = function (port, hostname) {
  * @return {https.Server}
  */
 web.createHttps = function (options, port, hostname) {
+	// 设置默认配置
+	setDefaultConfig();
+	
 	// 如果还没有载入插件，则自动载入
 	if (plus_never_loaded)
 		web.loadPlus();
@@ -192,6 +198,24 @@ web.disable = function (p) {
 		}
 	}
 }
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * 如果参数没有配置，则设置为默认
+ *
+ */
+var setDefaultConfig = function () {
+	// 网站跟目录 默认为 ./html
+	if (typeof web.get('home_path') == 'undefined')
+		web.set('home_path', './html');
+	// 路由处理程序目录 默认为 ./code
+	if (typeof web.get('code_path') == 'undefined')
+		web.set('code_path', './code');
+	// 模板目录 默认为 ./tpl
+	if (typeof web.get('template_path') == 'undefined')
+		web.set('template_path', './tpl');
+}
+
 
 //--------------------------------------------------------------------------------------------------
 /**

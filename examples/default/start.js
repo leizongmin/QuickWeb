@@ -15,7 +15,7 @@ var SERVER_PORT = 80;
 // 设置服务器
 var path = require('path');
 web.set({
-	'home_path':	 path.resolve(__dirname, './www'),		// 网站根目录
+	'home_path':	 path.resolve(__dirname, './html'),		// 网站根目录
 	'code_path':	 path.resolve(__dirname, './code'),		// 程序目录
 	'template_path': path.resolve(__dirname, './tpl'),		// 模板目录
 	'tmp_path':		 path.resolve(__dirname, './tmp'),		// 临时目录，用于POST文件上传

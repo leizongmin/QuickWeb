@@ -22,34 +22,44 @@
 ```javascript
 	// 载入QuickWeb
 	var web = require('./core/web');
-
-	// 设置
-	web.set('home_path', './www');			// 网站根目录
-	web.set('code_path', './code');			// 程序目录
-	/*
-	// 也可以这样设置
-	web.set({
-		home_path:		'./www',
-		code_path:		'./code'
-	});
-	*/
-
 	// 创建服务器，监听80端口
-	var s = web.create(80);
+	web.create();
 ```
 
-上面的程序中，定义了网站的根目录为**./www**，当别人访问你的网站时，所有的文件都是从这个
-目录里面查找的；
+在当前目录下创建目录**html**用于存放你的静态文件，**code**目录用于存放路由处理程序，以及
+**tpl**目录用于存放模板文件。
+
+当别人访问你的网站时，所有的静态文件都是从目录**html**里面查找的；
 
 程序目录为**./code**，网站服务器端的处理程序将放在这个目录里面。
+
+如果要手动指定这些目录，可以在web.create()语句前使用**web.set('参数名', '值')**来指定：
+
+```javascript
+	// 设置
+	web.set('home_path', './html');			// 网站根目录
+	web.set('code_path', './code');			// 程序目录
+	web.set('template_path', './tpl');			// 模板目录
+```
+
+或者
+
+```javascript
+	// 也可以这样设置
+	web.set({
+		home_path:		'./html',
+		code_path:		'./code',
+		template_path:	'./tpl'
+	});
+```
 
 如果要创建HTTPS服务器，则使用以下语句：
 
 ```javascript
-	var s = web.createHttps({
-			key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),		// 设置证书
-			cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
-		}, 443);
+	web.createHttps({
+		key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),		// 设置证书
+		cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
+	}, 443);
 ```
 
 
