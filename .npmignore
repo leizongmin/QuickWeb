@@ -1,4 +1,4 @@
 .git
 .npmignore
-/test
-/examples
+test/
+examples/
