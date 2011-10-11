@@ -21,7 +21,7 @@
 
 ```javascript
 	// 载入QuickWeb
-	var web = require('./core/web');
+	var web = require('QuickWeb');
 	// 创建服务器，监听80端口
 	web.create();
 ```
