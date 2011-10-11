@@ -5,6 +5,8 @@
  * @version 0.1.9
  */
  
+var fs = require('fs'); 
+ 
 var web = module.exports;
 
 /** 版本号 */
@@ -205,6 +207,13 @@ web.disable = function (p) {
  *
  */
 var setDefaultConfig = function () {
+	// 检查是否禁止使用默认参数
+	var use_default_config = web.get('use_default_config'); 
+	if (typeof use_default_config != 'undefined' && use_default_config === false) {
+		web.log('disable default config', '', 'info');
+		return;
+	}
+	
 	// 网站跟目录 默认为 ./html
 	if (typeof web.get('home_path') == 'undefined')
 		web.set('home_path', './html');
@@ -214,6 +223,15 @@ var setDefaultConfig = function () {
 	// 模板目录 默认为 ./tpl
 	if (typeof web.get('template_path') == 'undefined')
 		web.set('template_path', './tpl');
+	// 如果存在 ./plus目录，则载入该目录里面的插件
+	try {
+		var dp = fs.readdirSync('./plus');
+		web.log('auto load plus', './plus', 'debug');
+		plus.scan('./plus');
+	}
+	catch (err) {
+		// web.log('no plus dir', err, 'error');
+	}
 }
 
 
