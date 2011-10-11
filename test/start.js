@@ -4,9 +4,10 @@
  
 var web = require('../core/web');
 
-web.set('home_path', './html');
-web.set('code_path', './code');
-web.set('template_path', './html');
+var path = require('path');
+web.set('home_path', path.resolve(__dirname, './html'));
+web.set('code_path', path.resolve(__dirname, './code'));
+web.set('template_path', path.resolve(__dirname, './html'));
 var mustache = require('mustache');
 web.set('render_to_html', function () {
 	return mustache.to_html.apply(null, arguments);

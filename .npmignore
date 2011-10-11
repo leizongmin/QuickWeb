@@ -1,5 +1,4 @@
 .git
 .npmignore
-README.md
-test
-examples
+/test
+/examples

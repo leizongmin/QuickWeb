@@ -4,7 +4,7 @@
  * 用于对HTTP请求进行预处理
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.9
+ * @version 0.1.10
  */
  
 var request = module.exports;
