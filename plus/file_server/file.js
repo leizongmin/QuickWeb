@@ -16,6 +16,14 @@ exports.init_server = function (web, server) {
 	/** 注册ServerInstance处理链 */
 	server.addListener(function (svr, req, res) {
 		try {
+			/* 如果文件名以/..开头，则拒绝（安全问题） */
+			if (req.filename.substr(0, 3) == '/..') {
+				web.log('invasion warning', 'file ' + req.filename, 'error');
+				web.log('invasion warning', req.headers, 'error');
+				sendError(res, 500, 'invasion warning: access is limited');
+				return;
+			}
+			
 			/* 获取绝对文件名 */
 			var filename = path.resolve(web.get('home_path'), req.filename.substr(1));
 			
@@ -88,7 +96,7 @@ var sendError = function (res, code, msg) {
 	msg = web.get('page_' + code) || msg;
 	
 	res.writeHead(code, {'Content-type': 'text/html'});
-	res.end(msg);
+	res.end('<h3>' + msg + '</h3><hr><strong>QuickWeb ' + web.version + '</strong> &nbsp; ' + new Date().toUTCString());
 }
 
 /**
