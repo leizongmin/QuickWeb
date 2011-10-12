@@ -2,7 +2,7 @@
  * QuickWeb web
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.10
+ * @version 0.1.11
  */
  
 var fs = require('fs'); 
@@ -13,7 +13,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.1.11-pre';
+web.version = 'v0.1.11';
 
 var logger = require('./logger');
 

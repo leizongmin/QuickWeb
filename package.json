@@ -1,7 +1,7 @@
 {
    "name":			"QuickWeb",
    "main":			"./core/web.js",
-   "version":		"0.1.10",
+   "version":		"0.1.11",
    "description":	"A quick web framework, plug-in management style, easy to extend. Now support cookie, session, RESTful url, file cache, render, upload, work with socket.io and multi-node, etc.",
    "author": "leizongmin <leizongmin@gmail.com> (http://lab.ucdok.com)",
    "repository": {

@@ -89,7 +89,7 @@ router.register = function (method, paths, handler) {
  * @return {object} 返回格式：{handler:处理函数, value:解析处理的键值} 
  */
 router.handler = function (method, paths) {
-	web.log('router handler', '[' + method + '] ' + paths, 'debug');
+	// web.log('router handler', '[' + method + '] ' + paths, 'debug');
 	
 	// 参数检查
 	if (typeof method != 'string' || typeof paths != 'string') {
@@ -113,7 +113,7 @@ router.handler = function (method, paths) {
 		var r = handlers[i];
 		var pv = r.path.exec(paths);
 		if (pv) {
-			web.log('router match', r.path, 'debug');
+			// web.log('router match', r.path, 'debug');
 			// 填充匹配的PATH值
 			var ret = {
 				handler: r.handler,
@@ -128,6 +128,6 @@ router.handler = function (method, paths) {
 	}
 	
 	// 没有符合条件的处理函数
-	web.log('router handler', 'not match.', 'debug');
+	// web.log('router handler', 'not match.', 'debug');
 	return false;
 }
