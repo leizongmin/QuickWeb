@@ -17,20 +17,21 @@ exports.init_response = function (web, response) {
 		/* 设置服务器版本 */
 		res.setHeader('Server', server_info);
 		
-		/* 设置内容编码 */
-		// 如果没有设置content-type，则默认为text/plain
-		var content_type = res.getHeader('Content-Type');
-		if (typeof content_type == 'undefined')
-			content_type = 'text/plain';
-		// 如果没有设置charset，则使用默认的编码
-		if (/charset\s*=\s*.+/i.test(content_type) == false) {
-			var charset = web.get('charset') || 'utf-8';
-			content_type += '; charset=' + charset;
+		/* 设置内容编码（如果为304，则忽略） */
+		if (res.statusCode != 304) {
+			// 如果没有设置content-type，则默认为text/plain
+			var content_type = res.getHeader('Content-Type');
+			if (typeof content_type == 'undefined')
+				content_type = 'text/plain';
+			// 如果没有设置charset，则使用默认的编码
+			if (/charset\s*=\s*.+/i.test(content_type) == false) {
+				var charset = web.get('charset') || 'utf-8';
+				content_type += '; charset=' + charset;
+			}
+			
+			res.setHeader('Content-Type', content_type);
+			web.log('Content-Type', content_type, 'debug');
 		}
-		
-		res.setHeader('Content-Type', content_type);
-		
-		web.log('Content-Type', content_type, 'debug');
 		
 		/* 通知下一个插件 */
 		res.next();
