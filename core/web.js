@@ -235,6 +235,9 @@ var setDefaultConfig = function () {
 	catch (err) {
 		// web.log('no plus dir', err, 'error');
 	}
+	
+	// 默认文件在缓存时间 1天
+	web.set('file_maxage', 86400);
 }
 
 

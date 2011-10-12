@@ -33,9 +33,10 @@ exports.init_server = function (web, server) {
 			/* 检查文件是否在缓存中 */
 			if (filename in web.file.cache) {
 				var file = web.file.cache[filename];
+				var extname = path.extname(path.resolve(filename, file.default_file)).substr(1);
 				// 如果请求中包含If-Modified-Since信息且未修改，则响应304，否则返回该文件内容
-				if (ifFileModified(res, file.mtime, since)) {
-					responseFile(res, path.resolve(filename, file.default_file), file.data, file.mtime);
+				if (ifFileModified(res, file.mtime, since, extname)) {
+					responseFile(res, extname, file.data, file.mtime);
 				}
 				web.log('file form cache', filename, 'debug');
 				return;
@@ -57,11 +58,12 @@ exports.init_server = function (web, server) {
 							web.log('file', err, 'error');
 						}
 						else {
+							var extname = path.extname(path.resolve(filename, default_file)).substr(1);
 							// 如果文件未修改，则响应304，否则返回该文件内容
-							if (ifFileModified(res, stat.mtime, since)) {
+							if (ifFileModified(res, stat.mtime, since, extname)) {
 								// console.log(default_file);
 								// console.log(path.resolve(filename, default_file));
-								responseFile(res, path.resolve(filename, default_file), data, stat.mtime);
+								responseFile(res, extname, data, stat.mtime);
 								web.log('file', 'send file: ' + filename, 'debug');
 							}
 						}
@@ -87,9 +89,10 @@ exports.init_server = function (web, server) {
  * @param {ServerResponse} res response实例
  * @param {string} mtime 文件最后修改时间
  * @param {string} since 客户端文件最后时间
+ * @param {string} extname 文件扩展名
  * @return {bool} 如果文件未修改，响应304，返回false
  */
-var ifFileModified = function (res, mtime, since) {
+var ifFileModified = function (res, mtime, since, extname) {
 	web.log('if file modified', 'mtime: ' + mtime + ',  since: ' + since, 'debug');
 	var t1 = new Date(mtime).getTime();
 	var t2 = new Date(since).getTime();
@@ -101,7 +104,9 @@ var ifFileModified = function (res, mtime, since) {
 	}
 	// 如果未修改，响应304
 	else {
-		res.writeHead(304);
+		res.writeHead(304, {
+			'Cache-Control':	'max-age=' + getMaxage(extname)
+		});
 		res.end();
 		web.log('file not modified', 'mtime ' +  mtime + ' / since ' + since, 'debug');
 		return false;
@@ -112,13 +117,11 @@ var ifFileModified = function (res, mtime, since) {
  * 向客户端响应文件
  *
  * @param {ServerResponse} res response实例
- * @param {string} filename 文件名
+ * @param {string} extname 文件扩展名
  * @param {string} data 文件内容
  * @param {string} mtime 最后修改时间
  */
-var responseFile = function (res, filename, data, mtime) {
-	var extname = path.extname(filename).substr(1);
-	
+var responseFile = function (res, extname, data, mtime) {
 	// HTTP 相应头
 	var header = {
 		'Content-Type':		web.mimes(extname),
