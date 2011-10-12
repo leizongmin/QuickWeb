@@ -93,7 +93,7 @@ exports.init_server = function (web, server) {
  * @return {bool} 如果文件未修改，响应304，返回false
  */
 var ifFileModified = function (res, mtime, since, extname) {
-	web.log('if file modified', 'mtime: ' + mtime + ',  since: ' + since, 'debug');
+	// web.log('if file modified', 'mtime: ' + mtime + ',  since: ' + since, 'debug');
 	var t1 = new Date(mtime).getTime();
 	var t2 = new Date(since).getTime();
 	if (isNaN(t1) || isNaN(t2))
