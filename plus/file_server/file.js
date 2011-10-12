@@ -117,9 +117,33 @@ var ifFileModified = function (res, mtime, since) {
  * @param {string} mtime 最后修改时间
  */
 var responseFile = function (res, filename, data, mtime) {
-	res.writeHead(200, {
-		'Content-Type':		web.mimes(path.extname(filename).substr(1)),
-		'Last-Modified':	new Date(mtime).toUTCString()
-	});
+	var extname = path.extname(filename).substr(1);
+	
+	// HTTP 相应头
+	var header = {
+		'Content-Type':		web.mimes(extname),
+		'Last-Modified':	new Date(mtime).toUTCString(),
+		'Cache-Control':	'max-age=' + getMaxage(extname)
+	}
+	
+	// 响应
+	res.writeHead(200, header);
 	res.end(data);
+}
+
+/**
+ * 获取指定文件类型的最大缓存时间
+ *
+ * @param {string} extname 文件扩展名 （不含小数点）
+ * @return {int} 单位，秒
+ */
+var getMaxage = function (extname) {
+	extname = extname.toLowerCase();
+	var maxage = web.get('file_maxage_' + extname);
+	if (typeof maxage == 'undefined')
+		maxage = web.get('file_maxage');
+	if (typeof maxage == 'undefined' || isNaN(maxage))
+		return 0;
+	else
+		return maxage;
 }
