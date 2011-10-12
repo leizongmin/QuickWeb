@@ -14,11 +14,12 @@ exports.get = function (server, request, response) {
 		response.redirect('/room/nodejs');
 		return;
 	}
-	
 	// 显示首页
-	response.renderFile('index.html', {
-			nickname: 	request.get.nickname || server.session.nickname,
-			islogin:	server.session.nickname ? true : false
-		}
-		, 'text/html');
+	else {
+		response.renderFile('index.html', {
+				nickname: 	request.get.nickname || server.session.nickname,
+				islogin:	server.session.nickname ? true : false
+			}
+			, 'text/html');
+	}
 }
