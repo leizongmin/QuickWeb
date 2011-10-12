@@ -71,4 +71,22 @@ exports.init_response = function (web, response) {
 		
 		web.log('redirect', target, 'info');
 	}
+	
+	/**
+	 * 向客户端发送出错信息
+	 *
+	 * @param {int} code 代码
+	 * @param {string} msg 信息
+	 */
+	response.ServerResponse.prototype.sendError = function (code, msg) {
+		if (!code)
+			code = 404;
+		if (!msg)
+			msg = '';
+		// 如果定义了错误信息页面，则优先使用
+		msg = web.get('page_' + code) || msg;
+		
+		this.writeHead(code, {'Content-type': 'text/html'});
+		this.end('<h3>' + msg + '</h3><hr><strong>QuickWeb ' + web.version + '</strong> &nbsp; ' + new Date().toUTCString());
+	}
 }

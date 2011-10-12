@@ -20,7 +20,7 @@ exports.init_server = function (web, server) {
 			if (req.filename.substr(0, 3) == '/..') {
 				web.log('invasion warning', 'file ' + req.filename, 'error');
 				web.log('invasion warning', req.headers, 'error');
-				sendError(res, 500, 'invasion warning: access is limited');
+				res.sendError(500, 'invasion warning: access is limited');
 				return;
 			}
 			
@@ -45,7 +45,7 @@ exports.init_server = function (web, server) {
 			/* 取文件最后修改时间 */
 			fs.stat(filename, function (err, stat) {
 				if (err) {
-					sendError(res, 404, 'File not found.');
+					res.sendError(404, 'File not found.');
 					web.log('file not found', err.toString(), 'info');
 					return;
 				}
@@ -53,7 +53,7 @@ exports.init_server = function (web, server) {
 					// 读取并发送文件
 					web.file.read(filename, function (err, data, default_file) {
 						if (err) {
-							sendError(res, 500, '<h3>' + err.toString() + '</h3>');
+							res.sendError(500, '<h3>' + err.toString() + '</h3>');
 							web.log('file', err, 'error');
 						}
 						else {
@@ -68,36 +68,18 @@ exports.init_server = function (web, server) {
 					});
 				}
 				catch (err) {
-					sendError(res, 500, 'Read file error.');
+					res.sendError(500, 'Read file error.');
 					web.log('file', 'Read file error: ' + err, 'error');
 				}
 			});
 		}
 		catch (err) {
-			sendError(res, 500, 'Unknow error.');
+			res.sendError(500, 'Unknow error.');
 			web.log('file', 'Unknow error: ' + err, 'error');
 		}
 	});
 }
 
-/**
- * 向客户端发送出错信息
- *
- * @param {ServerResponse} res response实例
- * @param {int} code 代码
- * @param {string} msg 信息
- */
-var sendError = function (res, code, msg) {
-	if (!code)
-		code = 404;
-	if (!msg)
-		msg = '';
-	// 如果定义了错误信息页面，则优先使用
-	msg = web.get('page_' + code) || msg;
-	
-	res.writeHead(code, {'Content-type': 'text/html'});
-	res.end('<h3>' + msg + '</h3><hr><strong>QuickWeb ' + web.version + '</strong> &nbsp; ' + new Date().toUTCString());
-}
 
 /**
  * 向客户端响应 文件未修改
