@@ -5,7 +5,7 @@
  * 					session_recover = 回收扫描周期，单位为s，默认为1分钟
  */
  
-var web = QuickWeb;
+var web = global.QuickWeb;
 var md5 = require('./md5');
  
 /** SESSION数据 */ 

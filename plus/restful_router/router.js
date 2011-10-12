@@ -4,7 +4,7 @@
  * @author leizongmin<leizongmin@gmail.com>
  */
  
-var web = QuickWeb;
+var web = global.QuickWeb;
  
 var router = module.exports;
 

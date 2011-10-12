@@ -5,7 +5,7 @@
  * 通过web.set('page_404', 'HTML代码')来设置404出错页面HTML代码
  */
 
-var web = QuickWeb;
+var web = global.QuickWeb;
  
 var fs = require('fs'); 
 var path = require('path');
