@@ -4,7 +4,7 @@
  * @author leizongmin<leizongmin@gmail.com>
  */
  
-var web = require('../../core/web');
+var web = QuickWeb;
  
 var router = module.exports;
 

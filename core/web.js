@@ -9,8 +9,11 @@ var fs = require('fs');
  
 var web = module.exports;
 
+/** 引用QuickWeb的程序均可通过global.QuickWeb或者QuickWeb来访问QuickWeb对象 */
+global.QuickWeb = web;
+
 /** 版本号 */
-web.version = 'v0.1.10';
+web.version = 'v0.1.11-pre';
 
 var logger = require('./logger');
 

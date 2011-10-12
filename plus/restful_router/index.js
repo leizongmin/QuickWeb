@@ -4,7 +4,7 @@
  */
  
 var router = require('./router');
-var web = require('../../core/web');
+var web = QuickWeb;
  
 var fs = require('fs');
 var path = require('path'); 
