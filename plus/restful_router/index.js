@@ -21,13 +21,15 @@ exports.init_server = function (web, server) {
 		var files = [];
 		code_path.forEach(function (v) {
 			files = files.concat(scanCodeFiles(v));
+			watchCodePath(v);		// 监视该目录的更新
 		});
 	}
-	else
+	else {
 		var files = scanCodeFiles(code_path);
+		watchCodePath(code_path);	// 监视该目录的更新
+	}
 		
 	loadCodeFiles(files);		// 载入代码
-	watchCodePath(code_path);	// 监视该目录的更新
 	
 	/** 注册监听器 */
 	server.addListener(function (svr, req, res) {
