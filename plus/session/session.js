@@ -6,7 +6,7 @@
  */
  
 var web = global.QuickWeb;
-var md5 = require('./md5');
+var md5 = web.util.md5;
  
 /** SESSION数据 */ 
 var session_data = {} 
