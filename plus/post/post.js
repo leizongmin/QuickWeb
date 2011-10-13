@@ -12,7 +12,8 @@ exports.init_request = function (web, request) {
 	request.addListener(function (req) {
 		var method = req.method.toLowerCase();
 		
-		if (method == 'post') {
+		/* 仅解析POST和PUT请求方法 */
+		if (method == 'post' || method == 'put') {
 			var form = new formidable.IncomingForm();
 			
 			// 设置临时目录
