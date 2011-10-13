@@ -3,14 +3,16 @@ v0.1.11
 
 * 增加方法**response.sendError()**用于想客户端响应指定的HTTP出错信息；
 
-* 设置全局变量**QuickWeb**，在程序中可以通过QuickWeb来访问QuickWeb对象，可简化插件的编写；
+* 设置全局变量**QuickWeb**，在程序中可以通过global.QuickWeb来访问QuickWeb对象，可简化插件的编写；
 
 * 修复安全问题：通过请求**/..**开头的路径来访问系统的任意目录；
 
 * 增加静态文件服务缓存**Cache-Control**，可通过设置`web.set('file_maxage', 缓存秒数)`来设置默认的缓存时间；
 通过设置`web.set('file_maxage_文件扩展名', 缓存秒数)`来设置指定文件类型的缓存时间；（仅针对浏览器客户端）
 
-* 增加**Etag**插件：可通过`request.etag()`来校验客户端的Etag，通过`response.etag()`来设置响应的Etag，以实现动态页面的缓存机制；
+* 新增**Etag**插件：可通过`request.etag()`来校验客户端的Etag，通过`response.etag()`来设置响应的Etag，以实现动态页面的缓存机制；
+
+* 新增MD5函数用于MD5加密，可通过**web.util.md5()**来访问；
 
 
 v0.1.10
