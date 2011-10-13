@@ -4,7 +4,7 @@
  * 可以通过web.file.load()来加载指定文件到内存中
  * 通过web.file.cache[filename]来访问该文件
  * 通过web.file.read()来读取文件，无需考虑是否在缓存
- * 设置参数file_cache_maxage表示文件缓存生存周期，单位为秒，默认为1天
+ * 设置参数file_cache_maxage表示文件缓存生存周期，单位为秒，默认为1小时
  * 设置参数file_cache_recover表示缓存回收扫描周期，单位为秒，默认为10分钟
  */
  
@@ -164,7 +164,7 @@ exports.init_server = function (web, server) {
 	/** 缓存回收启动扫描 */
 	var file_cache_maxage = web.get('file_cache_maxage');
 	if (isNaN(file_cache_maxage))
-		file_cache_maxage = 3600 * 24;
+		file_cache_maxage = 3600;
 	file_cache_maxage *= 1000;
 	var file_cache_recover = web.get('file_cache_recover');
 	if (isNaN(file_cache_recover))
