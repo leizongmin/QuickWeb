@@ -36,6 +36,7 @@ exports.init_server = function (web, server) {
 		var h = router.handler(req.method, req.filename);
 		if (h) {
 			req.path = h.value;
+			// 调用处理程序
 			h.handler(svr, req, res);
 		}
 		else {
