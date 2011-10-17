@@ -116,7 +116,9 @@ exports.init_server = function (web, server) {
 							file.timestamp = new Date().getTime();			// 时间戳
 							file.data = data;								// 文件内容
 							file.default_file = _default_file;				// 默认文件名
-							file_cache[filename] = file;
+							// 如果文件太大，则不缓存（默认最大为2M）
+							if (file.size <= 2097152)
+								file_cache[filename] = file;
 							
 							// 返回数据
 							callback(err, data, _default_file);
