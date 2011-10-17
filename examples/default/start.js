@@ -34,7 +34,7 @@ web.set('render_to_html', function (str, view) {
 
 
 // 载入APP
-web.loadApp(path.resolve(__dirname, './app/testapp'));
+// web.loadApp(path.resolve(__dirname, './app/testapp'));
 
 
 var s = web.create(SERVER_PORT);

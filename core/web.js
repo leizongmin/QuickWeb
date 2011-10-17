@@ -236,6 +236,25 @@ var setDefaultConfig = function () {
 	catch (err) {
 		// web.log('no plus dir', err, 'error');
 	}
+	// 如果存在./app目录，则将该目录下的子目录作为app程序来注册
+	try {
+		var dp = fs.readdirSync('./app');
+		web.log('auto load app', './app', 'debug');
+		dp.forEach(function (v) {
+			try {
+				var a = './app/' + v;
+				var dpc = fs.readdirSync(a);
+				// 载入app
+				web.loadApp(a);
+			}
+			catch (err) {
+				// 不是子目录
+			}
+		});
+	}
+	catch (err) {
+		// 不存在app目录
+	}
 	
 	// 默认文件在缓存时间 1天
 	web.set('file_maxage', 86400);
