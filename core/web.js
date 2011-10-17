@@ -2,7 +2,7 @@
  * QuickWeb web
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.11
+ * @version 0.1.12
  */
  
 var fs = require('fs'); 

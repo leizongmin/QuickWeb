@@ -2,7 +2,7 @@
  * QuickWeb 插件管理器
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.11
+ * @version 0.1.12
  */
  
 var plus = module.exports;

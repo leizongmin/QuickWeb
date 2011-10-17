@@ -4,7 +4,7 @@
  * 用于处理HTTP请求
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.11
+ * @version 0.1.12
  */
  
 var server = module.exports;
