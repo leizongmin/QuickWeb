@@ -13,7 +13,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.1.11';
+web.version = 'v0.1.12';
 
 var logger = require('./logger');
 
