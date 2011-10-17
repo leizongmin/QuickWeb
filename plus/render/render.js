@@ -78,7 +78,7 @@ exports.init_server = function (web, server) {
 		/* 读取并渲染文件 */
 		try {
 			// 获取绝对文件名
-			filename = path.resolve(template_path, filename);
+			filename = web.file.resolve(path.resolve(template_path, filename));
 			
 			web.file.read(filename, function (err, data) {
 				if (err) {

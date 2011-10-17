@@ -41,7 +41,9 @@ exports.init_response = function (web, response) {
 		if (typeof home_path == 'undefined')
 			home_path = '.';
 		try {
-			web.file.read(path.resolve(home_path, filename), function (err, data) {
+			// 获取绝对文件名
+			filename = web.file.resolve(path.resolve(home_path, filename));
+			web.file.read(filename, function (err, data) {
 				if (err) {
 					self.writeHead(500);
 					self.end(err.toString());

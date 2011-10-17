@@ -32,6 +32,11 @@ web.set('render_to_html', function (str, view) {
 	return mustache.to_html(str, view);
 });
 
+
+// 载入APP
+web.loadApp(path.resolve(__dirname, './app/testapp'));
+
+
 var s = web.create(SERVER_PORT);
 
 // 自定义文件类型，因为需要mime-type插件支持，所有必须等加载完插件之后

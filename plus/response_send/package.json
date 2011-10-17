@@ -1,1 +1,1 @@
-{	"name":		"response_send",	"main":		"./response.js",	"sequence":	"last",	"dependencies":	{		"mime-type":	"*",		"file_cache":	"*"	}}
+{	"name":		"response_send",	"main":		"./response.js",	"sequence":	"last",	"dependencies":	{		"mime-type":	"*"	}}

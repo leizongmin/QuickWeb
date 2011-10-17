@@ -253,6 +253,8 @@ web.setLoggerLevel = web.setLogLevel = function (level) {
 	web.log = logger.log;
 }
 
+var file = require('./file');
+var app = require('./app');
 
 // 初始化，自动载入../plus里面的默认插件
 plus.scan(path.resolve(__dirname, '../plus'));
