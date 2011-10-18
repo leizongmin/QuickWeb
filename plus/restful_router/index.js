@@ -36,6 +36,11 @@ exports.init_server = function (web, server) {
 		var h = router.handler(req.method, req.filename);
 		if (h) {
 			req.path = h.value;
+			
+			// 解码PATH中的中文字符串
+			for (var i in req.path)
+				req.path[i] = decodeURI(req.path[i]);
+			
 			// 调用处理程序
 			h.handler(svr, req, res);
 		}
