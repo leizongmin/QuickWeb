@@ -136,9 +136,16 @@ web.file.read = function (filename, callback) {
 					}
 				}
 				else {
-					web.log('read file from disk', filename, 'debug');
+					// 生成实际文件名
+					// filename可能为目录名， _fn为实际文件名
+					if (typeof _default_file == 'undefined')
+						var _fn = filename;
+					else
+						var _fn = path.resolve(filename, _default_file);
+						
+					web.log('read file from disk', _fn, 'debug');
 					// 保存到缓存中
-					fs.stat(filename, function (err, stat) {
+					fs.stat(_fn, function (err, stat) {
 						if (err) {
 							web.log('cache file', err, 'error');
 							callback(err);
@@ -151,26 +158,21 @@ web.file.read = function (filename, callback) {
 						file.data = data;								// 文件内容
 						file.default_file = _default_file;				// 默认文件名
 						// 如果文件太大，则不缓存（默认最大为2M）
-						if (file.size <= 2097152)
-							file_cache[filename] = file;
+						if (file.size <= 2097152) {
+							file_cache[filename] = file_cache[_fn] = file;
+						}
 						
 						// 返回数据
 						callback(err, data, _default_file);
 					});
 						
 					// 如果文件修改了，则删除缓存
-					watchfile();
+					watchfile(_fn);
 				}
 			}
 			
 			/* 监视文件改动回调函数 */
-			var watchfile = function () {
-				// 生成实际文件名
-				if (typeof _default_file == 'undefined')
-					var _fn = filename;
-				else
-					var _fn = path.resolve(filename, _default_file);
-					
+			var watchfile = function (_fn) {
 				// 监视时间文件名
 				fs.unwatchFile(_fn);
 				fs.watchFile(_fn, function () {
