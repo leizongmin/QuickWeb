@@ -105,7 +105,7 @@ var ifFileModified = function (res, mtime, since, extname) {
 	// 如果未修改，响应304
 	else {
 		res.writeHead(304, {
-			'Cache-Control':	'max-age=' + getMaxage(extname)
+			'Cache-Control':	'public, max-age=' + getMaxage(extname)
 		});
 		res.end();
 		web.log('file not modified', 'mtime ' +  mtime + ' / since ' + since, 'debug');
@@ -123,10 +123,12 @@ var ifFileModified = function (res, mtime, since, extname) {
  */
 var responseFile = function (res, extname, data, mtime) {
 	// HTTP 相应头
+	var maxage = getMaxage(extname);
 	var header = {
 		'Content-Type':		web.mimes(extname),
 		'Last-Modified':	new Date(mtime).toUTCString(),
-		'Cache-Control':	'max-age=' + getMaxage(extname)
+		'Cache-Control':	'public, max-age=' + maxage//,
+		// 'Expires':			new Date(new Date().getTime() + maxage * 1000).toUTCString()
 	}
 	
 	// 响应
