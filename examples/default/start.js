@@ -36,6 +36,9 @@ web.set('render_to_html', function (str, view) {
 // 载入APP
 // web.loadApp(path.resolve(__dirname, './app/testapp'));
 
+// 关闭file cache
+//web.set('file_cache', false);
+web.set('file_cache_maxsize', 1024 * 0.01);
 
 var s = web.create(SERVER_PORT);
 

@@ -13,6 +13,8 @@
  * 通过web.file.read()来读取文件，无需考虑是否在缓存
  * 设置参数file_cache_maxage表示文件缓存生存周期，单位为秒，默认为1小时
  * 设置参数file_cache_recover表示缓存回收扫描周期，单位为秒，默认为10分钟
+ * 设置参数file_cache表示是否开启文件缓存
+ * 设置参数file_cache_maxsize表示可以缓存的文件的最大尺寸
  */
  
 var web = require('./web'); 
@@ -25,7 +27,11 @@ web.file = {}
 	
 /** 缓存了的文件 */
 var file_cache = web.file.cache = {}
-	
+/** 是否开启文件缓存 */
+web.file.enable = true;
+/** 可缓存的文件最大尺寸 */
+web.file.maxsize = 2097152;  // 默认2M
+
 /**
  * 获取实际文件名
  *
@@ -106,7 +112,7 @@ web.file.load = function(filename, auto_update) {
 web.file.read = function (filename, callback) {
 		
 	// 检查文件是否在缓存中
-	if (filename in file_cache) {
+	if (web.file.enable && filename in file_cache) {
 		var file = file_cache[filename];
 		web.log('read file from cache', filename, 'debug');
 		// 如果是非永久缓存，则更新其时间戳
@@ -145,29 +151,35 @@ web.file.read = function (filename, callback) {
 						
 					web.log('read file from disk', _fn, 'debug');
 					// 保存到缓存中
-					fs.stat(_fn, function (err, stat) {
-						if (err) {
-							web.log('cache file', err, 'error');
-							callback(err);
-							return;
-						}
-						var file = {}
-						file.mtime = new Date(stat.mtime).toUTCString();	// 文件最后修改时间
-						file.size = stat.size;							// 文件尺寸
-						file.timestamp = new Date().getTime();			// 时间戳
-						file.data = data;								// 文件内容
-						file.default_file = _default_file;				// 默认文件名
-						// 如果文件太大，则不缓存（默认最大为2M）
-						if (file.size <= 2097152) {
-							file_cache[filename] = file_cache[_fn] = file;
-						}
-						
-						// 返回数据
+					if (web.file.enable) {
+						fs.stat(_fn, function (err, stat) {
+							if (err) {
+								web.log('cache file', err, 'error');
+								callback(err);
+								return;
+							}
+							// 如果文件太大，则不缓存（默认最大为2M）
+							if (stat.size <= web.file.maxsize) {
+								var file = {}
+								file.mtime = new Date(stat.mtime).toUTCString();	// 文件最后修改时间
+								file.size = stat.size;							// 文件尺寸
+								file.timestamp = new Date().getTime();			// 时间戳
+								file.data = data;								// 文件内容
+								file.default_file = _default_file;				// 默认文件名
+								
+								file_cache[filename] = file_cache[_fn] = file;
+							}
+							
+							// 返回数据
+							callback(err, data, _default_file);
+						});
+							
+						// 如果文件修改了，则删除缓存
+						watchfile(_fn);
+					}
+					else {
 						callback(err, data, _default_file);
-					});
-						
-					// 如果文件修改了，则删除缓存
-					watchfile(_fn);
+					}
 				}
 			}
 			
@@ -200,22 +212,44 @@ web.file.read = function (filename, callback) {
 
 	
 /** 缓存回收启动扫描 */
-var file_cache_maxage = web.get('file_cache_maxage');
-if (isNaN(file_cache_maxage))
-	file_cache_maxage = 3600;
-file_cache_maxage *= 1000;
-var file_cache_recover = web.get('file_cache_recover');
-if (isNaN(file_cache_recover))
-	file_cache_recover = 60 * 5;
-file_cache_recover *= 1000;
+web.file.init = function () {
+	// 文件缓存存活时间
+	var file_cache_maxage = web.get('file_cache_maxage');
+	if (isNaN(file_cache_maxage))
+		file_cache_maxage = 3600;
+	file_cache_maxage *= 1000;
+	// 缓存回收周期
+	var file_cache_recover = web.get('file_cache_recover');
+	if (isNaN(file_cache_recover))
+		file_cache_recover = 60 * 5;
+	file_cache_recover *= 1000;
+	if (file_cache_recover < file_cache_maxage)
+		file_cache_recover = file_cache_maxage;
 
-setInterval(function () {
-	web.log('file cache recover', 'start', 'debug');
-	var timestamp = new Date().getTime();
-	for (var i in file_cache) {
-		if (file_cache[i].timestamp >= 0 && file_cache[i].timestamp + file_cache_maxage < timestamp) {
-			web.log('remove file cache', i, 'debug');
-			delete file_cache[i];
+	// 缓存回收
+	setInterval(function () {
+		web.log('file cache recover', 'start', 'debug');
+		var timestamp = new Date().getTime();
+		for (var i in file_cache) {
+			if (file_cache[i].timestamp >= 0 && file_cache[i].timestamp + file_cache_maxage < timestamp) {
+				web.log('remove file cache', i, 'debug');
+				delete file_cache[i];
+			}
 		}
-	}
-}, file_cache_recover);
+	}, file_cache_recover);
+	
+	// 是否开启文件缓存
+	var enable = web.get('file_cache');
+	if (typeof enable == 'undefined')
+		enable = true;
+	web.file.enable = enable ? true : false;
+	web.log((web.file.enable ? 'enable' : 'disable') + ' file cache', '', 'info');
+	
+	// 可缓存的文件最大尺寸
+	var maxsize = parseInt(web.get('file_cache_maxsize'));
+	if (!isNaN(maxsize))
+		web.file.maxsize = maxsize;
+	web.log('file cache', 'maxsize = ' + web.file.maxsize, 'debug');
+	
+	web.log('QuickWeb', 'web.file.init()', 'info');
+}

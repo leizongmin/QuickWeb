@@ -258,6 +258,9 @@ var setDefaultConfig = function () {
 	
 	// 默认文件在缓存时间 1天
 	web.set('file_maxage', 86400);
+	
+	// 初始化file cache
+	web.file.init();
 }
 
 
@@ -272,7 +275,9 @@ web.setLoggerLevel = web.setLogLevel = function (level) {
 	web.log = logger.log;
 }
 
+// 载入file cache模块
 var file = require('./file');
+// 载入app 模块
 var app = require('./app');
 
 // 初始化，自动载入../plus里面的默认插件
