@@ -249,7 +249,7 @@ web.file.init = function () {
 	var maxsize = parseInt(web.get('file_cache_maxsize'));
 	if (!isNaN(maxsize))
 		web.file.maxsize = maxsize;
-	web.log('file cache', 'maxsize = ' + web.file.maxsize, 'debug');
+	web.log('file cache', 'maxsize = ' + web.file.maxsize, 'info');
 	
 	web.log('QuickWeb', 'web.file.init()', 'info');
 }
