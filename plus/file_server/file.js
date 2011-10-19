@@ -54,7 +54,7 @@ exports.init_server = function (web, server) {
 					// 读取并发送文件
 					web.file.read(filename, function (err, data, default_file) {
 						if (err) {
-							res.sendError(404, '<h1>Default file not found.</h1>');
+							res.sendError(404, '<h1>Default page not found.</h1>');
 							web.log('file', err, 'error');
 						}
 						else {

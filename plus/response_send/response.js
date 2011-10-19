@@ -89,7 +89,7 @@ exports.init_response = function (web, response) {
 		msg = web.get('page_' + code) || msg;
 		
 		this.writeHead(code, {'Content-type': 'text/html'});
-		this.end('<h1>' + msg + '</h1><br><hr>Power By <strong><a href="https://github.com/leizongmin/QuickWeb/issues" target="_blank">QuickWeb ' + web.version + '</a></strong> &nbsp; ' + new Date().toUTCString());
+		this.end('<h1>' + msg + '</h1><hr>Power By <strong><a href="https://github.com/leizongmin/QuickWeb/issues" target="_blank">QuickWeb ' + web.version + '</a></strong> &nbsp; ' + new Date().toUTCString());
 	}
 	
 	/**
