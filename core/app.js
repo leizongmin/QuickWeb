@@ -18,13 +18,13 @@ web._dirlink = app._dirlink = {}
  * 设置虚拟目录（扩展web对象）
  *
  * @param {string} cn 配置名（比如：home_path, template_path）
- * @param {string} vn 目录名（以“/”开头）
+ * @param {string} vn 目录名(如果以“/”开头，则为系统绝对路径）
  * @param {string} an 真实目录名
  */
 web.linkPath = function (cn, vn, an) {
 	cn = web.get(cn);
 	vn = path.resolve(cn, vn) + '/';
-	an = path.resolve(cn, an) + '/';
+	an = path.resolve(an) + '/';
 	app._dirlink[vn] = an;
 	web.log('link path', vn + '  =>  ' + an, 'info');
 }
