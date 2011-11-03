@@ -1,1 +1,0 @@
-{	"name":		"response_pipe",	"main":		"./pipe.js",	"sequence":	"last",	"dependencies":	{		"render":	"*"	}}

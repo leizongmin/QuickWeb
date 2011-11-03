@@ -2,10 +2,12 @@
  * QuickWeb web
  *
  * @author leizongmin<leizongmin@gmail.com>
- * @version 0.1.12
+ * @version 0.2.0
  */
- 
-var fs = require('fs'); 
+
+var fs = require('fs');
+var path = require('path'); 
+var os = require('os');
  
 var web = module.exports;
 
@@ -13,29 +15,41 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.1.12';
+web.version = 'v0.2.0-alpha';
 
-var logger = require('./logger');
+// 是否已载入所有模块
+var module_loaded = false;
+// 模块是否已初始化过
+var module_inited = false;
 
+/** 简单log记录函数 */
+web.log = function (title, msg, type) {
+	console.log('[' + type + '] ' + title + ' - ' + msg);
+}
 
-/**
- * 记录日志
- *
- * @param {string} source 来源
- * @param {string} msg 消息
- * @param {string} type 类型，可以为debug, info, error，默认为debug
- */
-web.log = logger.log;
+/** ServerInstance, ServerRequest, ServerResponse */
+var ServerInstance = web.ServerInstance = require('./ServerInstance').ServerInstance;
+var ServerRequest = web.ServerRequest = require('./ServerRequest').ServerRequest;
+var ServerResponse = web.ServerResponse = require('./ServerResponse').ServerResponse;
+ServerInstance.addListener = require('./ServerInstance').addListener;
+ServerRequest.addListener = require('./ServerRequest').addListener;
+ServerResponse.addListener = require('./ServerResponse').addListener;
 
-var path = require('path');
-var request = require('./request');
-var response = require('./response');
-var server = require('./server');
-var plus = require('./plus');
 
 /** 工具集 */
 web.util = {}
-web.util.md5 = require('md5');	// md5函数
+// md5函数
+web.util.md5 = require('md5');
+// EventProxy
+web.util.EventProxy = require('EventProxy.js').EventProxy;
+// 模板引擎
+web.util.mustache = require('mustache');
+
+/** Windows版本的Node不支持fs.watchFile() */
+if (/windows/i.test(os.type())) {
+	fs.watchFile = function (fn) { web.log('fs.watchFile()', fn, 'debug'); }
+	fs.unwatchFile = function (fn) { web.log('fs.unwatchFile()', fn, 'debug'); }
+}
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -46,12 +60,8 @@ web.util.md5 = require('md5');	// md5函数
  * @return {http.Server}
  */
 web.create = web.createHttp = function (port, hostname) {
-	// 设置默认配置
-	setDefaultConfig();
-	
-	// 如果还没有载入插件，则自动载入
-	if (plus_never_loaded)
-		web.loadPlus();
+	if (!module_inited)
+		web.init();
 		
 	// 创建http.Server
 	var http = require('http');
@@ -77,12 +87,8 @@ web.create = web.createHttp = function (port, hostname) {
  * @return {https.Server}
  */
 web.createHttps = function (options, port, hostname) {
-	// 设置默认配置
-	setDefaultConfig();
-	
-	// 如果还没有载入插件，则自动载入
-	if (plus_never_loaded)
-		web.loadPlus();
+	if (!module_inited)
+		web.init();
 		
 	// 创建https.Server	
 	var https = require('https');
@@ -101,11 +107,11 @@ web.createHttps = function (options, port, hostname) {
 
 /** request处理函数 */
 var requestHandle = function (req, _res) {
-	var req = new request.ServerRequest(req);
+	var req = new ServerRequest(req);
 	req.onready = function () {
 		// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
-		var res = new response.ServerResponse(_res);
-		var si = new server.ServerInstance(req, res);
+		var res = new ServerResponse(_res);
+		var si = new ServerInstance(req, res);
 				
 		// 用于在request, response, server中访问另外的对象
 		var _link = { request: req,	response: res,	server: si}
@@ -151,137 +157,48 @@ web.get = function (name) {
 	return web._config[name];
 }
 
-//--------------------------------------------------------------------------------------------------
 /**
- * 载入插件
+ * 载入配置文件
  *
- * @param {array} plus_dir 插件目录，可以为字符串或者字符串数组
+ * @param {string} filename 文件名
  */
-web.loadPlus = function (plus_dir) {
-	// 搜索插件
-	if (typeof plus_dir == 'string') {
-		plus.scan(plus_dir);
-	}
-	else if (plus_dir instanceof Array) {
-		for (var i in plus_dir)
-			plus.scan(plus_dir[i]);
-	}
-	// 载入插件
-	plus.load();
-	plus_never_loaded = false;
+web.loadConfig = function (filename) {
+	web.log('load config file', filename, 'info');
+	var conf = JSON.parse(fs.readFileSync(filename));
+	for (var i in conf)
+		web.set(i, conf[i]);
 }
 
+//--------------------------------------------------------------------------------------------------
 /**
- * 仅启用指定插件
+ * 初始化所有模块
  *
- * @param {array} p 插件名称数组
-*/
-web.enable = function (p) {
-	if (p instanceof Array)
-		plus._enable = p;
-	else {
-		plus._enable = [];
-		for (var i in arguments) {
-			console.log(arguments[i]);
-			plus._enable[i] = arguments[i];
+ */
+web.init = function () {
+	web.log('QuickWeb', 'init()', 'info');
+	// 载入模块，并配置
+	var ms = web.get('module sequence');
+	ms.forEach(function (n) {
+		var m = require('../module/' + n);
+		if (!module_loaded) {
+			web.log('load module', n, 'info');
+			m.init();
 		}
-	}
-}
-
-/**
- * 不启用指定插件
-*
-* @param {array} p 插件名称数组
-*/
-web.disable = function (p) {
-	if (p instanceof Array)
-		plus._disable = p;
-	else {
-		plus._disable = [];
-		for (var i in arguments) {
-			console.log(arguments[i]);
-			plus._disable[i] = arguments[i];
+		else {
+			if (web.get('enable ' + n))
+				m.enable();
+			else
+				m.disable();
+			module_inited = true;
 		}
-	}
+	});
+	module_loaded = true;
 }
 
 //--------------------------------------------------------------------------------------------------
-/**
- * 如果参数没有配置，则设置为默认
- *
- */
-var setDefaultConfig = function () {
-	// 检查是否禁止使用默认参数
-	var use_default_config = web.get('use_default_config'); 
-	if (typeof use_default_config != 'undefined' && use_default_config === false) {
-		web.log('disable default config', '', 'info');
-		return;
-	}
-	
-	// 网站跟目录 默认为 ./html
-	if (typeof web.get('home_path') == 'undefined')
-		web.set('home_path', './html');
-	// 路由处理程序目录 默认为 ./code
-	if (typeof web.get('code_path') == 'undefined')
-		web.set('code_path', './code');
-	// 模板目录 默认为 ./tpl
-	if (typeof web.get('template_path') == 'undefined')
-		web.set('template_path', './tpl');
-	// 如果存在 ./plus目录，则载入该目录里面的插件
-	try {
-		var dp = fs.readdirSync('./plus');
-		web.log('auto load plus', './plus', 'debug');
-		plus.scan('./plus');
-	}
-	catch (err) {
-		// web.log('no plus dir', err, 'error');
-	}
-	// 如果存在./app目录，则将该目录下的子目录作为app程序来注册
-	try {
-		var dp = fs.readdirSync('./app');
-		web.log('auto load app', './app', 'debug');
-		dp.forEach(function (v) {
-			try {
-				var a = './app/' + v;
-				var dpc = fs.readdirSync(a);
-				// 载入app
-				web.loadApp(a);
-			}
-			catch (err) {
-				// 不是子目录
-			}
-		});
-	}
-	catch (err) {
-		// 不存在app目录
-	}
-	
-	// 默认文件在缓存时间 1天
-	web.set('file_maxage', 86400);
-	
-	// 初始化file cache
-	web.file.init();
-}
-
-
-//--------------------------------------------------------------------------------------------------
-/**
- * 设置调试输出等级
- *
- * @param {int} level
- */
-web.setLoggerLevel = web.setLogLevel = function (level) {
-	logger.setLevel(level);
-	web.log = logger.log;
-}
-
-// 载入file cache模块
-var file = require('./file');
-// 载入app 模块
-var app = require('./app');
-
-// 初始化，自动载入../plus里面的默认插件
-plus.scan(path.resolve(__dirname, '../plus'));
-var plus_never_loaded = true;
-
+// 载入默认配置
+web.loadConfig(path.resolve(__dirname, '../config/default.json'));
+// 载入所有模块
+web.init();
+//
 web.log('QuickWeb',  web.version, 'info');

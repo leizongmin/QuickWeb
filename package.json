@@ -1,8 +1,8 @@
 {
    "name":			"QuickWeb",
    "main":			"./core/web.js",
-   "version":		"0.1.12",
-   "description":	"A quick web framework, plug-in management style, easy to extend. Now support cookie, session, RESTful url, file cache, render, upload, work with socket.io and multi-node, etc.",
+   "version":		"0.2.0",
+   "description":	"Easy to set up your Node.js web server environment.",
    "author": "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
    "repository": {
 		"type": "git",
@@ -12,6 +12,8 @@
 		"node": ">= 0.4.1"
 	},
 	"dependencies":	{
-		"formidable":	"*"
+		"formidable":		"*",
+		"mustache":			"*",
+		"EventProxy.js":	"*"
 	}
-} 
+}
