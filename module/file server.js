@@ -32,8 +32,11 @@ exports.disable = function () {
 var listener = function (server, request, response) {
 	try {
 		// 如果文件名以/..开头，则拒绝（安全问题）
-		if (request.filename.substr(0, 3) == '/..') {
-			response.sendError(500, 'Access denied');
+		if (request.filename.substr(0, 3) == '/..' ||
+			request.filename.substr(-2) == '..' ||
+			/\.\.\//.test(request.filename)
+		) {
+			response.sendError(403, 'Access denied');
 			web.logger.info('Access denied! request filename: ' + request.filename);
 			return;
 		}

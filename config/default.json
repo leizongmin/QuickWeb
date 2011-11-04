@@ -11,6 +11,8 @@
 	
 	"log level":			3,
 	
+	"charset":				"utf-8",
+	
 	"enable auto config":	true,
 	"enable file cache":	true,
 	"enable post data":		true,

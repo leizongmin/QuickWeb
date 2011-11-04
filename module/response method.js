@@ -102,6 +102,44 @@ var sendJSONIfAccepted = function (data, callback) {
 	}
 }
 
+/** HTTP状态码 */
+var httpStatusCode = {
+	'400':	'Bad Request',
+	'401':	'Unauthorized',
+	'402':	'Payment Required',
+	'403':	'Forbidden',
+	'404':	'Not Found',
+	'405':	'Method Not Allowed',
+	'406':	'Not Acceptable',
+	'407':	'Proxy Authentication Required',
+	'408':	'Request Timeout',
+	'409':	'Conflict',
+	'410':	'Gone',
+	'411':	'Length Required',
+	'412':	'Precondition Failed',
+	'413':	'Request Entity Too Large',
+	'414':	'Request-URI Too Long',
+	'415':	'Unsupported Media Type',
+	'416':	'Requested Range Not Satisfiable',
+	'417':	'Expectation Failed',
+	'421':	'There are too many connections from your internet address',
+	'422':	'Unprocessable Entity',
+	'424':	'Failed Dependency',
+	'425':	'Unordered Collection',
+	'426':	'Upgrade Required',
+	'449':	'Retry With',
+	'500':	'Internal Server Error',
+	'501':	'Not Implemented',
+	'502':	'Bad Gateway',
+	'503':	'Service Unavailable',
+	'504':	'Gateway Timeout',
+	'505':	'HTTP Version Not Supported',
+	'506':	'Variant Also Negotiate',
+	'507':	'Insufficient Storage',
+	'509':	'Bandwidth Limit Exceeded',
+	'510':	'Not Extended'
+}
+
 /**
  * 向客户端发送出错信息
  *
@@ -110,9 +148,12 @@ var sendJSONIfAccepted = function (data, callback) {
  */
 var sendError = function (code, msg) {
 	var self = this;
+	code = code ? code : 500;
+	msg = msg ? (msg.stack ? msg.stack : msg) :
+				httpStatusCode['' + code];
 	var view = {
-		status:		code ? code : 500,		// 出错代码
-		message:	msg ? (msg.stack ? msg.stack : msg) : 'Unknow Error',	// 出错信息
+		status:		code,	// 出错代码	
+		message:	msg,	// 出错信息
 		server:		'QuickWeb ' + web.version,	// 服务器版本
 		time:		new Date().toUTCString()	// 时间
 	}
@@ -129,9 +170,9 @@ var sendError = function (code, msg) {
 		});
 	}
 	else {
-		var html = '<h1>' + view.status + '</h1><h3><pre>' + view.message +
+		var html = '<body style="text-align: center;"><h1>' + view.status + '</h1><h3><pre>' + view.message +
 		'</pre></h3><hr>Power By <strong><a href="https://github.com/leizongmin/QuickWeb/issues" target="_blank">' +
-		view.server + '</a></strong> &nbsp; ' + view.time + '</div>';
+		view.server + '</a></strong> &nbsp; ' + view.time + '</div></body>';
 		this.end(html);
 	}
 }

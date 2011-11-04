@@ -27,8 +27,8 @@ server.ServerInstance = function (request, response) {
 	this._listener_i = 0;
 	
 	if (this._listener.length < 1) {
-		this.response.writeHead(500);
-		this.response.end('Server Error');
+		this.response.writeHead(501);
+		this.response.end('Not Implemented');
 		// debug('No server listener.');
 	}
 }
