@@ -161,7 +161,7 @@ getHandler = function (method, paths, index) {
 	// 测试符合条件的处理函数
 	if (isNaN(index) || index < 0)
 		index = 0;
-	web.logger.log('test router: ' + paths + '  ' + index);
+	// web.logger.log('test router: ' + paths + '  ' + index);
 	var handlers = web.router.handlers[method];
 	for (var i = index, r; r = handlers[i]; i++) {
 		var pv = r.path.exec(paths);
@@ -210,7 +210,7 @@ var removeHandler = function (method, paths) {
 		return false;
 	}
 	
-	// 查找指定正在文本
+	// 查找指定正则文本
 	var testpaths = paths + '$/';
 	if (testpaths.substr(0, 1) != '/')
 		testpaths = '/^/' + testpaths;

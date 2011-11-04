@@ -30,6 +30,11 @@ exports.disable = function () {
  
 /** ServerInstance监听函数 */
 var listener = function (server, request, response) {
+	// 仅支持GET方法
+	if (request.method != 'GET') {
+		server.next();
+		return;
+	}
 	try {
 		// 如果文件名以/..开头，则拒绝（安全问题）
 		if (request.filename.substr(0, 3) == '/..' ||

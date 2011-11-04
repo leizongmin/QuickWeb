@@ -117,6 +117,12 @@ var requestHandle = function (req, _res) {
 		var _link = { request: req,	response: res,	server: si}
 		req._link = res._link = si._link = _link;
 		
+		// 如果没有处理该请求，则返回501
+		si.onready = function () {
+			res.writeHead(501);
+			res.end('Not Implemented');
+		}
+		
 		// 调用ServerInstance处理链来处理本次请求
 		si.next();
 	}
