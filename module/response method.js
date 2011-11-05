@@ -43,6 +43,8 @@ exports.enable = function () {
 	web.ServerResponse.prototype.render = web.render.render;
 	// renderFile()
 	web.ServerResponse.prototype.renderFile = renderFile;
+	// pipe()
+	web.ServerResponse.prototype.pipe = pipe;
 }
 
 /** 关闭 */
@@ -63,6 +65,7 @@ exports.disable = function () {
 	web.ServerResponse.prototype.etag = noMethod('etag');
 	web.ServerResponse.prototype.render = noMethod('render');
 	web.ServerResponse.prototype.renderFile = noMethod('renderFile');
+	web.ServerResponse.prototype.pipe = noMethod('pipe');
 }
 
 
@@ -270,8 +273,9 @@ var setEtag = function (tag) {
  * @param {string} filename 文件名
  * @param {object} view 数据
  * @param {string} extname 渲染器，默认自动判断
+ * @param {bool} autoend 是否自动结束输出
  */
-var renderFile = function (filename, view, extname) {
+var renderFile = function (filename, view, extname, autoend) {
 	var self = this;
 	filename = web.file.resolve('template path', filename);
 	web.file.read(filename, function (err, data, realfilename) {
@@ -284,8 +288,81 @@ var renderFile = function (filename, view, extname) {
 			extname = path.extname(realfilename).substr(1);
 		var text = web.render.render(data.toString(), view, extname);
 		self.setHeader('Content-Type', web.mimetype.get(extname));
-		self.end(text);
+		if (autoend === false)
+			self.write(text);
+		else
+			self.end(text);
 	});
+}
+
+/**
+ * 初始化pipe
+ *
+ * @param {string} block 数据分块名称
+ */
+var pipe = function () {
+	this.pipe = new pipeObject(this, arguments);
+}
+
+/**
+ * pipe对象
+ */
+var pipeObject = function (response, blocks) {
+	var self = this;
+	this.response = response;	// response实例
+	this.blocks = {}				// 数据块名称，为false表示未输出
+	for (var i in blocks)
+		this.blocks[blocks[i]] = false;
+	this.outputblocks = blocks.length;	// 未输出的数据库数量
+	// 设置超时
+	var timeout = parseInt(web.get('response pipe timeout'));
+	if (isNaN(timeout) || timeout < 1)
+		web.logger.warn('"response pipe timeout" is not a number');
+	else
+		setTimeout(function () {
+			self.end('ERROR:Timeout');
+			if (typeof self.onTimeout == 'function')
+				self.onTimeout();
+		}, timeout);
+}
+
+/**
+ * 渲染文件
+ *
+ * @param {string} filename 文件名
+ * @param {object} view 视图
+ */
+pipeObject.prototype.render = function (filename, view) {
+	this.response.renderFile(filename, view, undefined, false);
+}
+
+/**
+ * 输出分块数据
+ *
+ * @param {string} block 分块名称
+ * @param {object} data 数据
+ */
+pipeObject.prototype.put = function (block, data) {
+	this.response.write('<script>pipe_' + block + '(' +
+		JSON.stringify(data) + ');</script>');
+	if (this.blocks[block] == false) {
+		this.blocks[block] = true;
+		this.outputblocks--;
+	}
+	// 如果已输出完所有数据库，则结束
+	if (this.outputblocks < 1)
+		this.end();
+}
+
+/**
+ * pipe输出结束
+ *
+ * @param {object} data 数据
+ */
+pipeObject.prototype.end = function (data) {
+	this.response.end('<script>pipe_end(' + JSON.stringify(data) + ');</script>');
+	if (typeof this.onEnd == 'function')
+		this.onEnd(data);
 }
 
 /**

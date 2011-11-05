@@ -43,6 +43,8 @@
 	"session recover":		60000,
 	"auto start session":	true,
 	
+	"response pipe timeout":	120000,	
+	
 	"auto listen":			true,
 	
 	"module sequence":	[
