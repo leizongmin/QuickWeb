@@ -21,8 +21,6 @@ exports.init = function () {
 	web.cookie.stringify = stringifyCookie;
 	// 验证etag方法
 	web.ServerRequest.prototype.etag = etag;
-	// auth认证
-	web.ServerRequest.prototype.auth = auth;
 }
 
 /** 开启 */
@@ -31,7 +29,7 @@ exports.enable = function () {
 	// 是否开启解析POST参数
 	if (web.get('enable post data'))
 		web.ServerRequest.addListener(decodePOST);
-	// 自动解析GET参数
+	// 自动解析GET参数 和 www-auth认证信息
 	web.ServerRequest.addListener(decodeGET);
 	// 是否开启解析Cookie
 	if (web.get('enable cookie'))
@@ -45,13 +43,25 @@ exports.disable = function () {
 
 
 /**
- * 解析GET参数
+ * 解析GET参数 和 www-auth认证信息
  */
 var decodeGET = function (request) {
+	// 解析GET参数
 	var v = url.parse(request.url, true);
 	request.get = v.query || {};				// 问号后面的参数
 	request.filename = v.pathname || '/';		// 文件名
 		
+	// www-auth认证信息
+	var authorization = request.headers['authorization'];
+	if (typeof authorization == 'string') {
+		var auth = request.auth = {}
+		authorization = authorization.trim();
+		var i = authorization.indexOf(' ');
+		auth.method = authorization.substr(0, i).toLowerCase();	// auth方法
+		auth.string = authorization.substr(i + 1);				// 字符串
+	}
+	
+	// 通知下一个监听器
 	request.next();
 }
 
@@ -167,34 +177,4 @@ var etag = function (tag, isNotMatch, isMatch) {
 		if (typeof isMatch == 'function') 
 			isMatch();
 	}
-}
-
-/**
- * http auth认证
- *
- * @param {function} callback 回调函数  function (user, password, fail)
- */
-var auth = function (callback) {
-	var self = this;
-	var authorization = this.headers['authorization'];
-	if (typeof authorization != 'string') {
-		authFail(this._link.response);
-		return;
-	}
-	authorization = authorization.trim();
-	var i = authorization.indexOf(' ');
-	var base64 = authorization.substr(i + 1).trim();
-	var b = new Buffer(base64, 'base64').toString();
-	i = b.indexOf(':');
-	var user = b.substr(0, i);
-	var password = b.substr(i + 1);
-	callback(user, password, function () { authFail(self._link.response); });
-}
-
-/**
- * http auth认证失败
- */
-var authFail = function (response) {
-	response.writeHead(401, {'WWW-Authenticate': 'Basic realm="."'});
-	response.end();
 }

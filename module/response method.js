@@ -45,6 +45,8 @@ exports.enable = function () {
 	web.ServerResponse.prototype.renderFile = renderFile;
 	// pipe()
 	web.ServerResponse.prototype.pipe = pipe;
+	// authFail
+	web.ServerResponse.prototype.authFail = authFail;
 }
 
 /** 关闭 */
@@ -66,6 +68,7 @@ exports.disable = function () {
 	web.ServerResponse.prototype.render = noMethod('render');
 	web.ServerResponse.prototype.renderFile = noMethod('renderFile');
 	web.ServerResponse.prototype.pipe = noMethod('pipe');
+	web.ServerResponse.prototype.authFail = noMethod('authFail');
 }
 
 
@@ -363,6 +366,14 @@ pipeObject.prototype.end = function (data) {
 	this.response.end('<script>pipe_end(' + JSON.stringify(data) + ');</script>');
 	if (typeof this.onEnd == 'function')
 		this.onEnd(data);
+}
+
+/**
+ * http auth认证失败
+ */
+var authFail = function () {
+	this.writeHead(401, {'WWW-Authenticate': 'Basic realm="."'});
+	this.end();
 }
 
 /**
