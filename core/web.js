@@ -39,7 +39,7 @@ ServerResponse.addListener = require('./ServerResponse').addListener;
 /** 工具集 */
 web.util = {}
 // md5函数
-web.util.md5 = require('md5');
+web.util.md5 = require('../module/md5');
 // EventProxy
 web.util.EventProxy = require('EventProxy.js').EventProxy;
 // 模板引擎
