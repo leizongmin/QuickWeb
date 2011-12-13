@@ -15,7 +15,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.2.1-pre';
+web.version = 'v0.2.1-build-20111213';
 
 // 是否已载入所有模块
 var module_loaded = false;
@@ -47,8 +47,8 @@ web.util.mustache = require('mustache');
 
 /** Windows版本的Node不支持fs.watchFile() */
 if (/windows/i.test(os.type())) {
-	fs.watchFile = function (fn) { web.log('fs.watchFile()', fn, 'debug'); }
-	fs.unwatchFile = function (fn) { web.log('fs.unwatchFile()', fn, 'debug'); }
+	fs.watchFile = function (fn) { web.log('Node.js for Windows not support fs.watchFile()', fn, 'warn'); }
+	fs.unwatchFile = function (fn) { web.log('Node.js for Windows not support fs.unwatchFile()', fn, 'warn'); }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ web.init = function () {
 	// 载入模块，并配置
 	var ms = web.get('module sequence');
 	ms.forEach(function (n) {
-		var m = require('../module/' + n);
+		var m = require('../module/' + n.replace(/ /ig, '_'));
 		if (!module_loaded) {
 			web.log('load module', n, 'info');
 			m.init();

@@ -1,7 +1,7 @@
 {
    "name":			"QuickWeb",
    "main":			"./core/web.js",
-   "version":		"0.2.0",
+   "version":		"0.2.1",
    "description":	"Easy to set up your Node.js web server environment.",
    "author": "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
    "repository": {
