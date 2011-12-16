@@ -7,6 +7,7 @@
  
 var formidable = require('formidable');
 var path = require('path');
+var fs = require('fs');
 var url = require('url'); 
 var web = global.QuickWeb;
 
@@ -73,21 +74,32 @@ var decodePOST = function (request) {
 		
 	/* 仅解析POST和PUT请求方法 */
 	if (method == 'post' || method == 'put') {
-		var form = new formidable.IncomingForm();
-			
-		// 设置临时目录
-		var tmp_path = web.get('tmp_path');
-		if (typeof tmp_path == 'string')
-			form.uploadDir = tmp_path;
-			
-		// 开始解析
-		form.parse(request.origin, function (err, fields, files) {
-			request.post = fields;
-			request.file = files;
-				
-			// 通知下一个监听器
-			request.next();
-		});
+		var tmp_path = web.get('temp path');
+		if (typeof tmp_path != 'string')
+			tmp_path = '/tmp';
+		
+		// 如果是application/octet-stream类型的上传文件，则不使用formidable解析
+		if (request.headers['content-type'].match(/octet-stream/i)) {
+			saveOctetStream(request.origin, tmp_path, function (file) {
+				request.post = {};
+				request.file = {stream: file};
+				// 通知下一个监听器
+				request.next();
+				//console.log(request.file);
+			});
+		}
+		else {
+			var form = new formidable.IncomingForm();
+			// 设置临时目录
+			form.uploadDir = tmp_path;			
+			// 开始解析
+			form.parse(request.origin, function (err, fields, files) {
+				request.post = fields;
+				request.file = files;	
+				// 通知下一个监听器
+				request.next();
+			});
+		}
 	}
 	else {
 		// 通知下一个监听器
@@ -177,4 +189,31 @@ var etag = function (tag, isNotMatch, isMatch) {
 		if (typeof isMatch == 'function') 
 			isMatch();
 	}
+}
+
+/**
+ * 保存上传的字节流
+ *
+ * @param {ServerRequest} request request实例
+ * @param {string} tmp_path 临时目录
+ * @param {function} callback 回调函数 function (file)
+ */
+var saveOctetStream = function (request, tmp_path, callback) {
+	var filename = path.resolve(tmp_path, web.util.md5(new Date().getTime() + '' + Math.random()));
+	var stream = fs.createWriteStream(filename);
+	var length = 0;
+	request.on('data', function (data) {
+		stream.write(data);
+		length += data.length;
+	});
+	request.on('end', function () {
+		stream.end();
+		callback({
+			size:	length,
+			path:	filename,
+			name:	'stream',
+			type:	'application/octet-stream',
+			lastModifiedDate:	null
+		});
+	});
 }
