@@ -18,6 +18,10 @@ exports.init = function () {
 	web.session.session = {}
 	// SessionObject对象
 	web.session.SessionObject = SessionObject;
+}
+
+/** 开启 */
+exports.enable = function () {
 	// SESSION标识符
 	var SESSION_TAG = web.get('session tag');
 	if (typeof SESSION_TAG != 'string')
@@ -28,10 +32,6 @@ exports.init = function () {
 	if (isNaN(maxage) || maxage < 0)
 		maxage = 1200;
 	web.session.maxage = maxage;
-}
-
-/** 开启 */
-exports.enable = function () {
 	// 注册自定义的Session
 	web.session.on = customSession;
 	// 开始Session
