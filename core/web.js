@@ -123,8 +123,13 @@ var requestHandle = function (req, _res) {
 			res.end('Not Implemented');
 		}
 		
+		// 如果使用了兼容express的中间件
+		if (have_use_middleware)
+			new MiddleWare(MIDDLEWARES, req, res, si).next();
+			
 		// 调用ServerInstance处理链来处理本次请求
-		si.next();
+		else 
+			si.next();
 	}
 	// 初始化ServerRequest
 	req.init();
@@ -173,6 +178,51 @@ web.loadConfig = function (filename) {
 	var conf = JSON.parse(fs.readFileSync(filename));
 	for (var i in conf)
 		web.set(i, conf[i]);
+}
+
+//--------------------------------------------------------------------------------------------------
+/**
+ * 兼容express.use()中间件
+ *
+ * @param {function} hanler 处理函数
+ */
+var have_use_middleware = false;
+var MIDDLEWARES = [];
+web.use = function (hanler) {
+	have_use_middleware = true;
+	MIDDLEWARES.push(hanler);
+}
+
+/**
+ * 兼容express中间件
+ *
+ * @param {array} MW 中间件列表
+ * @param {ServerRequest} req 
+ * @param {ServerResponse} res
+ * @param {ServerInstance} si
+ */
+var MiddleWare = function (MW, req, res, si) {
+	this.request = req;
+	this.response = res;
+	this.server = si;
+	this.middlewares = MW;
+	this.index = 0;
+}
+
+/**
+ * 执行下一个中间件
+ */
+MiddleWare.prototype.next = function () {
+	var self = this;
+	var handler = this.middlewares[this.index];
+	if (typeof handler == 'function') {
+		this.index++;
+		handler(this.request, this.response, function () {
+			self.next();
+		});
+	}
+	else
+		this.server.next();
 }
 
 //--------------------------------------------------------------------------------------------------
