@@ -52,9 +52,18 @@ var initLoadFile = function (filename) {
 	if (path.existsSync(filename)) {
 		web.logger.info('load init code: ' + filename);
 		require(filename);
+		watchCodeFile(filename);
 	}
 	else {
 		web.logger.info('no init code: ' + filename);
 	}
 }
 
+/** 监视程序文件，一有修改自动重新加载 */
+var watchCodeFile = function (filename) {
+	fs.watchFile(filename, function () {
+		delete require.cache[filename];
+		web.logger.info('reload init code: ' + filename);
+		require(filename);
+	});
+}
