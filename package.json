@@ -15,5 +15,8 @@
 		"formidable":		"*",
 		"mustache":			"*",
 		"EventProxy.js":	"*"
+	},
+	"bin": {
+		"quickweb":			"./bin/quickweb.js"
 	}
 }
