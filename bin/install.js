@@ -20,6 +20,7 @@ if (/Windows/ig.test(os_type)) {
 		err = fs.writeFileSync(binname, cmdscript);
 	}
 	catch (err) {
+		console.log('======================================================');
 		console.log('Please copy the file "quickweb.cmd" to Windows system directory.\nRun this command:\ncopy ' + filename + ' ' + binname);
 	}
 }
@@ -28,13 +29,14 @@ else {
 	try {
 		var filename = path.resolve(__dirname, 'quickweb.js');
 		var binname = '/usr/bin/quickweb';
-		var cmdscript = 'node ' + filename;
+		var cmdscript = filename;
 		var err = fs.writeFileSync('quickweb', cmdscript);
 		err = fs.writeFileSync(binname, cmdscript);
 		err = fs.chmodSync(binname, 777);
 	}
 	catch (err) {
+		console.log('======================================================');
 		console.log('Please run this command to finish install QuickWeb:\n' +
-					'cp -f quickweb ' + binname + '\nchmod ' + binname + ' 777');
+					'cp -f quickweb ' + binname + '\nchmod 777 ' + binname);
 	}
 }
