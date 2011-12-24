@@ -7,6 +7,9 @@
  * @version 0.2.0
  */
  
+// QuickWeb模块路径
+var module_quickweb = '../core/web.js'; 
+
 var fs = require('fs'); 
 //-----------------------------------------------------------------------------------
 var cmd = '' + process.argv[2];
@@ -44,7 +47,7 @@ if (typeof wd == 'string')
 	process.chdir(wd);
  
 // 载入QuickWeb 
-var web = require('quickweb');
+var web = require(module_quickweb);
 web.init();
 web.init.load();
 
