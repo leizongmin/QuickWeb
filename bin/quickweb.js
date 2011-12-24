@@ -44,7 +44,7 @@ if (typeof wd == 'string')
 	process.chdir(wd);
  
 // 载入QuickWeb 
-var web = require('QuickWeb');
+var web = require('quickweb');
 web.init();
 web.init.load();
 

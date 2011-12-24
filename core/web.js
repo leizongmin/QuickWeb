@@ -15,7 +15,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.2.1-b111224';
+web.version = 'v0.2.2-b111224';
 
 // 是否已载入所有模块
 var module_loaded = false;
