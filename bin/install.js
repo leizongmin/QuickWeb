@@ -28,7 +28,7 @@ if (/Windows/ig.test(os_type)) {
 }
 // 为Linux系统，将quickweb.js链接到/usr/bin目录
 else {
-	var filename = path.resolve(__dirname, 'quickweb.js');
+	var filename = path.resolve(__dirname, 'quickweb');
 	var binname = '/usr/bin/quickweb';
 	var cmd1 = 'ln -s -f ' + filename + ' /usr/bin';
 	var cmd2 = 'chmod 777 ' + binname;
