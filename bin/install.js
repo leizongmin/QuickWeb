@@ -29,7 +29,7 @@ if (/Windows/ig.test(os_type)) {
 else {
 	var filename = path.resolve(__dirname, 'quickweb.js');
 	var binname = '/usr/bin/quickweb';
-	var cmd = 'ln -s -f ' + filename + ' /usr/bin && chmod 777 ' + binname;
+	var cmd = 'ln -s -f ' + filename + ' /usr/bin\nchmod 777 ' + binname;
 	console.log(cmd);
 	try {
 		exec(cmd, function (error, stdout, stderr) {
