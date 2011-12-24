@@ -17,7 +17,7 @@
 		"EventProxy.js":	"*"
 	},
 	"bin": {
-		"quickweb":			"./bin/quickweb.js"
+		"quickweb":			"./bin/quickweb"
 	},
 	"scripts": {
 		"install":			"node ./bin/install.js",
