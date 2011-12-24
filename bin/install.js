@@ -14,21 +14,24 @@ var os_type = os.type();
 if (/Windows/ig.test(os_type)) {
 	try {
 		var filename = path.resolve(__dirname, 'quickweb.js');
+		var binname = 'C:\\Windows\quickweb.cmd';
 		var cmdscript = 'node ' + filename;
 		var err = fs.writeFileSync('quickweb.cmd', cmdscript);
-		err = fs.writeFileSync('C:\\Windows\quickweb.cmd', cmdscript);
+		err = fs.writeFileSync(binname, cmdscript);
 	}
 	catch (err) {
-		console.log('Please copy the file "quickweb.cmd" to Windows system directory.\nRun this command:\ncopy ' + filename + ' C:\\Windows');
+		console.log('Please copy the file "quickweb.cmd" to Windows system directory.\nRun this command:\ncopy ' + filename + ' ' + binname);
 	}
 }
 // 为Linux系统，将quickweb.js链接到/usr/bin目录
 else {
 	try {
 		var filename = path.resolve(__dirname, 'quickweb.js');
-		var err = fs.linkSync(filename, '/usr/bin/quickweb');
+		var binname = '/usr/bin/quickweb';
+		var err = fs.linkSync(filename, binname);
+		err = fs.chmodSync(binname, 777);
 	}
 	catch (err) {
-		console.log('Please run this command to finish install QuickWeb:\nlink ' + filename + ' /usr/bin/quickweb');
+		console.log('Please run this command to finish install QuickWeb:\nlink -s ' + filename + ' ' + binname);
 	}
 }
