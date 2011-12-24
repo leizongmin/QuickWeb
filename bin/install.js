@@ -28,10 +28,13 @@ else {
 	try {
 		var filename = path.resolve(__dirname, 'quickweb.js');
 		var binname = '/usr/bin/quickweb';
-		var err = fs.linkSync(filename, binname);
+		var cmdscript = 'node ' + filename;
+		var err = fs.writeFileSync('quickweb', cmdscript);
+		err = fs.writeFileSync(binname, cmdscript);
 		err = fs.chmodSync(binname, 777);
 	}
 	catch (err) {
-		console.log('Please run this command to finish install QuickWeb:\nlink -s ' + filename + ' ' + binname);
+		console.log('Please run this command to finish install QuickWeb:\n' +
+					'cp -f quickweb ' + binname + '\nchmod ' + binname + ' 777');
 	}
 }

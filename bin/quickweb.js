@@ -8,7 +8,7 @@
  */
  
 // QuickWeb模块路径
-var module_quickweb = '../core/web.js'; 
+var module_quickweb = 'quickweb'; 
 
 var fs = require('fs'); 
 //-----------------------------------------------------------------------------------
