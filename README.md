@@ -9,7 +9,7 @@
 安装QuickWeb
 ----------------------------
 
-	**npm install quickweb**
+	npm install quickweb
 	
 	
 开始使用
