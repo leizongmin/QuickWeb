@@ -29,8 +29,8 @@ if (cmd == '-init' || cmd == '--init') {
 	process.exit();
 }
 // 帮助
-if (cmd == '-help' || cmd == '--help' || cmd == '?' || cmd == '/?') {
-	console.log('[Usage]\n');
+if (cmd == '-h' || cmd == '--h' || cmd == '-help' || cmd == '--help' || cmd == '?' || cmd == '/?' || cmd == '-?' || cmd == '--?') {
+	console.log('[QuickWeb Usage]\n');
 	console.log('  quickweb -init         create directory structure');
 	console.log('  quickweb -help         get help');
 	console.log('  quickweb [directory]   run QuickWeb application in the specified directory');
