@@ -15,12 +15,13 @@ var exec = require('child_process').exec;
 if (/Windows/ig.test(os_type)) {
 	try {
 		var filename = path.resolve(__dirname, 'quickweb.js');
-		var binname = 'C:\\Windows\quickweb.cmd';
+		var binname = 'C:\\Windows\\quickweb.cmd';
 		var cmdscript = 'node ' + filename;
 		var err = fs.writeFileSync('quickweb.cmd', cmdscript);
 		err = fs.writeFileSync(binname, cmdscript);
 	}
 	catch (err) {
+		console.log(err.stack);
 		console.log('======================================================');
 		console.log('Please copy the file "quickweb.cmd" to Windows system directory.\nRun this command:\ncopy ' + filename + ' ' + binname);
 	}
@@ -29,15 +30,25 @@ if (/Windows/ig.test(os_type)) {
 else {
 	var filename = path.resolve(__dirname, 'quickweb.js');
 	var binname = '/usr/bin/quickweb';
-	var cmd = 'ln -s -f ' + filename + ' /usr/bin\nchmod 777 ' + binname;
-	console.log(cmd);
+	var cmd1 = 'ln -s -f ' + filename + ' /usr/bin';
+	var cmd2 = 'chmod 777 ' + binname;
+	console.log(cmd1 + '\n' + cmd2);
 	try {
-		exec(cmd, function (error, stdout, stderr) {
-			throw Error(error);
+		exec(cmd1, function (error, stdout, stderr) {
+			if (error)
+				console.log(error.stack);
+			exec(cmd2, function (error, stdout, stderr) {
+				if (error) {
+					console.log(error.stack);
+					console.log('======================================================');
+					console.log('Please run this command to finish install QuickWeb:\n' + cmd1 + '\n' + cmd2);
+				}
+			});
 		});
 	}
 	catch (err) {
+		console.log(err.stack);
 		console.log('======================================================');
-		console.log('Please run this command to finish install QuickWeb:\n' + cmd);
+		console.log('Please run this command to finish install QuickWeb:\n' + cmd1 + '\n' + cmd2);
 	}
 }
