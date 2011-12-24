@@ -14,9 +14,9 @@ var exec = require('child_process').exec;
 // 如果为Windows系统，则创建quickweb.cmd文件
 if (/Windows/ig.test(os_type)) {
 	try {
-		var filename = path.resolve(__dirname, 'quickweb.js');
+		var filename = path.resolve(__dirname, 'quickweb');
 		var binname = 'C:\\Windows\\quickweb.cmd';
-		var cmdscript = 'node ' + filename;
+		var cmdscript = 'node ' + filename + ' %1';
 		var err = fs.writeFileSync('quickweb.cmd', cmdscript);
 		err = fs.writeFileSync(binname, cmdscript);
 	}
