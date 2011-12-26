@@ -25,3 +25,12 @@
 	
 	方法二：**quickweb [应用目录]**
 	
+	
+性能测试
+----------------------------
+
+![1](http://github.com/leizongmin/quickweb-pftest/raw/master/1/result.png)
+
+![2](http://github.com/leizongmin/quickweb-pftest/raw/master/2/result.png)
+
+![3](http://github.com/leizongmin/quickweb-pftest/raw/master/3/result.png)
