@@ -66,13 +66,9 @@ var addRender = function (extname, handler) {
  */
 var renderText = function (text, view, extname) {
 	try {
-		if (typeof extname != 'string' || extname == '')
-			extname = '*';
-		else
-			extname = extname.toLowerCase();
-		var h = web.render.renders[extname];
-		if (!h)
-			h = mustache.to_html;
+		var h = web.render.renders[extname.toLowerCase()];
+		if (typeof h != 'function')
+			h = web.render.renders['*'] || mustache.to_html;
 		return h(text, view);
 	}
 	catch (err) {

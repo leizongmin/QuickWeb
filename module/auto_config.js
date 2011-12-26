@@ -84,9 +84,34 @@ var loadCustomRender = function (cp) {
 		var data = fs.readFileSync(f);
 		var json = JSON.parse(data);
 		for (var i in json) {
-			var r = require(json[i]);
+			// 判断是模块名还是文件名
+			switch (json[i].charAt(0)) {
+				case '.':
+				case '/':
+					var r = require(path.resolve(__dirname, '..', json[i]));
+					break;
+				default:
+					var r = require(json[i]);
+			}
+			// 如果是函数，则直接作为渲染函数
 			if (typeof r == 'function')
 				web.render.add(i, r);
+			// 如果是对象，则检查是否有to_html函数或者compile函数、render函数
+			else if (typeof r == 'object') {
+				// Mustache模板的to_html()
+				if (typeof r.to_html == 'function')
+					web.render.add(i, r.to_html);
+				// jade模板的render函数
+				else if (typeof r.render == 'function')
+					web.render.add(i, r.render);
+				// jade模板的compile函数
+				else if (typeof r.compile == 'function')
+					web.render.add(i, function (text, data) {
+						return r.compile(text)(data);
+					});
+				else
+					web.logger.warn(f + ' don\'t export a to_html/compile/render function');
+			}
 			else
 				web.logger.warn(f + ' don\'t export a function');
 		}
