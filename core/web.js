@@ -16,7 +16,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.2.2-b111226';
+web.version = 'v0.2.2-b111227';
 
 // 是否已载入所有模块
 var module_loaded = false;
@@ -48,10 +48,13 @@ web.util.EventProxy = require('EventProxy.js').EventProxy;
 // 模板引擎
 web.util.mustache = require('mustache');
 
-/** Windows版本的Node不支持fs.watchFile() */
+/** Windows版本的Node不支持fs.watchFile()，使用自己写的文件监视模块 */
 if (/windows/i.test(os.type())) {
-	fs.watchFile = function (fn) { web.log('Node.js for Windows not support fs.watchFile()', fn, 'warn'); }
-	fs.unwatchFile = function (fn) { web.log('Node.js for Windows not support fs.unwatchFile()', fn, 'warn'); }
+	//fs.watchFile = function (fn) { web.log('Node.js for Windows not support fs.watchFile()', fn, 'warn'); }
+	//fs.unwatchFile = function (fn) { web.log('Node.js for Windows not support fs.unwatchFile()', fn, 'warn'); }
+	var fs_watchFile = require('./fs_watchFile');
+	fs.watchFile = fs_watchFile.watchFile;
+	fs.unwatchFile = fs_watchFile.unwatchFile;
 }
 
 //--------------------------------------------------------------------------------------------------
