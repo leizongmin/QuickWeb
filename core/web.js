@@ -120,6 +120,7 @@ var requestHandle = function (req, _res) {
 	}
 	
 	var req = new ServerRequest(req);
+	/*
 	req.onready = function () {
 		// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
 		var res = new ServerResponse(_res);
@@ -143,8 +144,48 @@ var requestHandle = function (req, _res) {
 		else 
 			si.next();
 	}
+	*/
+	var _onready = new reqOnReady(req, _res);
+	req.onready = function () {
+		_onready.ready();
+	}
+	
 	// 初始化ServerRequest
 	req.init();
+}
+
+/**
+ * req.onready() 函数，为了避免创建匿名函数
+ */
+var reqOnReady = function (req, _res) {
+	this.req = req;
+	this._res = _res;
+}
+reqOnReady.prototype.ready = function () {
+	var req = this.req;
+	var _res = this._res;
+	
+	// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
+	var res = new ServerResponse(_res);
+	var si = new ServerInstance(req, res);
+				
+	// 用于在request, response, server中访问另外的对象
+	var _link = { request: req,	response: res,	server: si}
+	req._link = res._link = si._link = _link;
+	
+	// 如果没有处理该请求，则返回501
+	si.onready = function () {
+		res.writeHead(501);
+		res.end('Not Implemented');
+	}
+	
+	// 如果使用了兼容express的中间件
+	if (have_use_middleware)
+		new MiddleWare(MIDDLEWARES, req, res, si).next();
+		
+	// 调用ServerInstance处理链来处理本次请求
+	else 
+		si.next();
 }
 
 //--------------------------------------------------------------------------------------------------
