@@ -8,6 +8,7 @@
 var fs = require('fs');
 var path = require('path'); 
 var os = require('os');
+var crypto = require('crypto');
  
 var web = module.exports;
 
@@ -39,7 +40,9 @@ ServerResponse.addListener = require('./ServerResponse').addListener;
 /** 工具集 */
 web.util = {}
 // md5函数
-web.util.md5 = require('../module/md5');
+web.util.md5 = function (text) {
+	return crypto.createHash('md5').update(text).digest('hex');
+}
 // EventProxy
 web.util.EventProxy = require('EventProxy.js').EventProxy;
 // 模板引擎
