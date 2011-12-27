@@ -80,7 +80,7 @@ var checkUpdate = function (filename) {
 			}
 			else if (f.stats.mtime.getTime() < stats.mtime.getTime()) {
 				f.callback(stats, f.stats);
-				debug(f.stats.mtime, stats.mtime);
+				//debug(f.stats.mtime, stats.mtime);
 				f.stats = stats;
 			}
 		});

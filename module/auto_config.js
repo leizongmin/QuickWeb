@@ -31,17 +31,17 @@ exports.enable = function () {
 	}
 	
 	// 加载config.json
-	loadCustomConfig(cp);
+	loadCustomConfig(cp, true);
 	// 加载debug.json
-	loadCustomDebug(cp);
+	loadCustomDebug(cp, true);
 	// 加载mimetype.json
-	loadCustomMimetype(cp);
+	loadCustomMimetype(cp, true);
 	// 加载render.json
-	loadCustomRender(cp);
+	loadCustomRender(cp, true);
 	// 加载link.json
-	loadCustomLink(cp);
+	loadCustomLink(cp, true);
 	// 加载error page
-	loadCustomErrorPage(cp);
+	loadCustomErrorPage(true);
 }
 
 /** 关闭 */
@@ -50,23 +50,23 @@ exports.disable = function () {
 }
 
 
-var loadCustomConfig = function (cp) {
+var loadCustomConfig = function (cp, auto_update) {
 	var f = path.resolve(cp, 'config.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
-		web.loadConfig(f);
+		web.loadConfig(f, auto_update);
 	}
 }
 
-var loadCustomDebug = function (cp) {
+var loadCustomDebug = function (cp, auto_update) {
 	var f = path.resolve(cp, 'debug.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
-		web.loadConfig(f);
+		web.loadConfig(f, auto_update);
 	}
 }
 
-var loadCustomMimetype = function (cp) {
+var loadCustomMimetype = function (cp, auto_update) {
 	var f = path.resolve(cp, 'mimetype.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
@@ -74,10 +74,22 @@ var loadCustomMimetype = function (cp) {
 		var json = JSON.parse(data);
 		for (var i in json)
 			web.mimetype.set(i, json[i]);
+			
+		// 自动更新
+		if (auto_update === true) {
+			fs.watchFile(f, function () {
+				try {
+					loadCustomMimetype(cp, false);
+				}
+				catch (err) {
+					web.logger.error(err);
+				}
+			});
+		}
 	}
 }
 
-var loadCustomRender = function (cp) {
+var loadCustomRender = function (cp, auto_update) {
 	var f = path.resolve(cp, 'render.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
@@ -115,10 +127,22 @@ var loadCustomRender = function (cp) {
 			else
 				web.logger.warn(f + ' don\'t export a function');
 		}
+		
+		// 自动更新
+		if (auto_update === true) {
+			fs.watchFile(f, function () {
+				try {
+					loadCustomRender(cp, false);
+				}
+				catch (err) {
+					web.logger.error(err);
+				}
+			});
+		}
 	}
 }
 
-var loadCustomLink = function (cp) {
+var loadCustomLink = function (cp, auto_update) {
 	var f = path.resolve(cp, 'link.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
@@ -128,10 +152,22 @@ var loadCustomLink = function (cp) {
 			for (var j in json[i])
 				web.file.link(i, j, json[i][j]);
 		}
+		
+		// 自动更新
+		if (auto_update === true) {
+			fs.watchFile(f, function () {
+				try {
+					loadCustomLink(cp, false);
+				}
+				catch (err) {
+					web.logger.error(err);
+				}
+			});
+		}
 	}
 }
 
-var loadCustomErrorPage = function () {
+var loadCustomErrorPage = function (auto_update) {
 	var p = web.get('error page path');
 	p = path.resolve(p);
 	if (path.existsSync(p)) {

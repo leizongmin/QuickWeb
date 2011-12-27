@@ -178,12 +178,24 @@ web.get = function (name) {
  * 载入配置文件
  *
  * @param {string} filename 文件名
+ * @param {bool} auto_update 当文件被修改时，是否自动更新，默认否
  */
-web.loadConfig = function (filename) {
+web.loadConfig = function (filename, auto_update) {
 	web.log('load config file', filename, 'info');
 	var conf = JSON.parse(fs.readFileSync(filename));
 	for (var i in conf)
 		web.set(i, conf[i]);
+	// 文件是否自动更新
+	if (auto_update === true) {
+		fs.watchFile(filename, function () {
+			try {
+				web.loadConfig(filename, false);
+			}
+			catch (err) {
+				web.log('Auto update config', err.stack, 'error');
+			}
+		});
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
