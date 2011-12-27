@@ -38,7 +38,7 @@
 	"http cache maxage html":	0,
 	"http big file minsize":	1048576,
 	
-	"session tag":			"SESSIONID",
+	"session tag":			"_SID",
 	"session maxage":		1200,
 	"session recover":		60000,
 	"auto start session":	true,

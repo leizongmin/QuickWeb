@@ -65,6 +65,8 @@ var addRender = function (extname, handler) {
  * @return {string}
  */
 var renderText = function (text, view, extname) {
+	if (!extname)
+		extname = '*';
 	try {
 		var h = web.render.renders[extname.toLowerCase()];
 		if (typeof h != 'function')
