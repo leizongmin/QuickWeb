@@ -35,64 +35,114 @@ if (cmd == '-h' || cmd == '--h' || cmd == '-help' || cmd == '--help' || cmd == '
 	console.log('  quickweb -help         get help');
 	console.log('  quickweb [directory]   run QuickWeb application in the specified directory');
 	console.log('  quickweb               run QuickWeb application in the current directory');
+	console.log('\ncluster support:');
+	console.log('  quickweb -cluster [directory]   run multi QuickWeb application instance');
+	console.log('  quickweb -cluster               run multi QuickWeb application instance');
 	console.log('');
 	console.log('For more information, please visit http://github.com/leizongmin/QuickWeb');
 	process.exit();
 }
 
 //-----------------------------------------------------------------------------------
-// 改变工作目录
-var wd = process.argv[2];
-if (typeof wd == 'string')
-	process.chdir(wd);
- 
-// 载入QuickWeb 
-var web = require(module_quickweb);
-web.init();
-web.init.load();
+var startQuickWeb = function () {
+	// 改变工作目录
+	if (typeof wd == 'string')
+		process.chdir(wd);
 
-// 自动监听端口
-if (web.get('auto listen')) {
-	var listenHttp = web.get('listen http');
-	var listenHttps = web.get('listen https');
-	if (typeof web.server == 'undefined')
-		web.server = {}
-	if (typeof web.server.http == 'undefined')
-		web.server.http = {}
-	if (typeof web.server.https == 'undefined')
-		web.server.https = {}
+	// 载入QuickWeb 
+	var web = require(module_quickweb);
+	web.init();
+	web.init.load();
+
+	// 自动监听端口
+	if (web.get('auto listen')) {
+		var listenHttp = web.get('listen http');
+		var listenHttps = web.get('listen https');
+		if (typeof web.server == 'undefined')
+			web.server = {}
+		if (typeof web.server.http == 'undefined')
+			web.server.http = {}
+		if (typeof web.server.https == 'undefined')
+			web.server.https = {}
+			
+		// 自动监听HTTP端口，如果没指定，则默认开启80端口
+		if (typeof listenHttp == 'undefined') {
+			web.server.http.default = web.createHttp();
+		}
+		else {
+			for (var i in listenHttp) {
+				var h = listenHttp[i];
+				web.server.http[h.name] = web.createHttp(h.port, h.ip);
+			}
+		}
 		
-	// 自动监听HTTP端口，如果没指定，则默认开启80端口
-	if (typeof listenHttp == 'undefined') {
-		web.server.http.default = web.createHttp();
-	}
-	else {
-		for (var i in listenHttp) {
-			var h = listenHttp[i];
-			web.server.http[h.name] = web.createHttp(h.port, h.ip);
+		// 自动监听HTTPS端口
+		if (typeof listenHttps != 'undefined') {
+			for (var i in listenHttps) {
+				var h = listenHttps[i];
+				web.server.https[h.name] = web.createHttps({
+					key: 	fs.readFileSync(h.key),
+					cert:	fs.readFileSync(h.cert)}, h.port, h.ip);
+			}
 		}
 	}
-	
-	// 自动监听HTTPS端口
-	if (typeof listenHttps != 'undefined') {
-		for (var i in listenHttps) {
-			var h = listenHttps[i];
-			web.server.https[h.name] = web.createHttps({
-				key: 	fs.readFileSync(h.key),
-				cert:	fs.readFileSync(h.cert)}, h.port, h.ip);
-		}
+	web.init.start();
+
+	// 监视程序退出
+	process.on('exit', function () {
+		web.init.exit();
+	});
+
+	// 如果开启了forever选项
+	if (web.get('enable forever')) {
+		process.on('uncaughtException', function (err) {
+			web.logger.error(err);
+		});
 	}
 }
-web.init.start();
 
-// 监视程序退出
-process.on('exit', function () {
-	web.init.exit();
-});
 
-// 如果开启了forever选项
-if (web.get('enable forever')) {
-	process.on('uncaughtException', function (err) {
-		web.logger.error(err);
-	});
+//-----------------------------------------------------------------------------------
+// 检查是否支持cluster
+if (Number(process.version.substr(3)) >= 6.0)
+	var cluster = require('cluster');
+else
+	var cluster = false;
+// 检查是否开启cluster
+if (cmd == '-cluster') {
+	var wd = process.argv[3];
+	
+	if (cluster === false) {
+		console.log('ERROR: Your Node version is too lower, not support cluster.');
+		process.exit();
+	}
+	else if (cluster.isMaster) {
+		var numCPUs = require('os').cpus().length;
+		// 如果只有一个CPU，不支持cluster
+		if (numCPUs === 1) {
+			console.log('ERROR: You only have one CPU core, not support cluster.');
+			process.exit();
+		}
+		// 有两个CPU，启动两个子进程
+		else if (numCPUs === 2) {
+			cluster.fork();
+			cluster.fork();
+		}
+		// 有N个CPU，启动N - 1个子进程
+		else {
+			for (var i = 0; i < numCPUs - 1; i++)
+				cluster.fork();
+		}
+		// 监视子进程退出情况
+		cluster.on('death', function(worker) {
+			console.log('worker ' + worker.pid + ' died');
+		});
+	}
+	else {
+		startQuickWeb();
+	}
+}
+else {
+	var wd = process.argv[2];
+	startQuickWeb();
 }
