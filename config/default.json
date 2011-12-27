@@ -41,7 +41,7 @@
 	"session tag":			"_SID",
 	"session maxage":		1200,
 	"session recover":		60000,
-	"auto start session":	true,
+	"auto start session":	false,
 	
 	"response pipe timeout":	120000,	
 	

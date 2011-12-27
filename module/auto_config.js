@@ -90,7 +90,7 @@ var loadCustomMimetype = function (cp, auto_update) {
 }
 
 var loadCustomRender = function (cp, auto_update) {
-	var f = path.resolve(cp, 'render.json');
+	var f = path.resolve(cp, 'renderer.json');
 	if (path.existsSync(f)) {
 		web.log('auto config', f, 'info');
 		var data = fs.readFileSync(f);
@@ -98,13 +98,21 @@ var loadCustomRender = function (cp, auto_update) {
 		for (var i in json) {
 			// 判断是模块名还是文件名
 			switch (json[i].charAt(0)) {
+				// 是文件名
 				case '.':
 				case '/':
 					var r = require(path.resolve(__dirname, '..', json[i]));
 					break;
+				// 是模块名
 				default:
-					var r = require(json[i]);
+					// 如果在默认支持的模块列表中，则使用QuickWeb提供的接口
+					var filename = path.resolve(__dirname, 'renderer', json[i] + '.js');
+					if (path.existsSync(filename))
+						var r = require(filename);
+					else
+						var r = require(json[i]);
 			}
+			
 			// 如果是函数，则直接作为渲染函数
 			if (typeof r == 'function')
 				web.render.add(i, r);

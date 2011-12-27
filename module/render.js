@@ -62,16 +62,19 @@ var addRender = function (extname, handler) {
  * @param {string} text 模板
  * @param {object} view 数据
  * @param {string} extname 渲染器，默认为*
+ * @param {object} annotations 元数据，用于不同的模板引擎，包含的属性：  filename:模板文件名
  * @return {string}
  */
-var renderText = function (text, view, extname) {
+var renderText = function (text, view, extname, annotations) {
+	annotations = annotations || {}
+	//console.log('\n渲染文件：' + annotations.filename + '\n');
 	if (!extname)
 		extname = '*';
 	try {
 		var h = web.render.renders[extname.toLowerCase()];
 		if (typeof h != 'function')
 			h = web.render.renders['*'] || mustache.to_html;
-		return h(text, view);
+		return h(text, view, annotations);
 	}
 	catch (err) {
 		web.logger.error('web.render.render() error: ' + err);

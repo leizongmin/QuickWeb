@@ -289,7 +289,7 @@ var renderFile = function (filename, view, extname, autoend) {
 		}
 		if (typeof extname != 'string')
 			extname = path.extname(realfilename).substr(1);
-		var text = web.render.render(data.toString(), view, extname);
+		var text = web.render.render(data.toString(), view, extname, {filename: realfilename});
 		self.setHeader('Content-Type', web.mimetype.get(extname));
 		if (autoend === false)
 			self.write(text);
