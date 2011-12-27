@@ -13,7 +13,7 @@ var debug = console.log;
 exports.list = {} 
 
 /** 监视检查周期 */
-exports.interval = 1000;
+exports.interval = 10000;
  
 /**
  * 监视文件改动
