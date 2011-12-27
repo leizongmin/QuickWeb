@@ -1,7 +1,7 @@
 {
    "name":			"quickweb",
    "main":			"./core/web.js",
-   "version":		"0.2.2",
+   "version":		"0.2.3-pre",
    "description":	"Easy to set up your Node.js web server environment.",
    "author": "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
    "repository": {
@@ -13,8 +13,8 @@
 	},
 	"dependencies":	{
 		"formidable":		"*",
-		"mustache":			"*",
-		"EventProxy.js":	"*"
+		"EventProxy.js":	"*",
+		"ejs":				"*"
 	},
 	"bin": {
 		"quickweb":			"./bin/quickweb"

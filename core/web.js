@@ -16,7 +16,7 @@ var web = module.exports;
 global.QuickWeb = web;
 
 /** 版本号 */
-web.version = 'v0.2.2-b111227';
+web.version = 'v0.2.3-pre';
 
 // 是否已载入所有模块
 var module_loaded = false;
@@ -46,7 +46,7 @@ web.util.md5 = function (text) {
 // EventProxy
 web.util.EventProxy = require('EventProxy.js').EventProxy;
 // 模板引擎
-web.util.mustache = require('mustache');
+web.util.ejs = require('ejs');
 
 /** Windows版本的Node不支持fs.watchFile()，使用自己写的文件监视模块 */
 if (/windows/i.test(os.type())) {

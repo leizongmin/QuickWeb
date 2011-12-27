@@ -7,7 +7,7 @@
 
 var web = global.QuickWeb;
 
-var mustache = require('mustache');
+var ejs = require('ejs');
 
 /** 初始化 */
 exports.init = function () {
@@ -19,7 +19,7 @@ exports.init = function () {
 	// 渲染器列表
 	web.render.renders = {}
 	// 默认渲染器
-	web.render.renders['*'] = mustache.to_html;
+	web.render.renders['*'] = ejs.render;
 }
 
 /** 开启 */
@@ -73,7 +73,7 @@ var renderText = function (text, view, extname, annotations) {
 	try {
 		var h = web.render.renders[extname.toLowerCase()];
 		if (typeof h != 'function')
-			h = web.render.renders['*'] || mustache.to_html;
+			h = web.render.renders['*'] || ejs.render;
 		return h(text, view, annotations);
 	}
 	catch (err) {

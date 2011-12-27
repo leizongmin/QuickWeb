@@ -59,6 +59,10 @@ var setMimetype = function (extname, type) {
 
 
 var mimes = {
+	"ejs"		: "text/html",
+	"haml"		: "text/html",
+	"jade"		: "text/html",
+	
 	"3gp"		: "video/3gpp",
 	"a"			: "application/octet-stream",
 	"ai"		: "application/postscript",
