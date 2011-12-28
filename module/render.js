@@ -7,7 +7,7 @@
 
 var web = global.QuickWeb;
 
-var ejs = require('ejs');
+var ejs = require('./renderer/ejs');
 
 /** 初始化 */
 exports.init = function () {

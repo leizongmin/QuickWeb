@@ -29,7 +29,7 @@ exports.render = function (tpl, view, options) {
 	if (typeof fn == 'function')
 		return fn(view);
 		
-	// 如果没有还没有缓存，则先编译，并缓存，再返回渲染结果
+	// 如果还没有缓存，则先编译，并缓存，再返回渲染结果
 	var fn = haml(tpl);
 	fs.watchFile(options.filename, function () {
 		delete exports.cache[options.filename];
