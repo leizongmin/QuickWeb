@@ -49,8 +49,8 @@ exports.disable = function () {
 var decodeGET = function (request) {
 	// 解析GET参数
 	var v = url.parse(request.url, true);
-	request.get = v.query || {};				// 问号后面的参数
-	request.filename = v.pathname || '/';		// 文件名
+	request.get = v.query || {};						// 问号后面的参数
+	request.filename = decodeURI(v.pathname || '/');	// 文件名
 		
 	// www-auth认证信息
 	var authorization = request.headers['authorization'];
