@@ -11,13 +11,15 @@
 var module_quickweb = 'quickweb'; 
 
 var fs = require('fs'); 
+var path = require('path');
 //-----------------------------------------------------------------------------------
 var cmd = '' + process.argv[2];
 cmd = cmd.trim().toLowerCase();
 
 // 创建基本目录
 if (cmd == '-init' || cmd == '--init') {
-	var dir = ['html', 'tpl', 'tmp', 'code', 'error_page', 'config', 'init'];
+	var dir = ['html', 'tpl', 'tmp', 'code', 'error_page', 'config', 'init', 'lib'];
+	// 创建目录
 	for (var i in dir) {
 		try {
 			fs.mkdirSync(dir[i], 666);
@@ -25,7 +27,18 @@ if (cmd == '-init' || cmd == '--init') {
 			console.error(err.toString());
 		}
 	}
-	console.log('ok');
+	// 创建样例
+	if (!path.existsSync('./config/config.json'))
+		fs.writeFileSync('./config/config.json', '{\n\t"log level":\t4\n}');
+	if (!path.existsSync('./code/index.js'))
+		fs.writeFileSync('./code/index.js', 'exports.path = \'/\';\nexports.get = function (request, response, next) {\n\tresponse.end(\'Hello, world!\');\n}');
+	if (!path.existsSync('./init/start.js'))
+		fs.writeFileSync('./init/start.js', 'console.log(\'Write your global init code here.\');');
+	// 创建package.json文件
+	if (!path.existsSync('./package.json'))
+		fs.writeFileSync('./package.json', '{\n\t"name":\t"quickweb app",\n\t"dependencies": {\n\t\t"quickweb":\t"*"\n\t}\n}');
+	
+	console.log('OK!');
 	process.exit();
 }
 // 帮助
@@ -120,8 +133,8 @@ if (cmd == '-cluster') {
 		var numCPUs = require('os').cpus().length;
 		// 如果只有一个CPU，不支持cluster
 		if (numCPUs === 1) {
-			console.log('ERROR: You only have one CPU core, not support cluster.');
-			process.exit();
+			console.log('WARNING: You only have one CPU core, not support cluster.');
+			cluster.fork();
 		}
 		// 有两个CPU，启动两个子进程
 		else if (numCPUs === 2) {
@@ -136,6 +149,8 @@ if (cmd == '-cluster') {
 		// 监视子进程退出情况
 		cluster.on('death', function(worker) {
 			console.log('worker ' + worker.pid + ' died');
+			// 自动重新fork一个子进程
+			cluster.fork();
 		});
 	}
 	else {
