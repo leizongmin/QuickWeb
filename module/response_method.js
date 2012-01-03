@@ -164,6 +164,8 @@ var sendError = function (code, msg) {
 		time:		new Date().toUTCString()	// 时间
 	}
 	
+	web.logger.error(self._link.request.url + ' Response Error: [' + code + '] ' + msg);
+	
 	// 输出出错信息
 	if (!this.hasResponse())
 		this.writeHead(view.status, {'Content-type': 'text/html'});
