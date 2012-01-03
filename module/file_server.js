@@ -132,8 +132,10 @@ var responseFile = function (res, extname, data, mtime) {
 	}
 	
 	// 响应
-	res.writeHead(200, header);
-	res.end(data);
+	process.nextTick(function () {
+		res.writeHead(200, header);
+		res.end(data);
+	});
 }
 
 /**
