@@ -22,6 +22,8 @@ exports.init = function () {
 
 /** 开启 */
 exports.enable = function () {
+	// send
+	web.ServerResponse.prototype.send = web.ServerResponse.prototype.end;
 	// sendJSON()
 	web.ServerResponse.prototype.sendJSON = sendJSON;
 	// sendJSONIfAccepted()
@@ -56,6 +58,7 @@ exports.disable = function () {
 			web.logger.warn('response method disable! response has no method "' + m + '"');
 		}
 	}
+	web.ServerResponse.prototype.send = noMethod('send');
 	web.ServerResponse.prototype.sendJSON = noMethod('sendJSON');
 	web.ServerResponse.prototype.sendJSONIfAccepted = noMethod('sendJSONIfAccepted');
 	web.ServerResponse.prototype.sendError = noMethod('sendError');
