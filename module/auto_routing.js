@@ -17,6 +17,7 @@ exports.init = function () {
 		web.router = {}
 	// 存放被自动加载的文件列表
 	web.router.codefiles = []
+	web.router.codefilesInfo = {}
 	// 扫描指定目录的.js文件，并自动注册路由
 	web.loadCode = loadCode;
 }
@@ -81,44 +82,65 @@ var scanCodeFiles = function (code_path) {
  * 注册程序文件
  *
  * @param {object} m 模块
+ * @return {object}
  */
 var registerCodeFile = function (m) {
-	if (typeof m.get == 'function')
+	// 注册
+	var methods = [];
+	if (typeof m.get == 'function') {
 		web.router.get(m.path, m.get);
-		
-	if (typeof m.post == 'function')
+		methods.push('get');
+	}
+	if (typeof m.post == 'function') {
 		web.router.post(m.path, m.post);
-		
-	if (typeof m.delete == 'function')
+		methods.push('post');
+	}
+	if (typeof m.delete == 'function') {
 		web.router.delete(m.path, m.delete);
-		
-	if (typeof m.put == 'function')
+		methods.push('delete');
+	}
+	if (typeof m.put == 'function') {
 		web.router.put(m.path, m.put);
-		
-	if (typeof m.head == 'function')
+		methods.push('put');
+	}
+	if (typeof m.head == 'function') {
 		web.router.head(m.path, m.head);
+		methods.push('head');
+	}
+	return {path: m.path, method: methods};
 }
 
 /**
  * 监视已注册的程序文件，有修改自动重新载入
  *
  * @param {string} filename 文件名
+ * @param {object} info 注册的方法数组
  */
-var watchCodeFile = function (filename) {
+var watchCodeFile = function (filename, info) {
 	fs.unwatchFile(filename);
 	fs.watchFile(filename, function () {
 		try {
 			// 删除之前的缓存
 			if (filename in require.cache)
 				delete require.cache[filename];
+			// 删除之前的路由信息
+			var oldinfo = web.router.codefilesInfo[filename];
+			if (oldinfo) {
+				for (var i in oldinfo.method)
+					web.router.remove(oldinfo.method[i], oldinfo.path);
+			}
+			for (var i in web.router.codefiles)
+			if (web.router.codefiles[i] == filename)
+				delete web.router.codefiles[i];
+			
 			// 重新载入模块
 			var m = require(filename);
 			web.logger.info('reload code file: ' + filename);
 			// 注册
 			if (typeof m.path != 'string' && !(m.path instanceof RegExp))
 				return;
-			registerCodeFile(m);
-			watchCodeFile(filename);
+			var info = registerCodeFile(m);
+			watchCodeFile(filename, info);
 		}
 		catch (err) {
 			web.logger.error('reload code file error: ' + err);
@@ -126,10 +148,13 @@ var watchCodeFile = function (filename) {
 	});
 	
 	// 将文件名加入到代码文件名列表
+	web.router.codefilesInfo[filename] = info;
+	var _isInList = false;
 	for (var i in web.router.codefiles)
 		if (web.router.codefiles[i] == filename)
-			return;
-	web.router.codefiles.push(filename);
+			_isInList = true;
+	if (_isInList === false)
+		web.router.codefiles.push(filename);
 }
 
 /**
@@ -147,10 +172,10 @@ var loadCodeFiles = function (files) {
 				return;
 			
 			// 注册处理程序
-			registerCodeFile(m);
+			var info = registerCodeFile(m);
 			
 			// 监视文件改动
-			watchCodeFile(v);
+			watchCodeFile(v, info);
 		}
 		catch (err) {
 			web.logger.error('load code file error: ' + err);
