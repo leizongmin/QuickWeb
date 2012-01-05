@@ -29,6 +29,7 @@
 	"enable session":		true,
 	"enable init":			true,
 	"enable forever":		true,
+	"enable request log":	true,
 	
 	"file cache recover":	60000,
 	"file cache maxage":	60000,

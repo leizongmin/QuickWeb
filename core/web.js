@@ -168,10 +168,14 @@ reqOnReady.prototype.ready = function () {
 	// 当ServerRequest初始化完成后，分别初始化ServerResponse和ServerInstance
 	var res = new ServerResponse(_res);
 	var si = new ServerInstance(req, res);
+	res.ondataready = resOnDataReady;
 				
 	// 用于在request, response, server中访问另外的对象
 	var _link = { request: req,	response: res,	server: si}
 	req._link = res._link = si._link = _link;
+	
+	// 如果为HEAD请求，则不输出
+	_res._isoutput = req._link.request.method.toLowerCase() == 'head' ? false : true;
 	
 	// 如果没有处理该请求，则返回501
 	si.onready = function () {
@@ -186,6 +190,12 @@ reqOnReady.prototype.ready = function () {
 	// 调用ServerInstance处理链来处理本次请求
 	else 
 		si.next();
+}
+/**
+ * 当输出完成时，用于记录日志
+ */
+var resOnDataReady = function () {
+	web.logger.request(this._link.request, this);
 }
 
 //--------------------------------------------------------------------------------------------------

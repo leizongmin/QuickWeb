@@ -18,6 +18,7 @@ exports.init = function () {
 	// 设置输出流
 	web.logger.stdout = process.stdout;
 	web.logger.stderr = process.stderr;
+	web.logger.stdlog = process.stdout;
 	// 先默认初始化logger
 	exports.disable();
 }
@@ -57,10 +58,16 @@ exports.enable = function () {
 	else {
 		web.logger.error = noLog;
 	}
+	// 网站访问日志
+	if (web.get('enable request log') === true)
+		web.logger.request = requestLog;
+	else
+		web.logger.request = noLog;
 }
 
 /** 关闭 */
 exports.disable = function () {
+	web.logger.request = noLog;
 	web.logger.debug = web.logger.log = web.logger.info = noLog;
 	web.logger.warn = web.logger.error = noLog;
 }
@@ -112,4 +119,24 @@ var warn = function (msg) {
  */
 var error = function (msg) {
 	web.logger.stderr.write('\033[41;37m[error]\033[0m  ' + (msg.stack || msg) + '\n');
+}
+
+/**
+ * 网站访问日志
+ */
+var requestLog = function (req, res) {
+	// 采用Apache日志格式
+	var remotehost = req.socket.remoteAddress;	// 远程IP
+	var timestamp = new Date().toUTCString();	// 时间戳
+	var method = req.method;					// 请求方法
+	var url = req.url;							// 请求路径
+	var httpversion = req.httpVersion;			// http协议版本
+	var statuscode = res.statusCode;			// 响应状态码
+	var responsesize = res._responseSize;		// 输出长度
+	var referer = req.headers['referer'] || '';			// 来源网址
+	var useragent = req.headers['user-agent'] || '';	// 客户代理信息
+	/*
+	58.61.164.141 – - [22/Feb/2010:09:51:46 +0800] “GET /reference-and-source/weblog-format/ HTTP/1.1″ 206 6326 ” http://www.google.cn/search?q=webdataanalysis” “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)”
+	*/
+	web.logger.stdlog.write(remotehost + ' – - [' + timestamp + '] "' + method + ' ' + url + ' ' + httpversion + '" ' + statuscode + ' ' + responsesize + ' "' + referer + '" "' + useragent + '"\n');
 }

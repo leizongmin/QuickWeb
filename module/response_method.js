@@ -405,7 +405,7 @@ var listener = function (response) {
 		}
 		
 		response.setHeader('Content-Type', content_type);
-		web.logger.debug('Content-Type: ' + content_type);
+		//web.logger.debug('Content-Type: ' + content_type);
 	}
 	
 	// 通知下一个插件

@@ -23,6 +23,7 @@ request.ServerRequest = function (origin) {
 	this.url = origin.url;					// 请求路径
 	this.headers = origin.headers;			// 请求头
 	this.httpVersion = origin.httpVersion;	// HTTP版本
+	this.socket = origin.socket;				// socket句柄
 	
 	// 初始化Listener
 	this._listener_i = 0;

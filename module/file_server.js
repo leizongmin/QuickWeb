@@ -31,7 +31,7 @@ exports.disable = function () {
 /** ServerInstance监听函数 */
 var listener = function (server, request, response) {
 	// 仅支持GET方法
-	if (request.method != 'GET') {
+	if (request.method != 'GET' && request.method != 'HEAD') {
 		server.next();
 		return;
 	}
@@ -39,7 +39,7 @@ var listener = function (server, request, response) {
 		// 如果文件名包含..，则拒绝（安全问题）
 		if (request.filename.indexOf('..') >= 0) {
 			response.sendError(403, 'Access denied');
-			web.logger.info('Access denied! request filename: ' + request.filename);
+			//web.logger.info('Access denied! request filename: ' + request.filename);
 			return;
 		}
 		
@@ -70,7 +70,7 @@ var listener = function (server, request, response) {
 						}
 						else {
 							responseFile(response, extname, data, stat.mtime);
-							web.logger.log('response file: ' + realfilename);
+							//web.logger.log('response file: ' + realfilename);
 						}
 					});
 				}
@@ -78,7 +78,7 @@ var listener = function (server, request, response) {
 		});
 	}
 	catch (err) {
-		web.logger.warn('file listener error: ' + err.stack);
+		//web.logger.warn('file listener error: ' + err.stack);
 		response.sendError(404, err.stack);
 	}
 }
@@ -108,7 +108,7 @@ var fileModified = function (res, mtime, since, extname) {
 			'Cache-Control':	'public, max-age=' + getMaxage(extname)
 		});
 		res.end();
-		web.logger.debug('file not modified: mtime=' +  t1 + ' / since=' + t2);
+		//web.logger.debug('file not modified: mtime=' +  t1 + ' / since=' + t2);
 		return false;
 	}
 }

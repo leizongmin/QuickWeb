@@ -22,6 +22,10 @@ response.ServerResponse = function (origin) {
 	this.statusCode = origin.statusCode;
 	this.headers = {}
 	
+	this._responseSize = 0;
+	
+	this._isoutput = true;
+	
 	// 初始化Listener
 	this._listener_i = 0;
 	this._listener_e = 'header';
@@ -38,10 +42,13 @@ response.ServerResponse.prototype._listener = {header: [], data: []};
 response.ServerResponse.prototype.next = function () {
 	var self = this;
 	var event = self._listener_e;
+	
+	// 如果还没有调用完处理链，则继续执行剩余的处理链
 	if (self._listener_i < self._listener[event].length) {
 		var h = self._listener[event][self._listener_i++];
 		h(self);
 	}
+	// 否则，执行相应的ready()函数
 	else {
 		if (event == 'header') {
 			self._listener_e = 'data';
@@ -68,11 +75,6 @@ response.addListener = response.ServerResponse.prototype.addListener = function 
 		else
 			response.ServerResponse.prototype._listener[event].push(handler);
 	}
-	/*
-	else {
-		debug('Event name [' + event + '] not support.');
-	}
-	*/
 }
 
 /**
@@ -104,8 +106,8 @@ response.ServerResponse.prototype.writeHead = function (statusCode, reasonPhrase
 			self.origin.writeHead(statusCode, self.headers);
 		else
 			self.origin.writeHead(statusCode, reasonPhrase, self.headers);
+		self.next();
 	}
-	this.next();
 }
 
 /**
@@ -120,13 +122,18 @@ response.ServerResponse.prototype.write = function (data, encoding) {
 	// 输出响应头之前要先检查是否已经处理完了head Listener，如果没有，则先处理Listener
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
-			self.origin.write(data, encoding);
+			if (self._isoutput) {
+				self.origin.write(data, encoding);
+				self.next();
+			}
 		}
 		this.next();
-		return true;
 	}
 	else {
-		return this.origin.write(data, encoding);
+		if (this._isoutput) {
+			this.origin.write(data, encoding);
+			this._responseSize += data.length;
+		}
 	}
 }
 
@@ -142,12 +149,19 @@ response.ServerResponse.prototype.end = function (data, encoding) {
 	// 输出响应头之前要先检查是否已经处理完了head Listener，如果没有，则先处理Listener
 	if (this._listener_e == 'header') {
 		this.onheaderready = function () {
-			self.origin.end(data, encoding);
+			if (self._isoutput) {
+				self.origin.end(data, encoding);
+				self._responseSize += data ? data.length : 0;
+			}
+			self.next();
 		}
 		this.next();
 	}
 	else {
-		this.origin.end(data, encoding);
+		if (self._isoutput) {
+			this.origin.end(data, encoding);
+			this._responseSize += data ? data.length : 0;
+		}
 		
 		// 处理data Listener
 		this._listener_e = 'data';
