@@ -36,7 +36,10 @@ if (cmd == '-init' || cmd == '--init') {
 		fs.writeFileSync('./init/start.js', 'console.log(\'Write your global init code here.\');');
 	// 创建package.json文件
 	if (!path.existsSync('./package.json'))
-		fs.writeFileSync('./package.json', '{\n\t"name":\t"quickweb app",\n\t"dependencies": {\n\t\t"quickweb":\t"*"\n\t}\n}');
+		fs.writeFileSync('./package.json', '{\n\t"name":\t"quickweb app",\n\t"main":\t"server.js",\n\t"dependencies": {\n\t\t"quickweb":\t"*"\n\t}\n}');
+	// 创建server.js
+	var servercode = fs.readFileSync(__filename);
+	fs.writeFileSync('./server.js', servercode);
 	
 	console.log('OK!');
 	process.exit();
