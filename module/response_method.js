@@ -88,7 +88,7 @@ var sendJSON = function (data) {
 	}
 	catch (err) {
 		this.sendError(500, err.toString());
-		web.logger.error('response.sendJSON() error: ' + err.stack);
+		//web.logger.error('response.sendJSON() error: ' + err.stack);
 	}
 }
 
@@ -167,7 +167,8 @@ var sendError = function (code, msg) {
 		time:		new Date().toUTCString()	// 时间
 	}
 	
-	web.logger.error(self._link.request.url + ' Response Error: [' + code + '] ' + msg);
+	if (code > 499)
+		web.logger.error(self._link.request.url + ' Response Error: [' + code + '] ' + msg);
 	
 	// 输出出错信息
 	if (!this.hasResponse())
