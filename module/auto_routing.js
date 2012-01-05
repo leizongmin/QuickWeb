@@ -107,6 +107,10 @@ var registerCodeFile = function (m) {
 		web.router.head(m.path, m.head);
 		methods.push('head');
 	}
+	if (typeof m.options == 'function') {
+		web.router.options(m.path, m.options);
+		methods.push('options');
+	}
 	return {path: m.path, method: methods};
 }
 

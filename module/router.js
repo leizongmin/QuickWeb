@@ -15,7 +15,7 @@ exports.init = function () {
 		web.router = {}
 	// 路由表
 	web.router.handlers = {
-		get: [], post: [], put: [], delete: [], head: []
+		get: [], post: [], put: [], delete: [], head: [], options: []
 	}
 }
 
@@ -37,6 +37,8 @@ exports.enable = function () {
 	web.router.delete = web.router.del = registerRouter('delete');
 	// 注册HEAD请求
 	web.router.head = registerRouter('head');
+	// 注册OPTIONS请求
+	web.router.options = registerRouter('options');
 	// 删除路由
 	web.router.remove = removeHandler;
 	// 删除所有请求方法的路由
@@ -133,7 +135,7 @@ var register = function (method, paths, handler) {
 		routerHandlers[method].push(p);
 	}
 	
-	web.logger.info('register router: ' + paths);
+	web.logger.info('register ' + method + ' router: ' + paths);
 	return true;
 }
 
@@ -163,21 +165,23 @@ getHandler = function (method, paths, index) {
 		index = 0;
 	// web.logger.log('test router: ' + paths + '  ' + index);
 	var handlers = web.router.handlers[method];
-	for (var i = index, r; r = handlers[i]; i++) {
-		var pv = r.path.exec(paths);
-		if (pv == null)
-			continue;
-		
-		// 填充匹配的PATH值
-		var ret = {
-			index:		i,				// 索引位置
-			handler: 	r.handler,		// 处理句柄
-			value:		{}				// PATH参数值
+	if (handlers) {
+		for (var i = index, r; r = handlers[i]; i++) {
+			var pv = r.path.exec(paths);
+			if (pv == null)
+				continue;
+			
+			// 填充匹配的PATH值
+			var ret = {
+				index:		i,				// 索引位置
+				handler: 	r.handler,		// 处理句柄
+				value:		{}				// PATH参数值
+			}
+			r.names.forEach(function (v, i) {
+				ret.value[v] = pv[i + 1];
+			});
+			return ret;
 		}
-		r.names.forEach(function (v, i) {
-			ret.value[v] = pv[i + 1];
-		});
-		return ret;
 	}
 	
 	// 没有符合条件的处理函数
@@ -240,6 +244,7 @@ var removeAllHandler = function (paths) {
 	ok += removeHandler('put', paths) ? 1 : 0;
 	ok += removeHandler('head', paths) ? 1 : 0;
 	ok += removeHandler('delete', paths) ? 1 : 0;
+	ok += removeHandler('options', paths) ? 1 : 0;
 	return ok > 0 ? true : false;
 }
 
