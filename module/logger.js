@@ -15,6 +15,9 @@ exports.init = function () {
 		web.logger = {}
 	// 老版本的web.log()
 	web.log = webLog;
+	// 设置输出流
+	web.logger.stdout = process.stdout;
+	web.logger.stderr = process.stderr;
 	// 先默认初始化logger
 	exports.disable();
 }
@@ -80,33 +83,33 @@ var noLog = function () {}
  * 调试输出
  */
 var debug = function (msg) {
-	console.log('\033[0;33m' + msg + '\033[0m');
+	web.logger.stdout.write('\033[0;33m' + msg + '\033[0m\n');
 }
 
 /**
  * 日志输出
  */
 var log = function (msg) {
-	console.log('\033[46;37m[log]\033[0m    ' + msg);
+	web.logger.stdout.write('\033[46;37m[log]\033[0m    ' + msg + '\n');
 }
 
 /**
  * 信息输出
  */
 var info = function (msg) {
-	console.log('\033[44;37m[info]\033[0m   ' + msg);
+	web.logger.stdout.write('\033[44;37m[info]\033[0m   ' + msg + '\n');
 }
 
 /**
  * 警告输出
  */
 var warn = function (msg) {
-	console.log('\033[43;37m[warn]\033[0m   ' + (msg.stack || msg));
+	web.logger.stderr.write('\033[43;37m[warn]\033[0m   ' + (msg.stack || msg) + '\n');
 }
 
 /**
  * 错误输出
  */
 var error = function (msg) {
-	console.log('\033[41;37m[error]\033[0m  ' + (msg.stack || msg));
+	web.logger.stderr.write('\033[41;37m[error]\033[0m  ' + (msg.stack || msg) + '\n');
 }
