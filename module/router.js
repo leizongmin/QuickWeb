@@ -98,14 +98,14 @@ var register = function (method, paths, handler) {
 		
 		/* 处理paths */
 		// 获取名称
-		var names = paths.match(/\/:[\w\d_$]+/g);
+		var names = paths.match(/:[\w\d_$]+/g);
 		if (!names)
 			names = [];
 		names.forEach(function (v, i) {
-			names[i] = v.substr(2);
+			names[i] = v.substr(1);
 		});
 		// 替换正则表达式
-		var paths = paths.replace(/\/:[\w\d_$]+/g, '/([^/]+)');
+		var paths = paths.replace(/:[\w\d_$]+/g, '([^/]+)');
 		paths = '^' + paths + '$';
 		var pathreg = new RegExp(paths);
 	}
