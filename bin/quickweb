@@ -134,21 +134,10 @@ if (cmd == '-cluster') {
 	}
 	else if (cluster.isMaster) {
 		var numCPUs = require('os').cpus().length;
-		// 如果只有一个CPU，不支持cluster
-		if (numCPUs === 1) {
-			console.log('WARNING: You only have one CPU core, not support cluster.');
+		// 有N个CPU，启动N个子进程
+		for (var i = 0; i < numCPUs; i++)
 			cluster.fork();
-		}
-		// 有两个CPU，启动两个子进程
-		else if (numCPUs === 2) {
-			cluster.fork();
-			cluster.fork();
-		}
-		// 有N个CPU，启动N - 1个子进程
-		else {
-			for (var i = 0; i < numCPUs - 1; i++)
-				cluster.fork();
-		}
+		
 		// 监视子进程退出情况
 		cluster.on('death', function(worker) {
 			console.log('worker ' + worker.pid + ' died');
