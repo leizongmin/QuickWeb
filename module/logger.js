@@ -15,10 +15,10 @@ exports.init = function () {
 		web.logger = {}
 	// 老版本的web.log()
 	web.log = webLog;
-	// 设置输出流
-	web.logger.stdout = process.stdout;
-	web.logger.stderr = process.stderr;
-	web.logger.stdlog = process.stdout;
+	// 设置输出流，只需要提供 write()方法的对象即可
+	web.logger.stdout = process.stdout;		// 服务器信息日志
+	web.logger.stderr = process.stderr;		// 错误日志
+	web.logger.stdlog = process.stdout;		// 访问记录日志
 	// 先默认初始化logger
 	exports.disable();
 }
@@ -125,7 +125,7 @@ var error = function (msg) {
  * 网站访问日志
  */
 var requestLog = function (req, res) {
-	// 采用Apache日志格式
+	// 采用类似Apache日志格式
 	var remotehost = req.socket.remoteAddress;	// 远程IP
 	var timestamp = new Date().toUTCString();	// 时间戳
 	var method = req.method;					// 请求方法
@@ -136,7 +136,7 @@ var requestLog = function (req, res) {
 	var referer = req.headers['referer'] || '';			// 来源网址
 	var useragent = req.headers['user-agent'] || '';	// 客户代理信息
 	/*
-	58.61.164.141 – - [22/Feb/2010:09:51:46 +0800] “GET /reference-and-source/weblog-format/ HTTP/1.1″ 206 6326 ” http://www.google.cn/search?q=webdataanalysis” “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)”
+	58.61.164.141 [22/Feb/2010:09:51:46 +0800] “GET /reference-and-source/weblog-format/ HTTP/1.1″ 206 6326 ” http://www.google.cn/search?q=webdataanalysis” “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)”
 	*/
-	web.logger.stdlog.write(remotehost + ' – - [' + timestamp + '] "' + method + ' ' + url + ' ' + httpversion + '" ' + statuscode + ' ' + responsesize + ' "' + referer + '" "' + useragent + '"\n');
+	web.logger.stdlog.write(remotehost + ' [' + timestamp + '] "' + method + ' ' + url + ' ' + httpversion + '" ' + statuscode + ' ' + responsesize + ' "' + referer + '" "' + useragent + '"\n');
 }
