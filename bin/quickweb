@@ -29,7 +29,7 @@ if (cmd == '-init' || cmd == '--init') {
 	}
 	// 创建样例
 	if (!path.existsSync('./config/config.json'))
-		fs.writeFileSync('./config/config.json', '{\n\t"log level":\t4\n}');
+		fs.writeFileSync('./config/config.json', '{\n\t"log level":\t4,\n\t"enable request log":\ttrue\n}');
 	if (!path.existsSync('./code/index.js'))
 		fs.writeFileSync('./code/index.js', 'exports.path = \'/\';\nexports.get = function (request, response, next) {\n\tresponse.end(\'Hello, world!\');\n}');
 	if (!path.existsSync('./init/start.js'))
