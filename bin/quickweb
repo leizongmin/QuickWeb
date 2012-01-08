@@ -22,7 +22,7 @@ if (cmd == '-init' || cmd == '--init') {
 	// 创建目录
 	for (var i in dir) {
 		try {
-			fs.mkdirSync(dir[i], 666);
+			fs.mkdirSync(dir[i], 777);
 		} catch (err) {
 			console.error(err.toString());
 		}
