@@ -10,7 +10,7 @@
 var server = module.exports;
 
 
-var web = require('./web');
+var web = global.QuickWeb;
 
 
 /**

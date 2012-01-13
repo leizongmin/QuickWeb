@@ -43,8 +43,6 @@ web.util = {}
 web.util.md5 = function (text) {
 	return crypto.createHash('md5').update(text).digest('hex');
 }
-// EventProxy
-web.util.EventProxy = require('EventProxy.js').EventProxy;
 // 模板引擎
 web.util.ejs = require('ejs');
 
