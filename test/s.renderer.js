@@ -1,5 +1,6 @@
 var should = require('should');
 var Service = require('../lib/Service');
+var fs = require('fs');
 
 describe('service.renderer', function () {
 
@@ -26,21 +27,56 @@ describe('service.renderer', function () {
   it('#render', function () {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
-    var tpl = 'Hello, {{name}}';
+    var tpl = 'Hello, {{=name}}';
     var data = {name: 'QuickWeb'}
     renderer.render('ejs', tpl, data)
       .should.equal(ejsrenderer.render(tpl, data));
   });
   
   // 编译
-  it('compile', function () {
+  it('#compile', function () {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
-    var tpl = 'Hello, {{name}}';
+    var tpl = 'Hello, {{=name}}';
     var data = {name: 'QuickWeb'}
     var f1 = renderer.compile('ejs', tpl);
     var f2 = ejsrenderer.compile(tpl);
     f1(data).should.equal(f2(data));
+  });
+  
+  // 编译文件
+  it('#compileFile', function (done) {
+    var conf = {open: '{{', close: '}}'}
+    renderer.config('ejs', conf);
+    var f = '__render.txt';
+    var tpl = 'Hello, {{=name}}';
+    var data = {name: 'QuickWeb'}
+    fs.writeFileSync(f, tpl);
+    renderer.compileFile('ejs', f, function (err, render) {
+      if (err)
+        throw Error();
+      console.log(render(data));
+      render(data).should.equal(renderer.render('ejs', tpl, data));
+      done();
+    });
+  });
+  
+  // 渲染文件
+  it('#renderFile', function (done) {
+    var conf = {open: '{{', close: '}}'}
+    renderer.config('ejs', conf);
+    var f = '__render.txt';
+    var tpl = 'Hello, {{=name}}';
+    var data = {name: 'QuickWeb'}
+    fs.writeFileSync(f, tpl);
+    renderer.renderFile('ejs', f, data, function (err, text) {
+      if (err)
+        throw Error();
+      console.log(text);
+      text.should.equal(renderer.render('ejs', tpl, data));
+      fs.unlink(f);
+      done();
+    });
   });
   
 });

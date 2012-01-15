@@ -1,9 +1,9 @@
 {
-  "name":			"quickweb",
-  "main":			"./index.js",
-  "version":		"0.3.0-pre",
-  "description":	"Easy to set up your Node.js web server environment.",
-  "author": "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
+  "name":         "quickweb",
+  "main":         "./index.js",
+  "version":      "0.3.0-pre",
+  "description":  "Easy to set up your Node.js web server environment.",
+  "author":       "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
   "repository": {
     "type": "git",
     "url": "git://github.com/leizongmin/QuickWeb.git"
@@ -16,10 +16,10 @@
     "ejs":				"*"
   },
   "bin": {
-    "quickweb":			"./bin/quickweb"
+    "quickweb":   "./bin/quickweb"
   },
-  "scripts": {
-    "install":			"node ./bin/install.js",
-    "update":			"node ./bin/install.js"
+  "scripts":  {
+    "install":    "node ./bin/install.js",
+    "update":     "node ./bin/install.js"
   }
 }
