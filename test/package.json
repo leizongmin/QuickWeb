@@ -1,7 +1,0 @@
-{
-   "name":			"quickweb-test",
-	"dependencies":	{
-		"mocha":		"*",
-		"should":		"*"
-	}
-}
