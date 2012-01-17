@@ -6,9 +6,11 @@ var server = http.createServer(function (req, res) {
   var s = new Date().getTime();
   quickweb.extend(res);
   // 可以使用quickweb提供的方法
-  res.render('hello, <%=name%>', {name:'老雷'});
-  var e = new Date().getTime();
-  console.log(e - s, 'ms');
+  //res.render('hello, <%=name%>', {name:'老雷'});
+  //var e = new Date().getTime();
+  //console.log(e - s, 'ms');
+  res.redirect('http://baidu.com');
+  res.redirect('http://qq.com');
 });
 server.listen(80);
 
