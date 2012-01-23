@@ -19,10 +19,13 @@ exports.Service = require('./lib/Service');
 // 载入服务
 exports.import = require('./lib/Service').import;
 
-
+// 连接管理器
+exports.Connector = require('./lib/Connector');
 
 // ServerResponse扩展
 exports.ServerResponse = require('./lib/ServerResponse');
+// ServerRequest扩展
+exports.ServerRequest = require('./lib/ServerRequest');
 
 // 扩展http模块中的ServerRequest或ServerResponse
 exports.extend = function (obj, type, conf) {
