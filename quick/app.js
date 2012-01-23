@@ -12,7 +12,7 @@ var quickweb = require('../');
 
 var debug;
 if (process.env.QUICKWEB_DEBUG && /app/.test(process.env.QUICKWEB_DEBUG))
-  debug = function(x) { console.error('-app: %s', x); };
+  debug = function(x) { console.error('app: %s', x); };
 else
   debug = function() { };
  
