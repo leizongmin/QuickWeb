@@ -7,7 +7,7 @@ var filecache = Service.import('filecache');
 
 describe('Service filecache', function () {
 
-  var f1 = '___test_.txt';
+  var f1 = '___test_2.txt';
   var f2 = path.resolve(f1);
   var data = 'hhhfjjjjdksjkdjskjdk';
   fs.writeFileSync(f1, data);

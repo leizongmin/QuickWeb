@@ -17,3 +17,11 @@ else
   debug = function() { };
  
  
+/**
+ * 加载指定目录下的应用
+ *
+ * @param {string} appdir 应用目录
+ */
+exports.load = function (appdir) {
+
+}

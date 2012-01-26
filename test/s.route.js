@@ -13,8 +13,7 @@ describe('Service.Route', function () {
                   , names: [ 'a', 'type' ]
                   });
     route.parse(/h+/).should.eql({path: /h+/, names: null});
-    if (route.parse(12) !== null)
-      throw Error();
+    should.equal(route.parse(12), null);
   });
 
   var fun1 = function () { return 'fun1'; }
@@ -27,27 +26,31 @@ describe('Service.Route', function () {
     route.add('/:a', fun2);
     route.add(/h+/, fun3);
     route.add('/:b', fun4);
-    route.staticTable['/a'].should.eql(fun1);
+    route.staticTable['/a'].should.eql({handle: fun1, info: {}});
   });
   
   it('#query', function () {
-    if (route.query('/abc/a') !== null)
-      throw Error();
+    should.equal(route.query('/abc/a'), null);
+    
     route.query('/abc').should.eql({ handle:  fun2
                                    , index:   0
                                    , value:   {a: 'abc'}
+                                   , info:    {}
                                    });
      route.query('/abc', 1).should.eql({ handle:  fun4
                                    , index:   2
                                    , value:   {b: 'abc'}
+                                   , info:    {}
                                    });
-     route.query('hhh').should.eql({ handle:   fun3
-                                   , index:    1
-                                   , value:    null
+     route.query('hhh').should.eql({ handle:  fun3
+                                   , index:   1
+                                   , value:   null
+                                   , info:    {}
                                    });
     route.query('/a').should.eql({ handle:  fun1
                                  , index:   0
                                  , value:   null
+                                 , info:    {}
                                  });
   });
   
@@ -56,12 +59,9 @@ describe('Service.Route', function () {
     route.remove('/:b').should.equal(true);
     route.remove(/h+/).should.equal(true);
     route.remove('/a').should.equal(true);
-    if (route.query('/abc') !== null)
-      throw Error();
-    if (route.query('/hhhh') !== null)
-      throw Error();
-    if (route.query('/a') !== null)
-      throw Error();
+    should.equal(route.query('/abc'), null);
+    should.equal(route.query('/hhhh'), null);
+    should.equal(route.query('/a'), null);
   });
   
 });

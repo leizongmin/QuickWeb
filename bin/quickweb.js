@@ -22,7 +22,7 @@ if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
   var command = process.argv[2].substr(1).toLowerCase().trim()
                               .replace('-', '_');
   try {
-    var m = require('../quick/command/' + command + '.js');
+    var m = require('./command/' + command + '.js');
     var argv = [];
     for (var i = 3; i < process.argv.length; i++)
       argv.push(process.argv[i]);
@@ -34,4 +34,8 @@ if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
     debug(err.stack);
     next = true;
   }
+}
+
+if (next) {
+  console.log('run quickweb -help for help.');
 }

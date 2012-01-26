@@ -2,21 +2,21 @@
   "name":         "quickweb",
   "main":         "./index.js",
   "version":      "0.3.0-pre",
-  "description":  "Easy to set up your Node.js web server environment.",
+  "description":  "A Node.js application server & web utils",
   "author":       "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
   "repository": {
     "type": "git",
     "url": "git://github.com/leizongmin/QuickWeb.git"
   },
   "engines": {
-    "node": ">= 0.6.0"
+    "node":         ">= 0.6.0"
   },
   "dependencies":	{
-    "formidable":		"*",
-    "ejs":				"*"
+    "formidable":   "*",
+    "ejs":          "*"
   },
   "bin": {
-    "quickweb":   "./bin/quickweb"
+    "quickweb":   "./bin/quickweb.js"
   },
   "scripts":  {
     "install":    "node ./bin/install.js",

@@ -7,7 +7,7 @@ var filecache = Service.import('filecache');
 
 describe('Service filecache', function () {
 
-  var f1 = '___test_.txt';
+  var f1 = '___test_3.txt';
   var f2 = path.resolve(f1);
   var data = 'hhhfjjjjdksjkdjskjdk';
   for (var i = 0; i < 100; i++)
