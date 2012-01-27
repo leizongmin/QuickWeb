@@ -14,6 +14,11 @@ if (Number(vers[0]) < 1 && Number(vers[1]) < 6)
   throw Error('QuickWeb must be run in Node v0.6.0 or upper version!');
  
  
+// 版本号
+exports.version = 'v0.3.0-pre'; 
+
+ 
+ 
 // 服务管理器 
 exports.Service = require('./lib/Service');
 

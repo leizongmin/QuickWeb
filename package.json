@@ -1,9 +1,9 @@
 {
-  "name":         "quickweb",
-  "main":         "./index.js",
-  "version":      "0.3.0-pre",
-  "description":  "A Node.js application server & web utils",
-  "author":       "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
+  "name":           "quickweb",
+  "main":           "./index.js",
+  "version":        "0.3.0-pre",
+  "description":    "A Node.js application server & web utils",
+  "author":         "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
   "repository": {
     "type": "git",
     "url": "git://github.com/leizongmin/QuickWeb.git"
@@ -19,7 +19,7 @@
     "quickweb":   "./bin/quickweb.js"
   },
   "scripts":  {
-    "install":    "node ./bin/install.js",
-    "update":     "node ./bin/install.js"
+    "install":      "node ./bin/install.js",
+    "update":       "node ./bin/install.js"
   }
 }
