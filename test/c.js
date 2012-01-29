@@ -8,7 +8,7 @@ if (cluster.isMaster) {
   cluster.fork();
 }
 else {
-*//*
+*/
   var connector = quickweb.Connector.create();
   var server = http.createServer(connector.listener());
   server.listen(80);
@@ -20,11 +20,12 @@ else {
   connector.addCode('test', { path:  '/test.aspx'
                                , get:   function (req, res) { res.send('hello'); }
                                });
-  */
+  /*
   var server = http.createServer(function (req, res) {
     quickweb.extend(req, res);
     res.end('hello');
   });
+  */
   server.listen(80);
   
 //}
