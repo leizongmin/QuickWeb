@@ -13,7 +13,10 @@
   },
   "dependencies":	{
     "formidable":   "*",
-    "ejs":          "*"
+    "ejs":          "*",
+    "should":       "*",
+    "mocha":        "*",
+    "mkdirp":       "*"
   },
   "bin": {
     "quickweb":   "./bin/quickweb.js"

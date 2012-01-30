@@ -34,7 +34,7 @@ exports.loaddir = function (dir, routes, conf) {
     var f = files[i];
     var m = require(f);
     var p = tool.relativePath(dir, f);
-    p = p.substr(0, p.length - 3) + '.do';
+    p = p.substr(0, p.length - 3) + '.nsp';
 
     // 注册路由
     for (var j in routes) {

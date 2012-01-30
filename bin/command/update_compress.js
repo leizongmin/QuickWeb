@@ -10,6 +10,7 @@ var tool = quickweb.import('tool');
 var path = require('path');
 var fs = require('fs');
 var zlib = require('zlib');
+var mkdirp = require('mkdirp');
 
 
 var debug;
@@ -46,7 +47,7 @@ exports.run = function (appdir) {
       fs.mkdir(d);
   }
   
-  // 去除.compress目录下的文件
+  // 去除.gzip目录下的文件
   var list = [];
   for (var i in shtml.file) {
     if (tool.relativePath(gzipdir, shtml.file[i]) === null)
@@ -63,15 +64,19 @@ exports.run = function (appdir) {
     }
     else {
       console.log('Compress file ' + f);
-      zlib.gzip(fs.readFileSync(f), function (err, data) {
-        if (err)
-          console.log('Error: ' + err.stack);
-        else {
-          var sf = path.resolve(gzipdir, path.basename(f));
-          fs.writeFileSync(sf, data);
-          console.log('Save as ' + sf);
-        }
-        compressFile();
+      var filename = f.substr(phtml.length + 1);
+      var basedir = path.dirname(path.resolve(gzipdir, filename));
+      mkdirp(basedir, 777, function (err) {
+        zlib.gzip(fs.readFileSync(f), function (err, data) {
+          if (err)
+            console.log('Error: ' + err.stack);
+          else {
+            var sf = path.resolve(gzipdir, filename);
+            fs.writeFileSync(sf, data);
+            console.log('Save as ' + sf);
+          }
+          compressFile();
+        });
       });
     }
   }

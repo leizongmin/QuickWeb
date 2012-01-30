@@ -35,8 +35,9 @@ exports.run = function () {
   L('option:');
   L('  -init-app          create an app');
   L('  -init              create an server');
-  L('  -update-struct     update app file struct');
+  L('  -update-route      update app route');
   L('  -update-compress   update compress file');
+  L('  -benchmark         ');
   L('  -start             start server');
   L('  -help              show this information');
   L('');
