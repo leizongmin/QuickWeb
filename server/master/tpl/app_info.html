@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>应用信息</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">应用信息</div>
+      </td>
+    </tr>
+    <tr>
+      <td width="200">应用名称</td>
+      <td><%= appname %></td>
+    </tr>
+    <tr>
+      <td>应用目录</td>
+      <td><%= appdir %></td>
+    </tr>
+    <tr>
+      <td>主机名</td>
+      <td><%= config.host %></td>
+    </tr>
+    <tr>
+      <td>虚拟路径</td>
+      <td><%= config.path %></td>
+    </tr>
+  </table>
+  
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">Request对象配置</div>
+      </td>
+    </tr>
+    <% for (var i in config.request) { %>
+    <tr>
+      <td width="200"><%= i %></td>
+      <td><%= config.request[i] %></td>
+    </tr>
+    <% } %>
+  </table>
+  
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">Response对象配置</div>
+      </td>
+    </tr>
+    <% for (var i in config.response) { %>
+    <tr>
+      <td width="200"><%= i %></td>
+      <td><%= config.response[i] %></td>
+    </tr>
+    <% } %>
+  </table>
+  
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">路由配置</div>
+      </td>
+    </tr>
+    <tr class="table-header">
+      <td width="200">类型</td>
+      <td>路径</td>
+    </tr>
+    <% for (var i in route) { %>
+    <tr>
+      <td><%= route[i].type %></td>
+      <td><%= route[i].path %></td>
+    </tr>
+    <% } %>
+  </table>
+  
+</body>
+</html>
