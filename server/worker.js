@@ -79,7 +79,24 @@ msgclient.on('broadcast', function (client_id, msg) {
   }
 });
 
+// 发送心跳信息 默认30秒
+if (isNaN(serverConfig['status update']['worker heartbeat']))
+  serverConfig['status update']['worker heartbeat'] = 30000;
+setInterval(function () {
+  msgclient.send('heartbeat', process.pid);
+}, serverConfig['status update']['worker heartbeat']);
+  
 
+
+// ----------------------------------------------------------------------------
+// 进程异常  
+process.on('uncaughtException', function (err) {
+  debug(err.stack);
+  // 发送出错信息
+  msgclient.send('uncaughtException', err.stack);
+});
+
+  
 // ----------------------------------------------------------------------------
 /**
  * 载入指定应用目录

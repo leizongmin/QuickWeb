@@ -29,11 +29,11 @@ exports.post = function (req, res) {
     var op = req.post.op;
     var pid = parseInt(req.post.pid);
     
-    if (op === 'kill') {
+    if (op === 'kill' || op === 'restart') {
       // 杀死进程
-      global.QuickWeb.master.killWorker(pid);
+      global.QuickWeb.master.killWorker(pid, true);
     }
-    else {
+    if (op === 'fork' || op === 'restart') {
       // 增加一个进程
       global.QuickWeb.master.forkWorker();
     }

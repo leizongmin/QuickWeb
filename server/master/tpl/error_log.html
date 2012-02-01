@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>异常信息</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="3">
+        <div style="text-align: center">异常信息</div>
+      </td>
+    </tr>
+    <tr class="table-header">
+      <td width="40">PID</td>
+      <td width="110">时间</td>
+      <td>内容</td>
+    </tr>
+    <% for (var i in log) { %>
+    <tr>
+      <td><%= log[i].pid %></td>
+      <td><%= (new Date(log[i].timestamp).toUTCString()) %></td>
+      <td><%= log[i].error %></td>
+    </tr>
+    <% } %>
+  </table>
+</body>
+</html>

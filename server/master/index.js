@@ -46,12 +46,15 @@ msgserver.bind(serverConfig.message, function (err) {
 
 // 客户端连接成功
 msgserver.on('online', function (id) {
+  id = parseInt(id);
+  if (workers.indexOf(id) === -1)
+    workers.push(id);
   debug('worker ' + id + ' online');
 });
 
 // 客户端断开连接
 msgserver.on('offline', function (id) {
-  killWorker(parseInt(id), false);
+  killWorker(parseInt(id));
 });
 
 
@@ -69,13 +72,27 @@ var forkWorker = function () {
 global.QuickWeb.master.forkWorker = forkWorker;
 
 // 杀死Worker进程
-var killWorker = function (pid, donotKill) {
-  if (donotKill !== false)
+var killWorker = function (pid, isAdmin) {
+  // 结束进程
+  try {
     process.kill(pid);
+  }
+  catch (err) {
+    debug('kill worker ' + pid + ' error: ' + err.stack);
+  }
+  
+  // 删除进程信息
   var i = workers.indexOf(pid);
-  delete workers[i];
+  workers.splice(i, 1);
   delete workerStatus[pid];
   debug('kill pid=' + pid);
+  
+  // 如果不是管理员进行的操作，则认为是进程异常退出
+  // ，自动启动一个新进程
+  if (isAdmin !== true && i !== -1) {
+    debug(pid + ' has died, auto restart.');
+    forkWorker();
+  }
 }
 global.QuickWeb.master.killWorker = killWorker;
 
@@ -84,7 +101,31 @@ if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
 for (var i = 0; i < serverConfig.cluster; i++)
   forkWorker();
 
+// Worker心跳
+msgserver.on('message', function (client_id, to, msg) {
+  if (to !== 'heartbeat')
+    return;
+    
+  var pid = msg;
+  if (workers.indexOf(pid) === -1)
+    workers.push(pid);
+}); 
   
+// Worker进程异常信息
+var exceptions = global.QuickWeb.master.workerException = [];
+msgserver.on('message', function (client_id, to, msg) {
+  if (to !== 'uncaughtException')
+    return;
+    
+  exceptions.push({ pid: client_id
+                  , timestamp: new Date().getTime()
+                  , error: msg
+                  });
+  if (exceptions.length > 20)
+    exceptions.shift();
+}); 
+  
+
 // ----------------------------------------------------------------------------
 // Worker进程请求统计信息
 var workerStatus = global.QuickWeb.master.workerStatus = {}

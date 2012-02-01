@@ -14,7 +14,10 @@
     <% for (var i in worker) { %>
     <tr>
       <td><span class="worker-pid"><%= worker[i] %></span></td>
-      <td><span class="worker-op"><button onclick="killWorker(<%= worker[i] %>)">结束</button></span></td>
+      <td><span class="worker-op">
+        <button onclick="restartWorker(<%= worker[i] %>)">重启</button>
+        <button onclick="killWorker(<%= worker[i] %>)">结束</button>
+      </span></td>
     </tr>
     <% } %>
   </table>
@@ -29,6 +32,12 @@
 function killWorker(pid) {
   $('#form_pid').val(pid);
   $('#form_op').val('kill');
+  $('#form').submit();
+}
+
+function restartWorker(pid) {
+  $('#form_pid').val(pid);
+  $('#form_op').val('restart');
   $('#form').submit();
 }
 
