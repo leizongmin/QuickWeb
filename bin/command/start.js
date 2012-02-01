@@ -20,45 +20,30 @@ else
 /**
  * 生成服务器目录结构
  *
- * @param {string} appdir 应用目录
- * @return {bool}
+ * @param {string} serverdir 服务器目录
+ * @return {int}
  */
-exports.run = function (appdir) {
+exports.run = function (serverdir) {
   // 默认使用当前目录
-  if (typeof appdir != 'string')
-    appdir = process.cwd();
+  if (typeof serverdir != 'string')
+    serverdir = process.cwd();
+  else {
+    process.chdir(serverdir);
+    serverdir = path.resolve(serverdir);
+  }
+  debug('start server on path ' + serverdir);
   
   // 载入服务器配置
-  var conf = require(path.resolve(appdir, 'config.json'));
+  var conf = require(path.resolve(serverdir, 'config.json'));
   
   // 启动进程
-  if (cluster.isMaster)
-    startMaster(conf);
-  else
-    startWorker(conf);
-    
-  return false;
-}
-
-/**
- * 启动Master进程
- *
- * @param {object} conf 配置信息
- */
-var startMaster = function (conf) {
-  // 启动服务器管理器
-  require('../master')(conf);
+  if (cluster.isMaster) {
+    require('../../server/master');
+  }
+  else {
+    require('../../server/worker');
+  }
   
-  // 创建子进程
-  for (var i = 0; i < conf.cluster; i++)
-    cluster.fork();
+  return 0;
 }
 
-/**
- * 启动Worker进程
- *
- * @param {object} conf 配置信息
- */
-var startWorker = function (conf) {
-  require('../worker')(conf);
-}

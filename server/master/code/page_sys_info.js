@@ -1,0 +1,43 @@
+/**
+ * 系统信息
+ *
+ */
+ 
+var os = require('os'); 
+var quickweb = require('quickweb');
+ 
+exports.path = '/page/sys_info';
+
+exports.get = function (req, res) {
+  // 权限验证
+  if (!global.QuickWeb.master.checkAuth(req.auth())) {
+    res.authFail();
+    return;
+  }
+  
+  res.renderFile('sys_info.html', getSysInfo());
+}
+
+
+// 获取系统信息
+var getSysInfo = function () {
+  // 内存信息
+  var sysinfo = { hostname   : os.hostname()
+                , systemtype : os.type()
+                , release    : os.release()
+                , uptime     : os.uptime()
+                , loadavg    : os.loadavg()
+                , totalmem   : os.totalmem()
+                , freemem    : os.freemem()
+                , cpus       : os.cpus()
+                , node       :{ ver     : process.versions.node
+                              , v8      : process.versions.v8
+                              , openssl : process.versions.openssl
+                              , path    : process.execPath
+                             }
+                , quickweb   :{ ver     : quickweb.version
+                             }
+                }
+  return sysinfo;
+}
+

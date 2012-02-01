@@ -1,0 +1,17 @@
+body {
+  max-width: 960px;
+  margin: auto;
+  font-size: 14px;
+}
+table {
+  border: 1px solid #00576C;
+}
+td {
+  padding: 4px;
+  text-align: left;
+}
+.table-header {
+  font-weight: bold;
+  background-color: #00576C;
+  color: white;
+}

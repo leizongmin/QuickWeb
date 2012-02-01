@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>系统信息</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">系统信息</div>
+      </td>
+    </tr>
+    <tr>
+      <td width="200">主机名称</td>
+      <td><%= hostname %></td>
+    </tr>
+    <tr>
+      <td>操作系统</td>
+      <td><%= systemtype %></td>
+    </tr>
+    <tr>
+      <td>发行版本</td>
+      <td><%= release %></td>
+    </tr>
+    <tr>
+      <td>运行时间</td>
+      <td><%= (parseInt(uptime / 60 / 60 * 10) / 10) %>小时</td>
+    </tr>
+    <tr>
+      <td>负载</td>
+      <td><%= loadavg %></td>
+    </tr>
+    <tr>
+      <td>内存大小</td>
+      <td><%= totalmem %></td>
+    </tr>
+    <tr>
+      <td>空闲内存</td>
+      <td><%= freemem %> (<%= parseInt((freemem / totalmem) * 100) %>%)</td>
+    </tr>
+    <tr>
+      <td>Node.js版本</td>
+      <td><%= node.ver %></td>
+    </tr>
+    <tr>
+      <td>V8版本</td>
+      <td><%= node.v8 %></td>
+    </tr>
+    <tr>
+      <td>OpenSSL版本</td>
+      <td><%= node.openssl %></td>
+    </tr>
+    <tr>
+      <td>Node.js路径</td>
+      <td><%= node.path %></td>
+    </tr>
+    <tr>
+      <td>QuickWeb版本</td>
+      <td><%= quickweb.ver %></td>
+    </tr>
+  </table>
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="8">
+        <div style="text-align: center">CPU使用情况</div>
+      </td>
+    </tr>
+    <tr class="table-header">
+      <td width="60">CPU</td>
+      <td>model</td>
+      <td width="60">speed</td>
+      <td width="60">user</td>
+      <td width="60">nice</td>
+      <td width="60">sys</td>
+      <td width="60">idle</td>
+      <td width="60">irq</td>
+    </tr>
+    <% for (var i in cpus) { %>
+    <tr>
+      <td><span class="cpu-id">cpu<%= i %></span></td>
+      <td><span class="cpu-model"><%= cpus[i].model %></span></td>
+      <td><span class="cpu-speed"><%= cpus[i].speed %></span></td>
+      <td><span class="cpu-user"><%= cpus[i].times.user %></span></td>
+      <td><span class="cpu-nice"><%= cpus[i].times.nice %></span></td>
+      <td><span class="cpu-sys"><%= cpus[i].times.sys %></span></td>
+      <td><span class="cpu-idle"><%= cpus[i].times.idle %></span></td>
+      <td><span class="cpu-irq"><%= cpus[i].times.irq %></span></td>
+    </tr>
+    <% } %>
+  </table>
+</body>
+</html>

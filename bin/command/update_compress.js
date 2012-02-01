@@ -25,7 +25,7 @@ else
  * 生成文件目录结构
  *
  * @param {string} appdir 应用目录
- * @return {bool}
+ * @return {int}
  */
 exports.run = function (appdir) {
   // 默认使用当前目录
@@ -83,5 +83,5 @@ exports.run = function (appdir) {
   // 开始
   compressFile();
   
-  return false;
+  return 0;
 }

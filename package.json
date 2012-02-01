@@ -16,7 +16,8 @@
     "ejs":          "*",
     "should":       "*",
     "mocha":        "*",
-    "mkdirp":       "*"
+    "mkdirp":       "*",
+    "msgbus":       "*"
   },
   "bin": {
     "quickweb":   "./bin/quickweb.js"

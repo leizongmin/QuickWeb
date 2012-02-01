@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>QuickWeb Application Server</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+  <div id="header">
+    QuickWeb v0.3
+  </div>
+  <div id="nav">
+    <div class="nav-item">
+      <a href="/page/sys_info">系统信息</a>
+    </div>
+    <div class="nav-item">
+      <a href="/page/worker_list">进程</a>
+    </div>
+    <div class="nav-item">
+      <a href="/page/app_list">应用</a>
+    </div>
+    <div class="nav-item">
+      <a href="/page/load_line">资源占用</a>
+    </div>
+  </div>
+  <div id="main">
+    <h1>欢迎使用QuickWeb应用服务器！</h1>
+  </div>
+</body>
+</html>
+<script src="/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+  $('.nav-item').hover(function () {
+    $(this).addClass('nav-item-hover');
+  }, function () {
+    $(this).removeClass('nav-item-hover');
+  }).click(function () {
+    var url = $('a:first', this).attr('href');
+    openPage(url);
+  });
+  
+  $(window).resize(resizeWindow);
+  resizeWindow();
+  
+  openPage('/page/sys_info');
+});
+
+function openPage(url) {
+  $('#main').html('<iframe src="' + url + '" width="100%" height="100%">');
+}
+
+function resizeWindow() {
+  var maxh = $(window).height();
+  var hh = $('#header').height();
+  $('#main').height(maxh - hh - 40);
+}
+</script>

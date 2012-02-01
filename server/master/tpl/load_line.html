@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>系统信息</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <div id="mem_line"></div>
+  <div id="cpu_line"></div>
+</body>
+</html>
+<script src="/jscharts.js"></script>
+<script>
+
+// 画内存占用图
+var drawMemLine = function () {
+  var myData = JSON.parse('<%- mem_line %>');
+  var myChart = new JSChart('mem_line', 'line');
+  myChart.setSize(750, 300);
+  myChart.setTitle('内存占用');
+  myChart.setDataArray(myData);
+  myChart.setLineColor('#8D9386');
+  myChart.setLineWidth(4);
+  myChart.setTitleColor('#7D7D7D');
+  myChart.setAxisColor('#9F0505');
+  myChart.setGridColor('#a4a4a4');
+  myChart.setAxisValuesColor('#333639');
+  myChart.setAxisNameColor('#333639');
+  myChart.setTextPaddingLeft(0);
+  myChart.setAxisNameX('时间 s');
+  myChart.setAxisNameY('内存占用 MB');
+  myChart.setIntervalStartX(0);
+  myChart.setIntervalStartY(0);
+  myChart.setIntervalEndY(<%= (totalmem / 1024 / 1024) %>);
+  myChart.draw();
+}
+
+// 画CPU占用图
+var drawCPULine = function () {
+  var myData = JSON.parse('<%- cpu_line %>');
+  var myChart = new JSChart('cpu_line', 'line');
+  myChart.setSize(750, 300);
+  myChart.setTitle('CPU占用');
+  myChart.setDataArray(myData.user, 'user');
+  myChart.setDataArray(myData.sys, 'sys');
+  myChart.setLineColor('#A4D314', 'user');
+  myChart.setLineColor('#BBBBBB', 'sys');
+  myChart.setLineColor('#8D9386');
+  myChart.setLineWidth(4);
+  myChart.setTitleColor('#7D7D7D');
+  myChart.setAxisColor('#9F0505');
+  myChart.setGridColor('#a4a4a4');
+  myChart.setAxisValuesColor('#333639');
+  myChart.setAxisNameColor('#333639');
+  myChart.setTextPaddingLeft(0);
+  myChart.setAxisNameX('时间 s');
+  myChart.setAxisNameY('CPU占用 %');
+  myChart.setIntervalStartX(0);
+  myChart.setIntervalStartY(0);
+  myChart.setIntervalEndY(100);
+  myChart.draw();
+}
+
+drawMemLine();
+drawCPULine();
+</script>

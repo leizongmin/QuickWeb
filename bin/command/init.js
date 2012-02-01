@@ -23,7 +23,7 @@ else
  * 生成服务器目录结构
  *
  * @param {string} appdir 应用目录
- * @return {bool}
+ * @return {int}
  */
 exports.run = function (appdir) {
   // 默认使用当前目录
@@ -39,5 +39,5 @@ exports.run = function (appdir) {
   fs.writeFileSync(path.resolve(appdir, 'config.json'), JSON.stringify({}));
   
   console.log('ok.');
-  return true;
+  return 1;
 }

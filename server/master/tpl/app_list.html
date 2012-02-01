@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>应用列表</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <table width="600" align="center">
+    <tr class="table-header">
+      <td width="110">应用名称</td>
+      <td>目录</td>
+      <td width="110">是否已加载</td>
+    </tr>
+    <% for (var i in app) { %>
+    <tr>
+      <td><span class="app-name"><%= app[i].name %></span></td>
+      <td><span class="app-path"><%= app[i].path %></span></td>
+      <td><span class="app-loaded"><%= app[i].loaded %></span></td>
+    </tr>
+    <% } %>
+  </table>
+  <form id="form" method="POST">
+    <input name="path" id="form_path" type="hidden">
+    <input name="name" id="form_name" type="hidden">
+    <input name="op" id="form_op" type="hidden">
+  </form>
+</body>
+</html>
+<script src="/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+  $('.app-loaded').each(function () {
+    var $obj = $(this);
+    if ($obj.text().toLowerCase().trim() == 'false') {
+      $obj.after('<button onclick="loadApp(this)">载入</button>');
+    }
+    else {
+      $obj.after('<button onclick="unloadApp(this)">卸载</button>');
+    }
+  });
+});
+
+function loadApp(obj) {
+  var path = $('.app-path', $(obj).parent().parent()).text().trim();
+  var name = $('.app-name', $(obj).parent().parent()).text().trim();
+  $('#form_path').val(path);
+  $('#form_name').val(name);
+  $('#form_op').val('load');
+  $('#form').submit();
+}
+
+function unloadApp(obj) {
+  var path = $('.app-path', $(obj).parent().parent()).text().trim();
+  var name = $('.app-name', $(obj).parent().parent()).text().trim();
+  $('#form_path').val(path);
+  $('#form_name').val(name);
+  $('#form_op').val('unload');
+  $('#form').submit();
+}
+</script>

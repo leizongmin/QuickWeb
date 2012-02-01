@@ -23,7 +23,7 @@ else
  * 生成文件目录结构
  *
  * @param {string} appdir 应用目录
- * @return {bool}
+ * @return {int}
  */
 exports.run = function (appdir) {
   // 默认使用当前目录
@@ -65,5 +65,5 @@ exports.run = function (appdir) {
   var sfn = path.resolve(appdir, 'route.txt');
   fs.writeFileSync(sfn, ret.join('\n'));
   console.log('Update file ' + sfn + ' success.');
-  return true;
+  return 1;
 }

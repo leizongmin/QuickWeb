@@ -1,0 +1,40 @@
+#header {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+#nav {
+  float: left;
+  width: 150px;
+}
+#main {
+  float: right;
+  width: 810px;
+  height: 300px;
+}
+#main iframe {
+  border: none;
+}
+.nav-item {
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 2px solid #00576C;
+  margin-right: 12px;
+  padding-bottom: 2px;
+  padding-top: 12px;
+  cursor: pointer;
+}
+.nav-item a {
+  text-decoration: none;
+  color: #00576C;
+}
+.nav-item a:hover {
+  color: #FFF;
+}
+.nav-item-hover {
+  background-color: #00576C;
+}
+.nav-item-hover a {
+  color: #FFF;
+}

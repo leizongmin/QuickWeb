@@ -9,7 +9,7 @@ var url = require('url');
 /**
  * 显示帮助信息
  *
- * @return {bool}
+ * @return {int}
  */
 exports.run = function () {
 
@@ -99,5 +99,5 @@ exports.run = function () {
   }
   console.log('wait...');
   
-  return false;
+  return 0;
 }

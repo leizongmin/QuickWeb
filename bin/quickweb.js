@@ -14,8 +14,8 @@ else
   debug = function() { };
  
 
-// 是否继续
-var next = true; 
+// 是否继续 0: 不结束  1: 结束  -1: 出错
+var ret = -1; 
  
 // 执行命令
 if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
@@ -26,16 +26,16 @@ if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
     var argv = [];
     for (var i = 3; i < process.argv.length; i++)
       argv.push(process.argv[i]);
-    next = !m.run.apply(null, argv);
-    if (next === false)
+    ret = m.run.apply(null, argv);
+    if (ret === 1)
       process.exit();
   }
   catch (err) {
     debug(err.stack);
-    next = true;
+    ret = -1;
   }
 }
 
-if (next) {
+if (ret === -1) {
   console.log('run quickweb -help for help.');
 }

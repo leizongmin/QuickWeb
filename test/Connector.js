@@ -61,5 +61,24 @@ describe('Connector', function () {
     
     h.handle().should.equal('app2');
   });
+  
+  // 删除应用
+  it('#remove app', function () {
+    console.log(connector.appPathTable);
+    connector.removeApp('app2');
+    console.log(connector.appPathTable);
+    
+    var route = connector.getHostRoute('weibo.com', 'GET');
+    should.exist(route);
+    
+    var h = route.query('/test');
+    should.exist(h);
+    
+    var route = connector.getHostRoute('ucdok.com', 'GET');
+    should.exist(route);
+    
+    var h = route.query('/test');
+    should.not.exist(h);
+  });
 
 });

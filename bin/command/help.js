@@ -22,7 +22,7 @@ else
 /**
  * 显示帮助信息
  *
- * @return {bool}
+ * @return {int}
  */
 exports.run = function () {
   
@@ -43,5 +43,5 @@ exports.run = function () {
   L('');
   L('For more information, please visit http://github.com/leizongmin/QuickWeb');
   
-  return true;
+  return 1;
 }
