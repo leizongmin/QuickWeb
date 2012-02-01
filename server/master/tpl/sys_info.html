@@ -35,11 +35,11 @@
     </tr>
     <tr>
       <td>内存大小</td>
-      <td><%= totalmem %></td>
+      <td><%= (parseInt(totalmem / 1024 / 1024)) %> MB</td>
     </tr>
     <tr>
       <td>空闲内存</td>
-      <td><%= freemem %> (<%= parseInt((freemem / totalmem) * 100) %>%)</td>
+      <td><%= (parseInt(freemem / 1024 / 1024)) %> MB (<%= parseInt((freemem / totalmem) * 100) %>%)</td>
     </tr>
     <tr>
       <td>Node.js版本</td>
@@ -54,12 +54,16 @@
       <td><%= node.openssl %></td>
     </tr>
     <tr>
-      <td>Node.js路径</td>
+      <td>Node.js目录</td>
       <td><%= node.path %></td>
     </tr>
     <tr>
       <td>QuickWeb版本</td>
       <td><%= quickweb.ver %></td>
+    </tr>
+    <tr>
+      <td>QuickWeb目录</td>
+      <td><%= quickweb.path %></td>
     </tr>
   </table>
   <table width="750" align="center">

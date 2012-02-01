@@ -25,8 +25,14 @@ exports.get = function (req, res) {
 
 
 // 更新资源占用统计
-var SYSLOAD_SIZE = 20;
-var SYSLOAD_CYCLE = 10000;
+var serverConfig = global.QuickWeb.master.config;
+if (isNaN(serverConfig['status update']['load line']))
+  serverConfig['status update']['load line'] = 20000;
+if (isNaN(serverConfig['status update']['load line size']))
+  serverConfig['status update']['load line size'] = 20;
+var SYSLOAD_SIZE = serverConfig['status update']['load line size'];
+var SYSLOAD_CYCLE = serverConfig['status update']['load line'];
+
 var sysload = global.QuickWeb.master.sysload = [];
 var updateInfo = function () {
   sysload.push({ loadavg    : os.loadavg()

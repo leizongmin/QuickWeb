@@ -15,7 +15,7 @@ if (Number(vers[0]) < 1 && Number(vers[1]) < 6)
  
  
 // 版本号
-exports.version = 'v0.3.0-pre'; 
+exports.version = '0.3.0-pre'; 
 
  
  

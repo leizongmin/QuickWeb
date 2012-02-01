@@ -25,23 +25,33 @@ else {
 }
 
 
+// 设置全局变量
+global.QuickWeb.worker = {}
+
 // 载入服务器配置
 var serverConfig = require(path.resolve('./config.json'));
-//console.log(serverConfig);
+global.QuickWeb.worker.config = serverConfig;
 
 // 全局路由
 var connector = quickweb.Connector.create();
+global.QuickWeb.worker.connector = connector;
 
+// ----------------------------------------------------------------------------
 // 监听端口
+var listenHttp = {}
 for (var i in serverConfig['listen http']) {
   var port = parseInt(serverConfig['listen http'][i]);
   var server = http.createServer(connector.listener());
   server.listen(port);
+  listenHttp[port] = server;
   console.log('listen on port ' + port + '...');
 }
+global.QuickWeb.worker.listen = listenHttp;
 
+// ----------------------------------------------------------------------------
 // 启动消息客户端
 var msgclient = msgbus.createClient({debug: isDebug});
+global.QuickWeb.worker.msgclient = msgclient;
 msgclient.connect(serverConfig.message, function (err) {
   if (err)
     throw err;
@@ -52,17 +62,25 @@ msgclient.connect(serverConfig.message, function (err) {
 
 msgclient.on('broadcast', function (client_id, msg) {
   debug('on broadcast');
+  // 载入应用
   if (msg.cmd === 'load app') {
     debug('load app path: ' + msg.dir);
     loadApp(msg.dir);
   }
+  // 卸载应用
   else if (msg.cmd === 'unload app') {
     debug('unload app path: ' + msg.dir);
     unloadApp(msg.dir);
   }
+  // 提交请求信息
+  else if (msg.cmd === 'connector status') {
+    debug('update connector status');
+    msgclient.send('connector_status', connector.status);
+  }
 });
 
 
+// ----------------------------------------------------------------------------
 /**
  * 载入指定应用目录
  *
@@ -84,7 +102,9 @@ var loadApp = function (dir) {
   
   // 目录转向
   var dirRedirect = function (p) {
-    var h = function (req, res) { res.redirect(p + '/'); }
+    var h = function (req, res) {
+      res.redirect(req.url + '/');
+    }
     return {path: p, get: h, head: p}
   }
   

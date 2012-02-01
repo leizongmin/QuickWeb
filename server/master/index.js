@@ -44,9 +44,14 @@ msgserver.bind(serverConfig.message, function (err) {
     throw err;
 });
 
+// 客户端连接成功
 msgserver.on('online', function (id) {
   debug('worker ' + id + ' online');
-  //msgserver.broadcast({cmd: 'load app', dir: 'E:\\github\\tmp\\nqw\\app\\default'});
+});
+
+// 客户端断开连接
+msgserver.on('offline', function (id) {
+  killWorker(parseInt(id), false);
 });
 
 
@@ -54,6 +59,7 @@ msgserver.on('online', function (id) {
 // 启动Worker
 var workers = global.QuickWeb.master.workers = [];
 
+// 启动Worker进程
 var forkWorker = function () {
   var worker = cluster.fork();
   msgserver.addAccount('' + worker.pid);
@@ -62,10 +68,13 @@ var forkWorker = function () {
 }
 global.QuickWeb.master.forkWorker = forkWorker;
 
-var killWorker = function (pid) {
-  process.kill(pid);
+// 杀死Worker进程
+var killWorker = function (pid, donotKill) {
+  if (donotKill !== false)
+    process.kill(pid);
   var i = workers.indexOf(pid);
   delete workers[i];
+  delete workerStatus[pid];
   debug('kill pid=' + pid);
 }
 global.QuickWeb.master.killWorker = killWorker;
@@ -74,6 +83,24 @@ if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
     serverConfig.cluster = os.cpus().length;
 for (var i = 0; i < serverConfig.cluster; i++)
   forkWorker();
+
+  
+// ----------------------------------------------------------------------------
+// Worker进程请求统计信息
+var workerStatus = global.QuickWeb.master.workerStatus = {}
+msgserver.on('message', function (client_id, to, msg) {
+    if (to !== 'connector_status')
+      return;
+      
+    workerStatus[client_id] = msg;
+});
+
+// 默认每隔1分钟更新一次
+if (isNaN(serverConfig['status update']['connector']))
+  serverConfig['status update']['connector'] = 60000;
+setInterval(function () {
+  msgserver.broadcast({cmd: 'connector status'});
+}, serverConfig['status update']['connector']);
 
 
 // ----------------------------------------------------------------------------
@@ -105,7 +132,7 @@ for (var i in htmlfiles) {
   connector.addFile('default', file);
 }
 
-// 管理权限认证
+// 管理权限验证
 var checkAuth = function (info) {
   if (!info)
     return false;

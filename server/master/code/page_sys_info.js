@@ -5,6 +5,7 @@
  
 var os = require('os'); 
 var quickweb = require('quickweb');
+var path = require('path');
  
 exports.path = '/page/sys_info';
 
@@ -36,6 +37,7 @@ var getSysInfo = function () {
                               , path    : process.execPath
                              }
                 , quickweb   :{ ver     : quickweb.version
+                              , path    : path.resolve(__dirname, '../../..')
                              }
                 }
   return sysinfo;

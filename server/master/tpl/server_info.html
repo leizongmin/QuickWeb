@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>QuickWeb配置</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="2">
+        <div style="text-align: center">QuickWeb配置</div>
+      </td>
+    </tr>
+    <tr>
+      <td width="200">启动进程数量</td>
+      <td><%= config.cluster %></td>
+    </tr>
+    <tr>
+      <td>服务器端口</td>
+      <td><%= config["listen http"] %></td>
+    </tr>
+    <tr>
+      <td>消息服务器</td>
+      <td><%= config.message %></td>
+    </tr>
+    <tr>
+      <td>管理服务器</td>
+      <td><%= (config.master.host + ":" + config.master.port) %></td>
+    </tr>
+    <tr>
+      <td>管理服务器账户</td>
+      <td><%= (config.master.admin) %></td>
+    </tr>
+  </table>
+</body>
+</html>
