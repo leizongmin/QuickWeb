@@ -2,7 +2,7 @@
   "name":           "quickweb",
   "main":           "./index.js",
   "version":        "0.3.0-pre",
-  "description":    "A Node.js application server & web utils",
+  "description":    "A Node.js application server",
   "author":         "leizongmin <leizongmin@gmail.com> (http://ucdok.com)",
   "repository": {
     "type": "git",
