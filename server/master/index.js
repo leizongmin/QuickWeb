@@ -32,7 +32,7 @@ global.QuickWeb.master = {applist: {}}
 
   
 // 载入服务器配置
-var serverConfig = require(path.resolve('./config'));
+var serverConfig = tool.requireFile(path.resolve('./config'));
 global.QuickWeb.master.config = serverConfig;
 
 // ----------------------------------------------------------------------------
@@ -46,10 +46,16 @@ msgserver.bind(serverConfig.message, function (err) {
 
 // 客户端连接成功
 msgserver.on('online', function (id) {
-  id = parseInt(id);
-  if (workers.indexOf(id) === -1)
-    workers.push(id);
-  debug('worker ' + id + ' online');
+  var pid = parseInt(id);
+  if (workers.indexOf(pid) === -1)
+    workers.push(pid);
+  debug('worker ' + pid + ' online');
+  
+  // 让客户端加载已载入的应用
+  for (var i in global.QuickWeb.master.applist) {
+    var dir = global.QuickWeb.master.applist[i];
+    msgserver.broadcast({cmd: 'load app', dir: dir});
+  }
 });
 
 // 客户端断开连接
@@ -162,7 +168,7 @@ connector.addApp('default', {appdir: masterPath});
 // 载入code目录里面的所有js文件
 var codefiles = tool.listdir(masterPath + '/code', '.js').file;
 for (var i in codefiles) {
-  var m = require(codefiles[i]);
+  var m = tool.requireFile(codefiles[i]);
   connector.addCode('default', m);
 }
 

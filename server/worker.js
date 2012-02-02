@@ -29,7 +29,7 @@ else {
 global.QuickWeb.worker = {applist: {}}
 
 // 载入服务器配置
-var serverConfig = require(path.resolve('./config'));
+var serverConfig = tool.requireFile(path.resolve('./config'));
 global.QuickWeb.worker.config = serverConfig;
 
 // 全局路由
@@ -50,7 +50,7 @@ for (var i in serverConfig['listen http']) {
   var server = http.createServer(connector.listener());
   server.listen(port);
   listenHttp[port] = server;
-  console.log('listen on port ' + port + '...');
+  debug('listen on port ' + port + '...');
 }
 global.QuickWeb.worker.listen = listenHttp;
 
@@ -66,7 +66,7 @@ msgclient.connect(serverConfig.message, function (err) {
   }
 });
 
-msgclient.on('broadcast', function (client_id, msg) {
+var msgListener = function (client_id, msg) {
   debug('on broadcast');
   // 载入应用
   if (msg.cmd === 'load app') {
@@ -83,7 +83,9 @@ msgclient.on('broadcast', function (client_id, msg) {
     debug('update connector status');
     msgclient.send('connector_status', connector.status);
   }
-});
+}
+msgclient.on('broadcast', msgListener);
+
 
 // 发送心跳信息 默认30秒
 if (isNaN(serverConfig['status update']['worker heartbeat']))
@@ -114,10 +116,15 @@ var loadApp = function (dir) {
   // 应用名称
   var appname = path.basename(dir);
   
+  // 检查应用是否已加载过
+  if (appname in global.QuickWeb.worker.applist) {
+    debug('load app ignore: ' + appname + ' has in loaded.');
+    return;
+  }
+  
   // 载入应用配置及路由表
-  var appconf = require(dir + '/config');
+  var appconf = tool.requireFile(dir + '/config');
   var approute = fs.readFileSync(dir + '/route.txt', 'utf8').split(/\r?\n/);
-  console.log(appconf, approute);
   
   // 添加应用
   appconf.appdir = dir;
@@ -171,6 +178,9 @@ var loadApp = function (dir) {
         break;
     }
   }
+  
+  // 保存到应用列表
+  global.QuickWeb.worker.applist[appname] = dir;
 }
 
 /**
@@ -185,4 +195,7 @@ var unloadApp = function (dir) {
   
   // 删除应用
   connector.removeApp(appname);
+  
+  // 删除应用列表
+  delete global.QuickWeb.worker.applist[appname];
 }
