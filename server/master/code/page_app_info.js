@@ -24,7 +24,7 @@ exports.get = function (req, res) {
     appname = path.basename(appdir);
     
   // 载入应用配置及路由表
-  var appconf = tool.requireFile(appdir + '/config');
+  var appconf = tool.requireFile(appdir + '/config.js');
   var approute = fs.readFileSync(appdir + '/route.txt', 'utf8').split(/\r?\n/);
   for (var i in approute) {
     var line = approute[i].split('\t');

@@ -34,10 +34,10 @@ exports.run = function () {
   L('');
   L('option:');
   L('  -init-app          create an app');
-  L('  -init              create an server');
-  L('  -update-route      update app route');
+  L('  -init              create a server');
+  L('  -update-route      update app route info');
   L('  -update-compress   update compress file');
-  L('  -benchmark         ');
+  L('  -benchmark         a simple benchmark test program');
   L('  -start             start server');
   L('  -help              show this information');
   L('');

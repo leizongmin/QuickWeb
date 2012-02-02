@@ -34,7 +34,13 @@ exports.run = function (serverdir) {
   debug('start server on path ' + serverdir);
   
   // 载入服务器配置
-  var conf = require(path.resolve(serverdir, 'config'));
+  try {
+    var conf = require(path.resolve(serverdir, 'config'));
+  }
+  catch (err) {
+    console.log('Cannot find config file "config.js" on "' + serverdir + '"');
+    return 0;
+  }
   
   // 启动进程
   if (cluster.isMaster) {

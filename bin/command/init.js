@@ -35,8 +35,10 @@ exports.run = function (appdir) {
   // 创建目录
   fs.mkdir(path.resolve(appdir, 'app'));
   
-  // 创建文件
-  fs.writeFileSync(path.resolve(appdir, 'config.json'), JSON.stringify({}));
+  // 创建配置文件
+  var defaultconf = fs.readFileSync( path.resolve(__dirname
+                                   , '__server_config.js'));
+  fs.writeFileSync(path.resolve(appdir, 'config.js'), defaultconf);
   
   console.log('ok.');
   return 1;

@@ -36,10 +36,14 @@ exports.run = function (appdir) {
   fs.mkdir(path.resolve(appdir, 'code'));
   fs.mkdir(path.resolve(appdir, 'html'));
   fs.mkdir(path.resolve(appdir, 'tpl'));
-  fs.mkdir(path.resolve(appdir, 'config'));
   
-  // 创建文件
-  fs.writeFileSync(path.resolve(appdir, 'config.json'), JSON.stringify({}));
+  // 创建配置文件
+  var defaultconf = fs.readFileSync( path.resolve(__dirname
+                                   , '__app_config.js'));
+  fs.writeFileSync(path.resolve(appdir, 'config.js'), defaultconf);
+  
+  // 空白的路由信息文件
+  fs.writeFileSync(path.resolve(appdir, 'route.txt'), '');
   
   console.log('ok.');
   return 1;

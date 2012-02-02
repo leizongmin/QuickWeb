@@ -1,4 +1,8 @@
+dir	.gzip
+dir	.gzip/help
 dir	help
+file	.gzip/help/index.html
+file	.gzip/index.css
 file	help/index.html
 file	index.css
 code	index.js

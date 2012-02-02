@@ -1,8 +1,0 @@
-{
-  "host":   ["a.ucdok.com", "b.ucdok.com", "localhost", "127.0.0.1"],
-  "path":   "/",
-  
-  "response": {
-    "enable gzip":  true
-  }
-}

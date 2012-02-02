@@ -29,7 +29,7 @@ else {
 global.QuickWeb.worker = {applist: {}}
 
 // 载入服务器配置
-var serverConfig = tool.requireFile(path.resolve('./config'));
+var serverConfig = tool.requireFile(path.resolve('./config.js'));
 global.QuickWeb.worker.config = serverConfig;
 
 // 全局路由
@@ -123,7 +123,7 @@ var loadApp = function (dir) {
   }
   
   // 载入应用配置及路由表
-  var appconf = tool.requireFile(dir + '/config');
+  var appconf = tool.requireFile(dir + '/config.js');
   var approute = fs.readFileSync(dir + '/route.txt', 'utf8').split(/\r?\n/);
   
   // 添加应用
