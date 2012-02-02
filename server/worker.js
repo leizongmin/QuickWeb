@@ -26,15 +26,21 @@ else {
 
 
 // 设置全局变量
-global.QuickWeb.worker = {}
+global.QuickWeb.worker = {applist: {}}
 
 // 载入服务器配置
-var serverConfig = require(path.resolve('./config.json'));
+var serverConfig = require(path.resolve('./config'));
 global.QuickWeb.worker.config = serverConfig;
 
 // 全局路由
 var connector = quickweb.Connector.create();
 global.QuickWeb.worker.connector = connector;
+
+// Connector插件
+if (typeof serverConfig.onExtend === 'function')
+  connector.onExtend = serverConfig.onExtend;
+if (typeof serverConfig.onRequest === 'function')
+  connector.onRequest = serverConfig.onRequest;
 
 // ----------------------------------------------------------------------------
 // 监听端口
@@ -109,7 +115,7 @@ var loadApp = function (dir) {
   var appname = path.basename(dir);
   
   // 载入应用配置及路由表
-  var appconf = require(dir + '/config.json');
+  var appconf = require(dir + '/config');
   var approute = fs.readFileSync(dir + '/route.txt', 'utf8').split(/\r?\n/);
   console.log(appconf, approute);
   

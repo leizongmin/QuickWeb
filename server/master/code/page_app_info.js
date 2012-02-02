@@ -22,7 +22,7 @@ exports.get = function (req, res) {
     appname = path.basename(appdir);
     
   // 载入应用配置及路由表
-  var appconf = require(appdir + '/config.json');
+  var appconf = require(appdir + '/config');
   var approute = fs.readFileSync(appdir + '/route.txt', 'utf8').split(/\r?\n/);
   for (var i in approute) {
     var line = approute[i].split('\t');

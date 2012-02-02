@@ -32,7 +32,7 @@ global.QuickWeb.master = {applist: {}}
 
   
 // 载入服务器配置
-var serverConfig = require(path.resolve('./config.json'));
+var serverConfig = require(path.resolve('./config'));
 global.QuickWeb.master.config = serverConfig;
 
 // ----------------------------------------------------------------------------

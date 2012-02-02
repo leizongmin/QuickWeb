@@ -34,7 +34,7 @@ exports.run = function (serverdir) {
   debug('start server on path ' + serverdir);
   
   // 载入服务器配置
-  var conf = require(path.resolve(serverdir, 'config.json'));
+  var conf = require(path.resolve(serverdir, 'config'));
   
   // 启动进程
   if (cluster.isMaster) {
