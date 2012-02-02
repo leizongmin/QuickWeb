@@ -37,11 +37,19 @@
         <div style="text-align: center">Request对象配置</div>
       </td>
     </tr>
-    <% for (var i in config.request) { %>
+    <% for (var i in config.request) { if (i === "event") continue; %>
     <tr>
       <td width="200"><%= i %></td>
       <td><%= config.request[i] %></td>
     </tr>
+    <% } %>
+    <% if (config.request.event) { %>
+    <% for (var i in config.request.event) { %>
+    <tr>
+      <td><%= i %> 事件</td>
+      <td>有</td>
+    </tr>
+    <% } %>
     <% } %>
   </table>
   
@@ -51,11 +59,19 @@
         <div style="text-align: center">Response对象配置</div>
       </td>
     </tr>
-    <% for (var i in config.response) { %>
+    <% for (var i in config.response) { if (i === "event") continue; %>
     <tr>
       <td width="200"><%= i %></td>
       <td><%= config.response[i] %></td>
     </tr>
+    <% } %>
+    <% if (config.response.event) { %>
+    <% for (var i in config.response.event) { %>
+    <tr>
+      <td><%= i %> 事件</td>
+      <td>有</td>
+    </tr>
+    <% } %>
     <% } %>
   </table>
   

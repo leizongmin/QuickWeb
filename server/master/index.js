@@ -119,16 +119,26 @@ msgserver.on('message', function (client_id, to, msg) {
   
 // Worker进程异常信息
 var exceptions = global.QuickWeb.master.workerException = [];
+
+// 记录的进程异常信息数量 默认50条
+if (isNaN(serverConfig['exception log size']))
+  serverConfig['exception log size'] = 50;
+
+// 记录异常信息
+var pushExceptions = function (pid, err) {
+  exceptions.push({ pid:        pid
+                  , timestamp:  new Date().getTime()
+                  , error:      err
+                  });
+  if (exceptions.length > serverConfig['exception log size'])
+    exceptions.shift();
+}
+
 msgserver.on('message', function (client_id, to, msg) {
   if (to !== 'uncaughtException')
     return;
     
-  exceptions.push({ pid: client_id
-                  , timestamp: new Date().getTime()
-                  , error: msg
-                  });
-  if (exceptions.length > 20)
-    exceptions.shift();
+  pushExceptions(client_id, msg);
 }); 
   
 
@@ -196,3 +206,11 @@ var checkAuth = function (info) {
     return false;
 }
 global.QuickWeb.master.checkAuth = checkAuth;
+
+
+// ----------------------------------------------------------------------------
+// 进程异常  
+process.on('uncaughtException', function (err) {
+  debug(err.stack);
+  pushExceptions(process.pid, err.stack);
+});

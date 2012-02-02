@@ -33,6 +33,34 @@
       <td>管理服务器账户</td>
       <td><%= (config.master.admin) %></td>
     </tr>
+    <tr>
+      <td>onRequest插件</td>
+      <td><%= (typeof config.onRequest === "function" ? "有" : "无") %></td>
+    </tr>
+    <tr>
+      <td>onExtend插件</td>
+      <td><%= (typeof config.onExtend === "function" ? "有" : "无") %></td>
+    </tr>
+    <tr>
+      <td>更新请求统计周期</td>
+      <td><%= config["status update"]["connector"] %> ms</td>
+    </tr>
+    <tr>
+      <td>更新系统资源占用周期</td>
+      <td><%= config["status update"]["load line"] %> ms</td>
+    </tr>
+    <tr>
+      <td>系统资源占用数据数量</td>
+      <td><%= config["status update"]["load line size"] %></td>
+    </tr>
+    <tr>
+      <td>Worker进程心跳周期</td>
+      <td><%= config["status update"]["worker heartbeat"] %> ms</td>
+    </tr>
+    <tr>
+      <td>记录进程异常信息数量</td>
+      <td><%= config["exception log size"] %></td>
+    </tr>
   </table>
 </body>
 </html>
