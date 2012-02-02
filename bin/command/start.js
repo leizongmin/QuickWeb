@@ -24,29 +24,37 @@ else
  * @return {int}
  */
 exports.run = function (serverdir) {
-  // 默认使用当前目录
-  if (typeof serverdir != 'string')
-    serverdir = process.cwd();
-  else {
-    process.chdir(serverdir);
-    serverdir = path.resolve(serverdir);
-  }
-  debug('start server on path ' + serverdir);
-  
-  // 载入服务器配置
-  try {
-    var conf = require(path.resolve(serverdir, 'config'));
-  }
-  catch (err) {
-    console.log('Cannot find config file "config.js" on "' + serverdir + '"');
-    return 0;
-  }
-  
-  // 启动进程
+  // Master进程
   if (cluster.isMaster) {
+    
+    // 默认使用当前目录
+    if (typeof serverdir != 'string')
+      serverdir = process.cwd();
+    else {
+      serverdir = path.resolve(serverdir);
+      if (!path.existsSync(serverdir)) {
+        console.error('path ' + serverdir + ' is not exists!');
+        return -1;
+      }
+      process.chdir(serverdir);
+    }
+    debug('start server on path ' + serverdir);
+    
+    // 载入服务器配置
+    try {
+      var conf = require(path.resolve(serverdir, 'config'));
+    }
+    catch (err) {
+      console.error('Cannot find config file "config.js" on "' + serverdir + '"');
+      return 0;
+    }
+    
     require('../../server/master');
   }
+  
+  // Worker进程
   else {
+    debug('start worker ' + process.pid);
     require('../../server/worker');
   }
   

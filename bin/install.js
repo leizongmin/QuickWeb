@@ -50,12 +50,17 @@ if (/Windows/ig.test(os_type)) {
 else {
   line('Install QuickWeb on Unix/Linux...');
   
-  var filename = path.resolve(__dirname, 'quickweb.js');
+  var filename = path.resolve(__dirname, 'quickweb');
   var binname = '/usr/bin/quickweb';
   var cmd1 = 'ln -s -f ' + filename + ' /usr/bin';
   var cmd2 = 'chmod 777 ' + binname;
   line(cmd1 + '\n' + cmd2);
+  
   try {
+  
+    var cmdscript = fs.readFileSync(filename + '.js');
+    fs.writeFileSync(filename, cmdscript);
+    
     exec(cmd1, function (error, stdout, stderr) {
       if (error)
         line(error.stack);
@@ -73,6 +78,7 @@ else {
     line(err.stack);
     line('======================================================');
     line('Please run this command to finish install QuickWeb:\n' + cmd1 + '\n' + cmd2);
+    finishInstall();
   }
 }
 
