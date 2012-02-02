@@ -4,6 +4,8 @@
  
 var fs = require('fs'); 
 var path = require('path'); 
+var quickweb = require('quickweb');
+var tool = quickweb.import('tool');
  
 exports.path = '/page/app_list';
 
@@ -28,7 +30,7 @@ exports.get = function (req, res) {
                    ? true : false;
         data[app.name] = app;
       }
-      res.renderFile('app_list.html', {app: data});
+      res.renderFile('app_list.html', {app: data, message: res.___message});
     }
   });
 }
@@ -49,20 +51,50 @@ exports.post = function (req, res) {
     var msgserver = global.QuickWeb.master.msgserver;
     var applist = global.QuickWeb.master.applist;
     
+    // 加载应用
     if (op === 'load') {
       // 向各个Worker进程广播载入应用指令
       msgserver.broadcast({cmd: 'load app', dir: appPath});
       // 更新应用状态
       applist[appName] = appPath;
+      // 显示应用列表
+      exports.get(req, res);
     }
-    else {
+    
+    // 卸载应用
+    else if (op === 'unload') {
       // 向各个Worker进程广播卸载应用指令
       msgserver.broadcast({cmd: 'unload app', dir: appPath});
       // 更新应用状态
       delete applist[appName];
+      // 显示应用列表
+      exports.get(req, res);
     }
     
-    // 显示应用列表
-    exports.get(req, res);
+    // 更新路由信息
+    else if (op === 'update_route') {
+      tool.quickwebCmd( ['-update-route', appPath]
+                      , function (err, stdout, stderr) {
+        if (err)
+          res.sendError(500, err.stack);
+        else {
+          res.___message = stdout + stderr;
+          exports.get(req, res);
+        }
+      });
+    }
+    
+    // 更新压缩文件
+    else if (op === 'update_compress') {
+      tool.quickwebCmd( ['-update-compress', appPath]
+                      , function (err, stdout, stderr) {
+        if (err)
+          res.sendError(500, err.stack);
+        else {
+          res.___message = stdout + stderr;
+          exports.get(req, res);
+        }
+      });
+    }
   });
 }
