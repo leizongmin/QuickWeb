@@ -35,13 +35,18 @@ exports.post = function (req, res) {
     if (op === 'kill' || op === 'restart') {
       // 杀死进程
       cluster.kill(pid);
+      cluster.once('death', function (w) {
+        // 显示进程列表
+        exports.get(req, res);
+      });
     }
     if (op === 'fork' || op === 'restart') {
       // 增加一个进程
       cluster.fork();
+      if (op === 'fork') {
+        // 显示进程列表
+        exports.get(req, res);
+      }
     }
-    
-    // 显示进程列表
-    exports.get(req, res);
   });
 }
