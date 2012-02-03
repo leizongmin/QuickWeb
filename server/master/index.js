@@ -117,7 +117,7 @@ global.QuickWeb.master.checkAuth = checkAuth;
 if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
     serverConfig.cluster = os.cpus().length;
 for (var i = 0; i < serverConfig.cluster; i++)
-  cluster.fork();
+  cluster.fork(true);
   
 // 消息处理
 require('./message');  

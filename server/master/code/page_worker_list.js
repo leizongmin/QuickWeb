@@ -42,7 +42,7 @@ exports.post = function (req, res) {
     }
     if (op === 'fork' || op === 'restart') {
       // 增加一个进程
-      cluster.fork();
+      cluster.fork(true);
       if (op === 'fork') {
         // 显示进程列表
         exports.get(req, res);
