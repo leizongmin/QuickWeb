@@ -7,16 +7,36 @@
  
  
 var http = require('http'); 
+var os = require('os');
 
-// 仅支持v0.6.0以上的Node
-var vers = process.version.substr(1).split('.');
-if (Number(vers[0]) < 1 && Number(vers[1]) < 6)
-  throw Error('QuickWeb must be run in Node v0.6.0 or upper version!');
- 
  
 // 版本号
 exports.version = '0.3.0-pre'; 
 
+// QuickWeb信息
+exports.quickweb_path = __dirname;      // 模块目录
+if (/Windows/ig.test(os.type())) {      // 操作系统类型
+  exports.isWindows = true;
+  exports.isLinux = false;
+}
+else {
+  exports.isWindows = false;
+  exports.isLinux = true;
+}
+exports.cpu_num = os.cpus().length;     // CPU个数
+
+// Node.js版本
+exports.node_version = process.version.substr(1).split('.');
+for (var i in exports.node_version)
+  exports.node_version[i] = parseInt(exports.node_version[i]);
+
+// 仅支持v0.6.0以上的Node
+if (exports.node_version[0] < 1 && exports.node_version[1] < 6) {
+  console.error(Error(
+      'QuickWeb must be run in Node v0.6.0 or upper version!').stack);
+  process.exit(-1);
+}  
+ 
  
  
 // 服务管理器 
@@ -58,3 +78,8 @@ exports.extendRequest = function (obj, conf) {
 exports.extendResponse = function (obj, conf) {
   return exports.ServerResponse.extend(obj, conf);
 }
+
+
+
+// 增强的Cluster模块
+exports.Cluster = require('./lib/Cluster');
