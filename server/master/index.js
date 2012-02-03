@@ -8,114 +8,37 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var cluster = require('cluster');
 var os = require('os');
-var msgbus = require('msgbus');
 var quickweb = require('quickweb');
 var tool = quickweb.import('tool');
+var cluster = quickweb.Cluster;
 
 
 var debug;
-var isDebug;
-if (process.env.QUICKWEB_DEBUG && /master/.test(process.env.QUICKWEB_DEBUG)) {
+if (process.env.QUICKWEB_DEBUG && /master/.test(process.env.QUICKWEB_DEBUG))
   debug = function(x) { console.error('master: %s', x); };
-  isDebug = true;
-}
-else {
+else
   debug = function() { };
-  isDebug = false;
-}
+
+
+// global.QuickWeb.master.applist         应用列表 
+// global.QuickWeb.master.config          服务器配置信息 
+// global.QuickWeb.master.pushExceptions  记录进程异常信息
+// global.QuickWeb.master.workerException 进程异常数组
+// global.QuickWeb.master.workerStatus    进程请求统计信息
+// global.QuickWeb.master.connector       管理服务器Connector对象
+// global.QuickWeb.master.path            服务器路径
+// global.QuickWeb.master.checkAuth       验证管理权限
 
 
 // 设置全局变量
 global.QuickWeb.master = {applist: {}}
 
-  
+
 // 载入服务器配置
 var serverConfig = tool.requireFile(path.resolve('./config.js'));
 global.QuickWeb.master.config = serverConfig;
 
-// ----------------------------------------------------------------------------
-// 启动消息服务端
-var msgserver = msgbus.createServer({debug: isDebug});
-global.QuickWeb.master.msgserver = msgserver;
-msgserver.bind(serverConfig.message, function (err) {
-  if (err)
-    throw err;
-});
-
-// 客户端连接成功
-msgserver.on('online', function (id) {
-  var pid = parseInt(id);
-  if (workers.indexOf(pid) === -1)
-    workers.push(pid);
-  debug('worker ' + pid + ' online');
-  
-  // 让客户端加载已载入的应用
-  for (var i in global.QuickWeb.master.applist) {
-    var dir = global.QuickWeb.master.applist[i];
-    msgserver.broadcast({cmd: 'load app', dir: dir});
-  }
-});
-
-// 客户端断开连接
-msgserver.on('offline', function (id) {
-  killWorker(parseInt(id));
-});
-
-
-// ----------------------------------------------------------------------------
-// 启动Worker
-var workers = global.QuickWeb.master.workers = [];
-
-// 启动Worker进程
-var forkWorker = function () {
-  var worker = cluster.fork();
-  msgserver.addAccount('' + worker.pid);
-  workers.push(worker.pid);
-  debug('fork pid=' + worker.pid);
-}
-global.QuickWeb.master.forkWorker = forkWorker;
-
-// 杀死Worker进程
-var killWorker = function (pid, isAdmin) {
-  // 结束进程
-  try {
-    process.kill(pid);
-  }
-  catch (err) {
-    debug('kill worker ' + pid + ' error: ' + err.stack);
-  }
-  
-  // 删除进程信息
-  var i = workers.indexOf(pid);
-  workers.splice(i, 1);
-  delete workerStatus[pid];
-  debug('kill pid=' + pid);
-  
-  // 如果不是管理员进行的操作，则认为是进程异常退出
-  // ，自动启动一个新进程
-  if (isAdmin !== true && i !== -1) {
-    debug(pid + ' has died, auto restart.');
-    forkWorker();
-  }
-}
-global.QuickWeb.master.killWorker = killWorker;
-
-if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
-    serverConfig.cluster = os.cpus().length;
-for (var i = 0; i < serverConfig.cluster; i++)
-  forkWorker();
-
-// Worker心跳
-msgserver.on('message', function (client_id, to, msg) {
-  if (to !== 'heartbeat')
-    return;
-    
-  var pid = msg;
-  if (workers.indexOf(pid) === -1)
-    workers.push(pid);
-}); 
   
 // Worker进程异常信息
 var exceptions = global.QuickWeb.master.workerException = [];
@@ -133,31 +56,12 @@ var pushExceptions = function (pid, err) {
   if (exceptions.length > serverConfig['exception log size'])
     exceptions.shift();
 }
+global.QuickWeb.master.pushExceptions = pushExceptions;
 
-msgserver.on('message', function (client_id, to, msg) {
-  if (to !== 'uncaughtException')
-    return;
-    
-  pushExceptions(client_id, msg);
-}); 
-  
-
-// ----------------------------------------------------------------------------
 // Worker进程请求统计信息
 var workerStatus = global.QuickWeb.master.workerStatus = {}
-msgserver.on('message', function (client_id, to, msg) {
-    if (to !== 'connector_status')
-      return;
-      
-    workerStatus[client_id] = msg;
-});
 
-// 默认每隔1分钟更新一次
-if (isNaN(serverConfig['status update']['connector']))
-  serverConfig['status update']['connector'] = 60000;
-setInterval(function () {
-  msgserver.broadcast({cmd: 'connector status'});
-}, serverConfig['status update']['connector']);
+ 
 
 
 // ----------------------------------------------------------------------------
@@ -207,6 +111,17 @@ var checkAuth = function (info) {
 }
 global.QuickWeb.master.checkAuth = checkAuth;
 
+
+// ----------------------------------------------------------------------------
+// 启动Worker进程
+if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
+    serverConfig.cluster = os.cpus().length;
+for (var i = 0; i < serverConfig.cluster; i++)
+  cluster.fork();
+  
+// 消息处理
+require('./message');  
+  
 
 // ----------------------------------------------------------------------------
 // 进程异常  

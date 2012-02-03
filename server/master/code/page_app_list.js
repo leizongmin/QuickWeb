@@ -6,6 +6,7 @@ var fs = require('fs');
 var path = require('path'); 
 var quickweb = require('quickweb');
 var tool = quickweb.import('tool');
+var cluster = quickweb.Cluster;
  
 exports.path = '/page/app_list';
 
@@ -48,13 +49,12 @@ exports.post = function (req, res) {
     var appPath = req.post.path;
     var appName = req.post.name;
     
-    var msgserver = global.QuickWeb.master.msgserver;
     var applist = global.QuickWeb.master.applist;
     
     // 加载应用
     if (op === 'load') {
       // 向各个Worker进程广播载入应用指令
-      msgserver.broadcast({cmd: 'load app', dir: appPath});
+      cluster.broadcast({cmd: 'load app', dir: appPath});
       // 更新应用状态
       applist[appName] = appPath;
       // 显示应用列表
@@ -64,7 +64,7 @@ exports.post = function (req, res) {
     // 卸载应用
     else if (op === 'unload') {
       // 向各个Worker进程广播卸载应用指令
-      msgserver.broadcast({cmd: 'unload app', dir: appPath});
+      cluster.broadcast({cmd: 'unload app', dir: appPath});
       // 更新应用状态
       delete applist[appName];
       // 显示应用列表

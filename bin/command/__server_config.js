@@ -10,9 +10,6 @@ module.exports = {
   // 监听的端口
 , "listen http":  [8080]
   
-  // 消息服务器，可以为Unix Socket
-, "message":      "127.0.0.1:8851"
-  
   // 管理界面
 , "master": {
     "port":       8850           // 端口

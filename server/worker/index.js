@@ -8,22 +8,24 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var msgbus = require('msgbus');
 var quickweb = require('quickweb');
 var tool = quickweb.import('tool');
+var cluster = quickweb.Cluster;
 
 
 var debug;
-var isDebug;
-if (process.env.QUICKWEB_DEBUG && /worker/.test(process.env.QUICKWEB_DEBUG)) {
+if (process.env.QUICKWEB_DEBUG && /worker/.test(process.env.QUICKWEB_DEBUG))
   debug = function(x) { console.error('worker %s: %s', process.pid, x); };
-  isDebug = true;
-}
-else {
+else
   debug = function() { };
-  isDebug = false;
-}
 
+
+// global.QuickWeb.worker.applist           应用列表
+// global.QuickWeb.worker.config            服务器配置
+// global.QuickWeb.worker.connector         Connector对象
+// global.QuickWeb.worker.listen            监听的httpServer对象
+// global.QuickWeb.worker.loadApp           载入指定应用
+// global.QuickWeb.worker.unloadApp         卸载指定应用
 
 // 设置全局变量
 global.QuickWeb.worker = {applist: {}}
@@ -54,46 +56,8 @@ for (var i in serverConfig['listen http']) {
 }
 global.QuickWeb.worker.listen = listenHttp;
 
-// ----------------------------------------------------------------------------
-// 启动消息客户端
-var msgclient = msgbus.createClient({debug: isDebug});
-global.QuickWeb.worker.msgclient = msgclient;
-msgclient.connect(serverConfig.message, function (err) {
-  if (err)
-    throw err;
-  else {
-    msgclient.identify('' + process.pid);
-  }
-});
-
-var msgListener = function (client_id, msg) {
-  debug('on broadcast');
-  // 载入应用
-  if (msg.cmd === 'load app') {
-    debug('load app path: ' + msg.dir);
-    loadApp(msg.dir);
-  }
-  // 卸载应用
-  else if (msg.cmd === 'unload app') {
-    debug('unload app path: ' + msg.dir);
-    unloadApp(msg.dir);
-  }
-  // 提交请求信息
-  else if (msg.cmd === 'connector status') {
-    debug('update connector status');
-    msgclient.send('connector_status', connector.status);
-  }
-}
-msgclient.on('broadcast', msgListener);
-
-
-// 发送心跳信息 默认30秒
-if (isNaN(serverConfig['status update']['worker heartbeat']))
-  serverConfig['status update']['worker heartbeat'] = 30000;
-setInterval(function () {
-  msgclient.send('heartbeat', process.pid);
-}, serverConfig['status update']['worker heartbeat']);
-  
+// 消息处理
+require('./message');
 
 
 // ----------------------------------------------------------------------------
@@ -101,8 +65,17 @@ setInterval(function () {
 process.on('uncaughtException', function (err) {
   debug(err.stack);
   // 发送出错信息
-  msgclient.send('uncaughtException', err.stack);
+  cluster.send({cmd: 'uncaughtException', data: err.stack});
 });
+
+// 默认每隔1分钟更新一次提交请求统计信息
+if (isNaN(serverConfig['status update']['connector']))
+  serverConfig['status update']['connector'] = 60000;
+setInterval(function () {
+  debug('update connector status');
+  cluster.send({cmd: 'connector status', data: connector.status});
+}, serverConfig['status update']['connector']);
+
 
   
 // ----------------------------------------------------------------------------
@@ -182,6 +155,7 @@ var loadApp = function (dir) {
   // 保存到应用列表
   global.QuickWeb.worker.applist[appname] = dir;
 }
+global.QuickWeb.worker.loadApp = loadApp;
 
 /**
  * 卸载指定应用
@@ -199,3 +173,4 @@ var unloadApp = function (dir) {
   // 删除应用列表
   delete global.QuickWeb.worker.applist[appname];
 }
+global.QuickWeb.worker.unloadApp = unloadApp;

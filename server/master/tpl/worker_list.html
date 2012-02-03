@@ -13,10 +13,10 @@
     </tr>
     <% for (var i in worker) { %>
     <tr>
-      <td><span class="worker-pid"><%= worker[i] %></span></td>
+      <td><span class="worker-pid"><%= worker[i].pid %></span></td>
       <td><span class="worker-op">
-        <button onclick="restartWorker(<%= worker[i] %>)">重启</button>
-        <button onclick="killWorker(<%= worker[i] %>)">结束</button>
+        <button onclick="restartWorker(<%= worker[i].pid %>)">重启</button>
+        <button onclick="killWorker(<%= worker[i].pid %>)">结束</button>
       </span></td>
     </tr>
     <% } %>

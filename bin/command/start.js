@@ -6,7 +6,8 @@
  */
 
 var path = require('path');
-var cluster = require('cluster');
+var quickweb = require('quickweb');
+var cluster = quickweb.Cluster;
 
 
 var debug;

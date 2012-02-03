@@ -3,6 +3,9 @@
  *
  */
  
+var quickweb = require('quickweb');
+var cluster = quickweb.Cluster; 
+ 
 exports.path = '/page/worker_list';
 
 // 进程列表
@@ -13,7 +16,7 @@ exports.get = function (req, res) {
     return;
   }
   
-  var workers = global.QuickWeb.master.workers;
+  var workers = cluster.workers;
   res.renderFile('worker_list.html', {worker: workers});
 }
 
@@ -31,11 +34,11 @@ exports.post = function (req, res) {
     
     if (op === 'kill' || op === 'restart') {
       // 杀死进程
-      global.QuickWeb.master.killWorker(pid, true);
+      cluster.kill(pid);
     }
     if (op === 'fork' || op === 'restart') {
       // 增加一个进程
-      global.QuickWeb.master.forkWorker();
+      cluster.fork();
     }
     
     // 显示进程列表
