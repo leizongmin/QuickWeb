@@ -8,6 +8,7 @@
 var path = require('path');
 var quickweb = require('../../');
 var cluster = quickweb.Cluster;
+var utils = require('./__utils');
 
 
 var debug;
@@ -27,38 +28,38 @@ else
 exports.run = function (serverdir) {
   // Master进程
   if (cluster.isMaster) {
-    
-    // 默认使用当前目录
-    if (typeof serverdir != 'string')
-      serverdir = process.cwd();
-    else {
-      serverdir = path.resolve(serverdir);
-      if (!path.existsSync(serverdir)) {
-        console.error('path ' + serverdir + ' is not exists!');
-        return -1;
-      }
-      process.chdir(serverdir);
-    }
-    debug('start server on path ' + serverdir);
+    // 切换工作目录
+    utils.chdir(serverdir);
+    serverdir = process.cwd();
+    utils.log('start server on path "' + serverdir + '"');
     
     // 载入服务器配置
     try {
       var conf = require(path.resolve(serverdir, 'config'));
     }
     catch (err) {
-      console.error('Cannot find config file "config.js" on "' + serverdir + '"');
-      return 0;
+      utils.die('Cannot find config file "config.js" on "' + serverdir + '"');
     }
     
     require('../../server/master');
   }
-  
   // Worker进程
   else {
-    debug('start worker ' + process.pid);
+    utils.log('start worker ' + process.pid);
     require('../../server/worker');
   }
   
   return 0;
 }
 
+/**
+ * 帮助信息
+ */
+exports.help = function () {
+  var L = function (t) { console.log('  ' + t); }
+  L('start a QuickWeb server on specified directory.');
+  L('');
+  L('Examples:');
+  L('  quickweb -start            start server on current path');
+  L('  quickweb -start /server    start server on path /server');
+}

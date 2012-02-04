@@ -117,17 +117,19 @@ global.QuickWeb.master.processMonitor = processMonitor;
 var connector = quickweb.Connector.create();
 global.QuickWeb.master.connector = connector;
 
+var server_listen_addr = serverConfig.master.host + ':'
+                       + serverConfig.master.port;
 try {
   var server = http.createServer(connector.listener());
   server.listen(serverConfig.master.port, serverConfig.master.host);
-  debug('listen master server: ' + serverConfig.master.host + ':'
-        + serverConfig.master.port);
+  debug('listen master server: ' + server_listen_addr);
 }
 catch (err) {
-  console.error('Cannot create master server on ' + serverConfig.master.host
-                + ':' + serverConfig.master.port + '\n' + err.stack);
+  console.error('Cannot create master server on ' + server_listen_addr
+               + '\n' + err.stack);
   process.exit(-1);
 }
+console.log('Master server runing on ' + server_listen_addr);
         
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;

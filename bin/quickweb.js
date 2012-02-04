@@ -39,6 +39,6 @@ if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
 }
 
 if (ret === -1) {
-  console.log('run quickweb -help for help.');
+  console.log('Try "quickweb -help" for help.');
   process.exit();
 }

@@ -9,6 +9,7 @@ var quickweb = require('../../');
 var tool = quickweb.import('tool');
 var path = require('path');
 var fs = require('fs');
+var utils = require('./__utils');
 
 
 var debug;
@@ -26,33 +27,34 @@ else
  * @return {int}
  */
 exports.run = function (appdir) {
-  // 默认使用当前目录
-  if (typeof appdir != 'string')
-    appdir = process.cwd();
-  console.log('Scan dir ' + appdir);
+  // 切换工作目录
+  utils.chdir(appdir);
+  
+  var appdir = process.cwd();
+  utils.log('Scan app dir "' + appdir + '"...');
   
   // 读取html目录和code目录的文件结构
-  var phtml = path.resolve(appdir, 'html');
-  var pcode = path.resolve(appdir, 'code');
+  var phtml = path.resolve('html');
+  var pcode = path.resolve('code');
   var shtml = tool.listdir(phtml);
   var scode = tool.listdir(pcode, '.js');
   
   // 分析路径
   var ret = []
   // html目录
-  console.log('find ' + shtml.dir.length + ' dir(s)');
+  utils.log('find ' + shtml.dir.length + ' dir(s)');
   for (var i in shtml.dir) {
     var p = tool.relativePath(phtml, shtml.dir[i]);
     ret.push('dir\t' + p);
   }
   // html文件
-  console.log('find ' + shtml.file.length + ' static file(s)');
+  utils.log('find ' + shtml.file.length + ' static file(s)');
   for (var i in shtml.file) {
     var p = tool.relativePath(phtml, shtml.file[i]);
     ret.push('file\t' + p);
   }
   // 程序
-  console.log('find ' + scode.file.length + ' code file(s)');
+  utils.log('find ' + scode.file.length + ' code file(s)');
   for (var i in scode.file) {
     try {
       var m = require(scode.file[i]);
@@ -60,15 +62,28 @@ exports.run = function (appdir) {
       ret.push('code\t' + p);
     }
     catch (err) {
-      console.log('Load code file ' + scode.file[i] + ' error: ' + err.stack);
+      utils.log('Load code file ' + scode.file[i] + ' error: ' + err.stack);
     }
   }
   
-  // 保存文件
-  var sfn = path.resolve(appdir, 'route.txt');
-  fs.writeFileSync(sfn, ret.join('\n'));
-  console.log('Update file ' + sfn + ' success.');
-  console.log('ok.');
+  // 保存文件 route.txt
+  utils.mkfile('route.txt', ret.join('\n'));
+  
+  // 运行结束
+  utils.exit('OK.');
   
   return 1;
+}
+
+/**
+ * 帮助信息
+ */
+exports.help = function () {
+  var L = function (t) { console.log('  ' + t); }
+  L('update route file on specified app directory.');
+  L('analysis directory "html" and "code", create route table save on "route.txt"');
+  L('');
+  L('Examples:');
+  L('  quickweb -update-route              update route table on current app path');
+  L('  quickweb -update-route ./app/test1  update route table on path ./app/test1');
 }

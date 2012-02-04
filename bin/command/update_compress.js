@@ -11,6 +11,7 @@ var path = require('path');
 var fs = require('fs');
 var zlib = require('zlib');
 var mkdirp = require('mkdirp');
+var utils = require('./__utils');
 
 
 var debug;
@@ -28,24 +29,23 @@ else
  * @return {int}
  */
 exports.run = function (appdir) {
-  // 默认使用当前目录
-  if (typeof appdir != 'string')
-    appdir = process.cwd();
-  console.log('Scan dir ' + appdir);
+  // 切换工作目录
+  utils.chdir(appdir);
+  
+  var appdir = process.cwd();
+  utils.log('Scan app dir "' + appdir + '"...');
   
   // 读取html目录和code目录的文件结构
   var phtml = path.resolve(appdir, 'html');
   var shtml = tool.listdir(phtml);
   
-  // 创建目录
-  var gzipdir = path.resolve(appdir, 'html/.gzip');
-  if (!path.existsSync(gzipdir))
-    fs.mkdirSync(gzipdir);
-  for (var i in shtml.dir) {
-    var d = path.resolve(gzipdir, shtml.dir[i]);
-    if (!path.existsSync(d))
-      fs.mkdirSync(d);
-  }
+  // 检查是否存在html目录
+  if (!path.existsSync('html'))
+    utils.die('Cannot find html dir!');
+    
+  // 创建目录gzip目录
+  utils.mkdir('html/.gzip');
+  var gzipdir = path.resolve('html/.gzip');
   
   // 去除.gzip目录下的文件
   var list = [];
@@ -53,27 +53,27 @@ exports.run = function (appdir) {
     if (tool.relativePath(gzipdir, shtml.file[i]) === null)
       list.push(shtml.file[i]);
   }
-  console.log('Find ' + list.length + ' file(s)');
+  utils.log('Find ' + list.length + ' file(s)');
   
   // 压缩文件
   var compressFile = function () {
     var f = list.pop();
+    // 如果列表已空，则退出程序
     if (!f) {
-      console.log('ok');
-      process.exit();
+      utils.exit('OK.');
     }
     else {
-      console.log('Compress file ' + f);
+      utils.log('Compress file "' + f + '"...');
       var filename = f.substr(phtml.length + 1);
       var basedir = path.dirname(path.resolve(gzipdir, filename));
       mkdirp(basedir, 777, function (err) {
         zlib.gzip(fs.readFileSync(f), function (err, data) {
           if (err)
-            console.log('Error: ' + err.stack);
+            utils.log('Error: ' + err.stack);
           else {
             var sf = path.resolve(gzipdir, filename);
             fs.writeFileSync(sf, data);
-            console.log('Save as ' + sf);
+            utils.log('Save as "' + sf + '"');
           }
           compressFile();
         });
@@ -84,4 +84,19 @@ exports.run = function (appdir) {
   compressFile();
   
   return 0;
+}
+
+/**
+ * 帮助信息
+ */
+exports.help = function () {
+  var L = function (t) { console.log('  ' + t); }
+  L('update static compress file on specified app directory.');
+  L('scan html directory, the compress file save on html/.gzip directory');
+  L('');
+  L('Examples:');
+  L('  quickweb -update-compress               update compress file on current');
+  L('                                          app path');
+  L('  quickweb -update-compress ./app/test1   update compress file on path');
+  L('                                          ./app/test1');
 }

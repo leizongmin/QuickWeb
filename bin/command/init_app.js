@@ -9,6 +9,7 @@ var quickweb = require('../../');
 var tool = quickweb.import('tool');
 var path = require('path');
 var fs = require('fs');
+var utils = require('./__utils');
 
 
 var debug;
@@ -26,31 +27,33 @@ else
  * @return {int}
  */
 exports.run = function (appdir) {
-  // 默认使用当前目录
-  if (typeof appdir != 'string')
-    appdir = process.cwd();
-  else
-    appdir = path.resolve(appdir);
-  
-  if (!path.existsSync(appdir))
-    fs.mkdirSync(appdir);
-    
-  console.log('init app on path ' + appdir);
-  process.chdir(appdir);
+  // 切换工作目录
+  utils.chdir(appdir);
   
   // 创建目录
-  fs.mkdirSync('code');
-  fs.mkdirSync('html');
-  fs.mkdirSync('tpl');
+  utils.mkdir('code');
+  utils.mkdir('html');
+  utils.mkdir('tpl');
   
   // 创建配置文件
-  var defaultconf = fs.readFileSync( path.resolve(__dirname
-                                   , '__app_config.js'));
-  fs.writeFileSync('config.js', defaultconf);
+  utils.cpfile(path.resolve(__dirname, '__app_config.js'), 'config.js');
   
   // 空白的路由信息文件
-  fs.writeFileSync('route.txt', '');
+  utils.mkfile('route.txt', '');
   
-  console.log('ok.');
+  utils.exit('OK.');
   return 1;
+}
+
+/**
+ * 帮助信息
+ */
+exports.help = function () {
+  var L = function (t) { console.log('  ' + t); }
+  L('create a QuickWeb server app on specified directory.');
+  L('includes there directory "code", "html" and "tpl", a config file "config.js".');
+  L('');
+  L('Examples:');
+  L('  quickweb -init-app               create server app on current path');
+  L('  quickweb -init-app ./app/test1   create server app on path ./app/test1');
 }
