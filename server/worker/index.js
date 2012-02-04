@@ -8,7 +8,7 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var quickweb = require('quickweb');
+var quickweb = require('../../');
 var tool = quickweb.import('tool');
 var cluster = quickweb.Cluster;
 

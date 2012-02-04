@@ -4,7 +4,7 @@
  */
  
 var os = require('os'); 
-var quickweb = require('quickweb');
+var quickweb = require('../../../');
 var path = require('path');
  
 exports.path = '/page/sys_info';

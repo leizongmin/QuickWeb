@@ -4,7 +4,7 @@
  */
  
 var os = require('os'); 
-var quickweb = require('quickweb');
+var quickweb = require('../../../');
 var cluster = quickweb.Cluster;
  
 exports.path = '/page/load_line';

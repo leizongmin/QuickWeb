@@ -9,7 +9,7 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
-var quickweb = require('quickweb');
+var quickweb = require('../../');
 var tool = quickweb.import('tool');
 var cluster = quickweb.Cluster;
 var ProcessMonitor = quickweb.import('monitor.process');
@@ -117,11 +117,18 @@ global.QuickWeb.master.processMonitor = processMonitor;
 var connector = quickweb.Connector.create();
 global.QuickWeb.master.connector = connector;
 
-var server = http.createServer(connector.listener());
-server.listen(serverConfig.master.port, serverConfig.master.host);
-debug('listen master server: ' + serverConfig.master.host + ':'
-      + serverConfig.master.port);
-
+try {
+  var server = http.createServer(connector.listener());
+  server.listen(serverConfig.master.port, serverConfig.master.host);
+  debug('listen master server: ' + serverConfig.master.host + ':'
+        + serverConfig.master.port);
+}
+catch (err) {
+  console.error('Cannot create master server on ' + serverConfig.master.host
+                + ':' + serverConfig.master.port + '\n' + err.stack);
+  process.exit(-1);
+}
+        
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;
 
@@ -176,5 +183,12 @@ for (var i = 0; i < serverConfig.cluster; i++)
 // 进程异常  
 process.on('uncaughtException', function (err) {
   debug(err.stack);
-  pushExceptions(process.pid, err.stack);
+  // IPC通讯出错
+  if (err.toString().indexOf('write EINVAL - cannot write to IPC channel')) {
+    console.error(err.stack);
+    process.exit(-1);
+  }
+  else {
+    pushExceptions(process.pid, err.stack);
+  }
 });

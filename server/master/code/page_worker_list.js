@@ -3,7 +3,7 @@
  *
  */
  
-var quickweb = require('quickweb');
+var quickweb = require('../../../');
 var cluster = quickweb.Cluster; 
  
 exports.path = '/page/worker_list';

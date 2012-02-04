@@ -39,12 +39,12 @@ exports.run = function (appdir) {
   
   // 创建目录
   var gzipdir = path.resolve(appdir, 'html/.gzip');
-  if (!path.exists(gzipdir))
-    fs.mkdir(gzipdir);
+  if (!path.existsSync(gzipdir))
+    fs.mkdirSync(gzipdir);
   for (var i in shtml.dir) {
     var d = path.resolve(gzipdir, shtml.dir[i]);
-    if (!path.exists(d))
-      fs.mkdir(d);
+    if (!path.existsSync(d))
+      fs.mkdirSync(d);
   }
   
   // 去除.gzip目录下的文件

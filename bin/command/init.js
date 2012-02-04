@@ -29,16 +29,26 @@ exports.run = function (appdir) {
   // 默认使用当前目录
   if (typeof appdir != 'string')
     appdir = process.cwd();
-  if (!path.exists(appdir))
-    fs.mkdir(appdir);
+  else
+    appdir = path.resolve(appdir);
+  console.log('init server on path ' + appdir);
+  
+  try {
+    console.log('create dir ' + appdir);
+    var ok = fs.mkdirSync(appdir);
+    console.log(ok);
+  }
+  catch (err) {}
+  
+  process.chdir(appdir);
   
   // 创建目录
-  fs.mkdir(path.resolve(appdir, 'app'));
+  fs.mkdirSync('app');
   
   // 创建配置文件
   var defaultconf = fs.readFileSync( path.resolve(__dirname
                                    , '__server_config.js'));
-  fs.writeFileSync(path.resolve(appdir, 'config.js'), defaultconf);
+  fs.writeFileSync('config.js', defaultconf);
   
   console.log('ok.');
   return 1;

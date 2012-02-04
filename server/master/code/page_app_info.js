@@ -5,7 +5,7 @@
  
 var path = require('path'); 
 var fs = require('fs');
-var quickweb = require('quickweb');
+var quickweb = require('../../../');
 var tool = quickweb.import('tool');
  
 exports.path = '/page/app_info';

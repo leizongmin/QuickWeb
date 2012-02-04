@@ -29,21 +29,27 @@ exports.run = function (appdir) {
   // 默认使用当前目录
   if (typeof appdir != 'string')
     appdir = process.cwd();
-  if (!path.exists(appdir))
-    fs.mkdir(appdir);
+  else
+    appdir = path.resolve(appdir);
+  
+  if (!path.existsSync(appdir))
+    fs.mkdirSync(appdir);
+    
+  console.log('init app on path ' + appdir);
+  process.chdir(appdir);
   
   // 创建目录
-  fs.mkdir(path.resolve(appdir, 'code'));
-  fs.mkdir(path.resolve(appdir, 'html'));
-  fs.mkdir(path.resolve(appdir, 'tpl'));
+  fs.mkdirSync('code');
+  fs.mkdirSync('html');
+  fs.mkdirSync('tpl');
   
   // 创建配置文件
   var defaultconf = fs.readFileSync( path.resolve(__dirname
                                    , '__app_config.js'));
-  fs.writeFileSync(path.resolve(appdir, 'config.js'), defaultconf);
+  fs.writeFileSync('config.js', defaultconf);
   
   // 空白的路由信息文件
-  fs.writeFileSync(path.resolve(appdir, 'route.txt'), '');
+  fs.writeFileSync('route.txt', '');
   
   console.log('ok.');
   return 1;

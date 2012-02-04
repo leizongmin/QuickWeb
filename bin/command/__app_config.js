@@ -30,7 +30,7 @@ module.exports = {
   , 'gzip min size':    512           // 开启gzip压缩输出的最小长度
   
     // Response headers
-    'header': {}
+  , 'header': {}
   
     // Response对象事件
   , 'event': {}

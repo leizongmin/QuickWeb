@@ -33,7 +33,7 @@ if (typeof process.argv[2] == 'string' && process.argv[2].charAt(0) == '-') {
       process.exit();
   }
   catch (err) {
-    debug(err.stack);
+    console.error(err.stack);
     ret = -1;
   }
 }
