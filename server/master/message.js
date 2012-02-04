@@ -32,6 +32,10 @@ var master = global.QuickWeb.master;
 cluster.on('online', function (w) {
   // 添加到资源占用监视器
   master.processMonitor.watch(w.pid);
+  // 加载应用
+  for (var i in master.applist) {
+    cluster.send(w.pid, {cmd: 'load app', dir: master.applist[i]});
+  }
 });
 cluster.on('death', function (w) {
   // 取消资源占用监视

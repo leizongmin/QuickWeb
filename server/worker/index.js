@@ -99,6 +99,13 @@ var loadApp = function (dir) {
   var appconf = tool.requireFile(dir + '/config.js');
   var approute = fs.readFileSync(dir + '/route.txt', 'utf8').split(/\r?\n/);
   
+  // X-Powered-By响应头
+  if (!appconf.response)
+    appconf.response = {}
+  if (!appconf.response.header)
+    appconf.response.header = {}
+  appconf.response.header['X-Powered-By'] = 'QuickWeb/NSP';
+  
   // 添加应用
   appconf.appdir = dir;
   connector.addApp(appname, appconf);

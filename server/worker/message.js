@@ -27,7 +27,7 @@ var worker = global.QuickWeb.worker;
 
 
 // 处理消息
-cluster.on('broadcast', function (pid, msg) {
+var messageListener = function (pid, msg) {
   debug('on broadcast');
   
   // 只接受master的消息
@@ -45,4 +45,6 @@ cluster.on('broadcast', function (pid, msg) {
     worker.unloadApp(msg.dir);
   }
   
-});
+}
+cluster.on('broadcast', messageListener);
+cluster.on('message', messageListener);
