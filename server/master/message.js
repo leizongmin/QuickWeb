@@ -36,8 +36,6 @@ cluster.on('online', function (w) {
 cluster.on('death', function (w) {
   // 取消资源占用监视
   master.processMonitor.unwatch(w.pid);
-  // 删除请求统计
-  delete master.workerStatus[w.pid];
 });
 
   
@@ -51,7 +49,17 @@ cluster.on('message', function (pid, msg) {
   
   // Worker进程请求统计信息
   else if (msg.cmd == 'connector status') {
-    master.workerStatus[pid] = msg.data;
+    var ms = master.workerStatus;
+    var ws = msg.data;
+    ms.request += ws.request;
+    ms.response += ws.response;
+    ms.error += ws.error;
+    for (var i in ws.url) {
+      if (i in ms.url)
+        ms.url[i] += ws.url[i];
+      else
+        ms.url[i] = ws.url[i];
+    }
   }
   
 });

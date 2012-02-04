@@ -26,7 +26,6 @@ exports.get = function (req, res) {
     var stats = processMonitor.getPidHistory(pid);
     allstats[pid] = stats;
   }
-  console.log(allstats);
   
   var data = { mem_line      : JSON.stringify(getMemLine(allstats))
              , cpu_line      : JSON.stringify(getCpuLine(allstats))

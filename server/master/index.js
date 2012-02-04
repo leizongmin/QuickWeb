@@ -63,7 +63,9 @@ global.QuickWeb.master.pushExceptions = pushExceptions;
 
 // ----------------------------------------------------------------------------
 // Worker进程请求统计信息
-var workerStatus = global.QuickWeb.master.workerStatus = {}
+var workerStatus = global.QuickWeb.master.workerStatus = {
+  request: 0, response: 0, error: 0, url: {}
+}
 
 // 资源占用监视器采集周期
 if (isNaN(serverConfig['status update']['load line']))

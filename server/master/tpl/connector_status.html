@@ -9,37 +9,21 @@
 
   <table width="750" align="center">
     <tr class="table-header">
-      <td width="120">PID</td>
-      <td width="120">请求数量</td>
-      <td width="120">已处理数量</td>
-      <td width="120">无法处理数量</td>
-      <td>操作</td>
+      <td width="33%">请求数量</td>
+      <td width="33%">已处理数量</td>
+      <td>无法处理数量</td>
     </tr>
-    <% for (var i in worker) { %>
     <tr>
-      <td><span class="worker-pid"><%= i %></span></td>
-      <td><span class="worker-num"><%= worker[i].request %></span></td>
-      <td><span class="worker-num"><%= worker[i].response %></span></td>
-      <td><span class="worker-num"><%= worker[i].error %></span></td>
-      <td><span class="worker-op"><a href="/page/connector_status?pid=<%= i %>">详细信息</a></span></td>
-    </tr>
-    <% } %>
-    <tr>
-      <td width="120">总计</td>
-      <td width="120"><%= astatus.request %></td>
-      <td width="120"><%= astatus.response %></td>
-      <td width="120"><%= astatus.error %></td>
-      <td>&nbsp;</td>
+      <td width="120"><%= status.request %></td>
+      <td width="120"><%= status.response %></td>
+      <td width="120"><%= status.error %></td>
     </tr>
   </table>
   <br><br>
-  <% if (status) { %>
   <table width="750" align="center">
     <tr class="table-header">
       <td colspan="2">
-        <div style="text-align: center">PID:<%= pid %>详细信息
-          <button onclick="window.location='/page/connector_status'">汇总信息</button>
-        </div>
+        <div style="text-align: center">详细信息</div>
       </td>
     </tr>
     <tr class="table-header">
@@ -53,25 +37,6 @@
     </tr>
     <% } %>
   </table>
-  <% } else { %>
-  <table width="750" align="center">
-    <tr class="table-header">
-      <td colspan="2">
-        <div style="text-align: center">详细汇总信息</div>
-      </td>
-    </tr>
-    <tr class="table-header">
-      <td>URL</td>
-      <td width="200">请求数量</td>
-    </tr>
-    <% for (var i in astatus.url) { %>
-    <tr>
-      <td><%= i %></td>
-      <td><%= astatus.url[i] %></td>
-    </tr>
-    <% } %>
-  </table>
-  <% } %>
   
 </body>
 </html>
