@@ -34,7 +34,7 @@ exports.get = function (req, res) {
              , data_size     : config['status update']['load line size']
              , data_interval : config['status update']['load line']
              }
-  console.log(data);
+  
   res.renderFile('load_line.html', data);
 }
 
