@@ -27,6 +27,7 @@ else
 // global.QuickWeb.master.pushExceptions  记录进程异常信息
 // global.QuickWeb.master.workerException 进程异常数组
 // global.QuickWeb.master.workerStatus    进程请求统计信息
+// global.QuickWeb.master.workerStatusHistory 进程请求统计信息历史数据
 // global.QuickWeb.master.connector       管理服务器Connector对象
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限
@@ -66,6 +67,35 @@ global.QuickWeb.master.pushExceptions = pushExceptions;
 var workerStatus = global.QuickWeb.master.workerStatus = {
   request: 0, response: 0, error: 0, url: {}
 }
+
+// 更新Worker进程请求统计信息历史数据
+var workerStatusHistory = global.QuickWeb.master.workerStatusHistory = [];
+var workerStatusLast = global.QuickWeb.master.workerStatusLast = {
+  request: 0, response: 0, error: 0
+}
+// 默认每隔1分钟更新一次提交请求统计信息
+if (isNaN(serverConfig['status update']['connector']))
+  serverConfig['status update']['connector'] = 60000;
+// 默认保存200个历史数据
+if (isNaN(serverConfig['status update']['connector size']))
+  serverConfig['status update']['connector size'] = 200;
+var workerStatusHistorySize = serverConfig['status update']['connector size'];
+setInterval(function () {
+  // 计算新增的请求数
+  var plus = { request:   workerStatus.request - workerStatusLast.request
+             , response:  workerStatus.response - workerStatusLast.response
+             , error:     workerStatus.error - workerStatusLast.error
+             , timestamp: new Date().getTime()
+             }
+  workerStatusHistory.push(plus);
+  if (workerStatusHistory.length > workerStatusHistorySize)
+    workerStatusHistory.shift();
+  // 保存最后一次计算的状态
+  workerStatusLast.request = workerStatus.request;
+  workerStatusLast.response = workerStatus.response;
+  workerStatusLast.error = workerStatus.error;
+  workerStatusLast.error = workerStatusLast.error;
+}, serverConfig['status update']['connector']);
 
 // 资源占用监视器采集周期
 if (isNaN(serverConfig['status update']['load line']))

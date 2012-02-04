@@ -21,6 +21,7 @@ else
 // global.QuickWeb.master.pushExceptions  记录进程异常信息
 // global.QuickWeb.master.workerException 进程异常数组
 // global.QuickWeb.master.workerStatus    进程请求统计信息
+// global.QuickWeb.master.workerStatusHistory 进程请求统计信息历史数据
 // global.QuickWeb.master.connector       管理服务器Connector对象
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限

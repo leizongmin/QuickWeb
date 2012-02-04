@@ -19,7 +19,7 @@
       <td width="120"><%= status.error %></td>
     </tr>
   </table>
-  <br><br>
+  <div id="status_line"></div>
   <table width="750" align="center">
     <tr class="table-header">
       <td colspan="2">
@@ -40,3 +40,58 @@
   
 </body>
 </html>
+<script src="/jscharts.js"></script>
+<script src="/base.js"></script>
+<script>
+// 画请求统计图
+var drawStatusLine = function () {
+  // 初始化
+  var myChart = new JSChart('status_line', 'line');
+  myChart.setSize(750, 300);
+  myChart.setTitle('请求统计');
+  myChart.setTitleColor('#7D7D7D');
+  myChart.setAxisColor('#9F0505');
+  myChart.setGridColor('#a4a4a4');
+  myChart.setAxisValuesColor('#333639');
+  myChart.setAxisNameColor('#333639');
+  myChart.setTextPaddingLeft(0);
+ 
+  // 各个进程曲线
+  var data = window._data_status = JSON.parse('<%- history %>');
+  var sreq = [], sres = [], serr = [];
+  for (var i in data) {
+    // 刻度
+    var label = timePassStr(data[i].timestamp);
+    sreq.push([label, data[i].request]);
+    sres.push([label, data[i].response]);
+    serr.push([label, data[i].error]);
+  }
+  // 请求数量
+  myChart.setDataArray(sreq, 'request');
+  myChart.setLineColor('#004024', 'request');
+  myChart.setLineWidth(1, 'request');
+  // 响应数量
+  myChart.setDataArray(sres, 'response');
+  myChart.setLineColor('#00A01E', 'response');
+  myChart.setLineWidth(1, 'response');
+  // 无法相应数量
+  myChart.setDataArray(serr, 'error');
+  myChart.setLineColor('#D04700', 'error');
+  myChart.setLineWidth(1, 'error');
+  
+  // X轴
+  myChart.setAxisNameX('History');
+  //myChart.setAxisAlignFirstX(true);
+  myChart.setGraphExtend(true);
+  // Y轴
+  myChart.setAxisNameY('N');
+  
+  // 绘制
+  myChart.setLegendShow(true);
+  
+  myChart.draw();
+  window._status_chart = myChart;
+}
+
+drawStatusLine();
+</script>

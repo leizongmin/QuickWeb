@@ -21,6 +21,7 @@ module.exports = {
   // 更新状态
 , 'status update': {
     'connector':        10000    // 更新请求统计
+    'connector size':   200      // 历史请求统计数据个数
   , 'load line':        10000    // 更新系统资源占用
   , 'load line size':   60       // 系统资源占用数据个数
   }
