@@ -73,6 +73,14 @@
     </tr>
     <% } %>
     <% } %>
+    <% if (config.response.header) { %>
+    <% for (var i in config.response.header) { %>
+    <tr>
+      <td>响应头：<%= i %></td>
+      <td><%= config.response.header[i] %></td>
+    </tr>
+    <% } %>
+    <% } %>
   </table>
   
   <table width="750" align="center">

@@ -64,6 +64,12 @@ require('./message');
 // 进程异常  
 process.on('uncaughtException', function (err) {
   debug(err.stack);
+  // 如果是主进程意外终止，则退出本程序
+  if (err.toString().indexOf('channel closed') >= 0) {
+    console.error('Master process is death.');
+    process.exit(-1);
+    return;
+  }
   // 发送出错信息
   cluster.send({cmd: 'uncaughtException', data: err.stack});
 });
