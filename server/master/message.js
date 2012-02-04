@@ -24,8 +24,22 @@ else
 // global.QuickWeb.master.connector       管理服务器Connector对象
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限
+// global.QuickWeb.master.processMonitor  系统资源占用监视器
 var master = global.QuickWeb.master;
+
   
+// worker进程启动/结束消息
+cluster.on('online', function (w) {
+  // 添加到资源占用监视器
+  master.processMonitor.watch(w.pid);
+});
+cluster.on('death', function (w) {
+  // 取消资源占用监视
+  master.processMonitor.unwatch(w.pid);
+  // 删除请求统计
+  delete master.workerStatus[w.pid];
+});
+
   
 // 处理worker消息
 cluster.on('message', function (pid, msg) {

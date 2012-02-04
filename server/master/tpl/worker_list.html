@@ -6,14 +6,26 @@
 <link rel="stylesheet" href="/css/base.css">
 </head>
 <body>
-  <table width="300" align="center">
+  <table width="750" align="center">
     <tr class="table-header">
-      <td width="110">PID</td>
+      <td width="100">PID</td>
+      <td width="100">内存占用</td>
+      <td width="100">CPU占用</td>
+      <td width="200">时间戳</td>
       <td>操作 <button onclick="forkWorker()">增加进程</button></td>
     </tr>
     <% for (var i in worker) { %>
     <tr>
       <td><span class="worker-pid"><%= worker[i].pid %></span></td>
+      <td><span class="worker-mem">
+        <%= (worker[i].stat ? (parseInt(worker[i].stat.mem / 102.4) / 10) : "---") %> MB
+      </span></td>
+      <td><span class="worker-cpu">
+        <%= (worker[i].stat ? worker[i].stat.cpu : "---") %> %
+      </span></td>
+      <td><span class="worker-timestamp">
+        <%= (worker[i].stat ? worker[i].stat.timestamp : "---") %>
+      </span></td>
       <td><span class="worker-op">
         <button onclick="restartWorker(<%= worker[i].pid %>)">重启</button>
         <button onclick="killWorker(<%= worker[i].pid %>)">结束</button>
@@ -45,4 +57,11 @@ function forkWorker() {
   $('#form_op').val('fork');
   $('#form').submit();
 }
+
+$('.worker-timestamp').each(function () {
+  var self = $(this);
+  var timestamp = parseInt(self.text());
+  if (!isNaN(timestamp))
+    self.text(new Date(timestamp).toString());
+});
 </script>

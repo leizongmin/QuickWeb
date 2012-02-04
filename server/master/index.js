@@ -12,6 +12,7 @@ var os = require('os');
 var quickweb = require('quickweb');
 var tool = quickweb.import('tool');
 var cluster = quickweb.Cluster;
+var ProcessMonitor = quickweb.import('monitor.process');
 
 
 var debug;
@@ -29,6 +30,7 @@ else
 // global.QuickWeb.master.connector       管理服务器Connector对象
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限
+// global.QuickWeb.master.processMonitor  系统资源占用监视器
 
 
 // 设置全局变量
@@ -58,10 +60,24 @@ var pushExceptions = function (pid, err) {
 }
 global.QuickWeb.master.pushExceptions = pushExceptions;
 
+
+// ----------------------------------------------------------------------------
 // Worker进程请求统计信息
 var workerStatus = global.QuickWeb.master.workerStatus = {}
 
- 
+// 资源占用监视器采集周期
+if (isNaN(serverConfig['status update']['load line']))
+  serverConfig['status update']['load line'] = 20000;
+// 资源占用监视器采集数据个数
+if (isNaN(serverConfig['status update']['load line size']))
+  serverConfig['status update']['load line size'] = 20;
+  
+// 更新资源占用统计
+var processMonitor = ProcessMonitor.create({
+    cycle: serverConfig['status update']['load line']
+  , count: serverConfig['status update']['load line size']
+  });
+global.QuickWeb.master.processMonitor = processMonitor;
 
 
 // ----------------------------------------------------------------------------
@@ -113,14 +129,15 @@ global.QuickWeb.master.checkAuth = checkAuth;
 
 
 // ----------------------------------------------------------------------------
+// 消息处理
+require('./message'); 
+
 // 启动Worker进程
 if (isNaN(serverConfig.cluster) || serverConfig.cluster < 1)
     serverConfig.cluster = os.cpus().length;
 for (var i = 0; i < serverConfig.cluster; i++)
   cluster.fork(true);
-  
-// 消息处理
-require('./message');  
+   
   
 
 // ----------------------------------------------------------------------------

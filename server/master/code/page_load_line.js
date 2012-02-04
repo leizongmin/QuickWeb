@@ -5,6 +5,7 @@
  
 var os = require('os'); 
 var quickweb = require('quickweb');
+var cluster = quickweb.Cluster;
  
 exports.path = '/page/load_line';
 
@@ -15,78 +16,50 @@ exports.get = function (req, res) {
     return;
   }
   
-  var data = { mem_line      : JSON.stringify(getMemLine())
-             , cpu_line      : JSON.stringify(getCpuLine())
-             , totalmem      : os.totalmem()
-             }
+  var processMonitor = global.QuickWeb.master.processMonitor;
+  var config = global.QuickWeb.master.config;
   
+  // 取资源占用历史信息
+  var allstats = {}
+  for (var i in cluster.workers) {
+    var pid = cluster.workers[i].pid;
+    var stats = processMonitor.getPidHistory(pid);
+    allstats[pid] = stats;
+  }
+  console.log(allstats);
+  
+  var data = { mem_line      : JSON.stringify(getMemLine(allstats))
+             , cpu_line      : JSON.stringify(getCpuLine(allstats))
+             , totalmem      : parseInt(os.totalmem() / 1024 / 1024)
+             , totalcpu      : os.cpus().length
+             , data_size     : config['status update']['load line size']
+             , data_interval : config['status update']['load line']
+             }
+  console.log(data);
   res.renderFile('load_line.html', data);
 }
 
 
-// 更新资源占用统计
-var serverConfig = global.QuickWeb.master.config;
-if (isNaN(serverConfig['status update']['load line']))
-  serverConfig['status update']['load line'] = 20000;
-if (isNaN(serverConfig['status update']['load line size']))
-  serverConfig['status update']['load line size'] = 20;
-var SYSLOAD_SIZE = serverConfig['status update']['load line size'];
-var SYSLOAD_CYCLE = serverConfig['status update']['load line'];
-
-var sysload = global.QuickWeb.master.sysload = [];
-var updateInfo = function () {
-  sysload.push({ loadavg    : os.loadavg()
-               , cpus       : os.cpus()
-               , freemem    : os.freemem()
-               , totalmem   : os.totalmem()
-               });
-  if (sysload.length > SYSLOAD_SIZE)
-    sysload.shift();
+// 计算内存占用信息数据点
+var getMemLine = function (stats) {
+  var ret = {}
+  for (var pid in stats) {
+    var ps = stats[pid];
+    ret[pid] = [];
+    for (var i in ps)
+      ret[pid].push([ps[i].timestamp, parseInt(ps[i].mem / 1024)]);
+  }
+  return ret;
 }
 
-// 每60秒更新一次
-setInterval(updateInfo, SYSLOAD_CYCLE);
-for (var i = 0; i < SYSLOAD_SIZE; i++)
-  updateInfo();
-updateInfo();
-
-
-// 计算内存占用折线图数据
-var getMemLine = function () {
-  var data = [];
-  var x = 0;
-  var mb = 1024 * 1024;
-  for (var i in sysload) {
-    data.push([x, parseInt((sysload[i].totalmem - sysload[i].freemem) / mb)]);
-    x += (SYSLOAD_CYCLE / 1000);
+// 计算CPU占用信息数据点
+var getCpuLine = function (stats) {
+  var ret = {}
+  for (var pid in stats) {
+    var ps = stats[pid];
+    ret[pid] = [];
+    for (var i in ps)
+      ret[pid].push([ps[i].timestamp, ps[i].cpu]);
   }
-  return data;
-}
-
-// 计算CPU占用折线图数据
-var getCpuLine = function () {
-  var data = {user: [], nice: [], sys: [], idle: [], irq: []};
-  var x = 0;
-  for (var i in sysload) {
-    var cpus = sysload[i].cpus;
-    var d = {user: 0, nice: 0, sys: 0, idle: 0, irq: 0}
-    var total = 0;
-    for (var j in cpus) {
-      for (var k in cpus[j])
-        total += cpus[j][k];
-      d.user += cpus[j].user;
-      d.nice += cpus[j].nice;
-      d.sys += cpus[j].sys;
-      d.idle += cpus[j].idle;
-      d.irq += cpus[j].irq;
-    }
-    data.user.push([x, parseInt(d.user / total * 100) || 0]);
-    data.nice.push([x, parseInt(d.nice / total * 100) || 0]);
-    data.sys.push([x, parseInt(d.sys / total * 100) || 0]);
-    data.idle.push([x, parseInt(d.idle / total * 100) || 0]);
-    data.irq.push([x, parseInt(d.irq / total * 100) || 0]);
-    
-    x += (SYSLOAD_CYCLE / 1000);
-  }
-  return data;
+  return ret;
 }

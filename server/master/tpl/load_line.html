@@ -15,53 +15,141 @@
 
 // 画内存占用图
 var drawMemLine = function () {
-  var myData = JSON.parse('<%- mem_line %>');
+  // 初始化
   var myChart = new JSChart('mem_line', 'line');
   myChart.setSize(750, 300);
-  myChart.setTitle('内存占用');
-  myChart.setDataArray(myData);
-  myChart.setLineColor('#8D9386');
-  myChart.setLineWidth(4);
+  myChart.setTitle('内存占用  系统总内存: ' + <%= totalmem %> + ' MB');
   myChart.setTitleColor('#7D7D7D');
   myChart.setAxisColor('#9F0505');
   myChart.setGridColor('#a4a4a4');
   myChart.setAxisValuesColor('#333639');
   myChart.setAxisNameColor('#333639');
   myChart.setTextPaddingLeft(0);
-  myChart.setAxisNameX('时间 s');
-  myChart.setAxisNameY('内存占用 MB');
-  myChart.setIntervalStartX(0);
-  myChart.setIntervalStartY(0);
-  myChart.setIntervalEndY(<%= (totalmem / 1024 / 1024) %>);
+ 
+  // 各个进程曲线
+  var data = window._data_mem = JSON.parse('<%- mem_line %>');
+  var data_size = <%= data_size %>;
+  var data_interval = <%= data_interval %>;
+  var time_start = data_size * data_interval;
+  var time_end = new Date().getTime();
+  var total = {}
+  for (var pid in data) {
+    if (!(data[pid] && data[pid].length > 0))
+      continue;
+      
+    // 整理数据
+    for (var i in data[pid]) {
+      // 计算时间刻度
+      var t = data_size - Math.round((time_end - data[pid][i][0]) / data_interval);
+      data[pid][i][0] = t;
+      // 内存总数
+      var v = Number(data[pid][i][1]);
+      if (isNaN(total[t]))
+        total[t] = v;
+      else
+        total[t] += v;
+    }
+    var linename = 'PID:' + pid;
+    var color = '#00' + parseInt(Math.random() * 10) + parseInt(Math.random() * 10) + '80';
+    myChart.setDataArray(data[pid], linename);
+    myChart.setLineColor(color, linename);
+    myChart.setLineWidth(1, linename);
+  }
+  // 总数曲线
+  var _total = [];
+  for (var i in total) {
+    _total.push([i, total[i]]);
+  }
+  myChart.setDataArray(_total, 'total');
+  myChart.setLineColor('#C81900', 'total');
+  myChart.setLineWidth(2, 'total');
+  
+  // X轴
+  myChart.setAxisNameX('time: ' + data_interval + 'ms');
+  myChart.setAxisAlignFirstX(true);
+  myChart.setGraphExtend(true);
+  myChart.setShowXValues(false);
+  // Y轴
+  myChart.setAxisNameY('MB');
+  
+  // 绘制
+  myChart.setLegendShow(true);
+  
   myChart.draw();
+  window._mem_chart = myChart;
 }
 
 // 画CPU占用图
 var drawCPULine = function () {
-  var myData = JSON.parse('<%- cpu_line %>');
   var myChart = new JSChart('cpu_line', 'line');
   myChart.setSize(750, 300);
-  myChart.setTitle('CPU占用');
-  myChart.setDataArray(myData.user, 'user');
-  myChart.setDataArray(myData.sys, 'sys');
-  myChart.setLineColor('#A4D314', 'user');
-  myChart.setLineColor('#BBBBBB', 'sys');
-  myChart.setLineColor('#8D9386');
-  myChart.setLineWidth(4);
+  myChart.setTitle('CPU占用  CPU个数: ' + <%= totalcpu %>);
   myChart.setTitleColor('#7D7D7D');
   myChart.setAxisColor('#9F0505');
   myChart.setGridColor('#a4a4a4');
   myChart.setAxisValuesColor('#333639');
   myChart.setAxisNameColor('#333639');
   myChart.setTextPaddingLeft(0);
-  myChart.setAxisNameX('时间 s');
-  myChart.setAxisNameY('CPU占用 %');
-  myChart.setIntervalStartX(0);
-  myChart.setIntervalStartY(0);
-  myChart.setIntervalEndY(100);
+ 
+  // 各个进程曲线
+  var data = window._data_mem = JSON.parse('<%- cpu_line %>');
+  var data_size = <%= data_size %>;
+  var data_interval = <%= data_interval %>;
+  var time_start = data_size * data_interval;
+  var time_end = new Date().getTime();
+  var total = {}
+  for (var pid in data) {
+    if (!(data[pid] && data[pid].length > 0))
+      continue;
+      
+    // 整理数据
+    for (var i in data[pid]) {
+      // 计算时间刻度
+      var t = data_size - Math.round((time_end - data[pid][i][0]) / data_interval);
+      data[pid][i][0] = t;
+      // CPU总数
+      var v = Number(data[pid][i][1]);
+      if (isNaN(total[t]))
+        total[t] = v;
+      else
+        total[t] += v;
+    }
+    var linename = 'PID:' + pid;
+    var color = '#00' + parseInt(Math.random() * 10) + parseInt(Math.random() * 10) + '80';
+    myChart.setDataArray(data[pid], linename);
+    myChart.setLineColor(color, linename);
+    myChart.setLineWidth(1, linename);
+  }
+  // 总数曲线
+  var _total = [];
+  for (var i in total) {
+    _total.push([i, Math.round(total[i] / <%= totalcpu %>)]);
+  }
+  myChart.setDataArray(_total, 'total');
+  myChart.setLineColor('#C81900', 'total');
+  myChart.setLineWidth(2, 'total');
+  
+  // X轴
+  myChart.setAxisNameX('time: ' + data_interval + 'ms');
+  myChart.setAxisAlignFirstX(true);
+  myChart.setGraphExtend(true);
+  myChart.setShowXValues(false);
+  // Y轴
+  myChart.setAxisNameY('%');
+  
+  // 绘制
+  myChart.setLegendShow(true);
+  
   myChart.draw();
+  window._cpu_chart = myChart;
 }
 
-drawMemLine();
-drawCPULine();
+try {
+  drawMemLine();
+  drawCPULine();
+}
+catch (err) {
+  alert('暂时没有足够的数据！');
+  console.error(err.stack);
+}
 </script>

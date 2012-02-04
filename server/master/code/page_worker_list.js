@@ -16,8 +16,16 @@ exports.get = function (req, res) {
     return;
   }
   
-  var workers = cluster.workers;
-  res.renderFile('worker_list.html', {worker: workers});
+  var processMonitor = global.QuickWeb.master.processMonitor;
+  
+  var data = [];
+  for (var i in cluster.workers) {
+    var pid = cluster.workers[i].pid;
+    var stat = processMonitor.getPidLastStat(pid);
+    data.push({pid: pid, stat: stat});
+  }
+  
+  res.renderFile('worker_list.html', {worker: data});
 }
 
 // 启动/杀死进程
