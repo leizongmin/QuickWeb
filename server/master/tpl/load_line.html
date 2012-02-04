@@ -11,7 +11,10 @@
 </body>
 </html>
 <script src="/jscharts.js"></script>
+<script src="/base.js"></script>
 <script>
+
+var NOW = new Date().getTime();
 
 // 画内存占用图
 var drawMemLine = function () {
@@ -28,26 +31,16 @@ var drawMemLine = function () {
  
   // 各个进程曲线
   var data = window._data_mem = JSON.parse('<%- mem_line %>');
-  var data_size = <%= data_size %>;
-  var data_interval = <%= data_interval %>;
-  var time_start = data_size * data_interval;
-  var time_end = new Date().getTime();
   var total = {}
   for (var pid in data) {
-    if (!(data[pid] && data[pid].length > 0))
-      continue;
-      
-    // 整理数据
     for (var i in data[pid]) {
-      // 计算时间刻度
-      var t = data_size - Math.round((time_end - data[pid][i][0]) / data_interval);
-      data[pid][i][0] = t;
-      // 内存总数
-      var v = Number(data[pid][i][1]);
+      var t = data[pid][i][0];
+      var v = data[pid][i][1];
       if (isNaN(total[t]))
         total[t] = v;
       else
         total[t] += v;
+      data[pid][i][0] = timePassStr(t, NOW);
     }
     var linename = 'PID:' + pid;
     var color = '#00' + parseInt(Math.random() * 10) + parseInt(Math.random() * 10) + '80';
@@ -58,17 +51,17 @@ var drawMemLine = function () {
   // 总数曲线
   var _total = [];
   for (var i in total) {
-    _total.push([i, total[i]]);
+    i = parseInt(i);
+    _total.push([timePassStr(i, NOW), total[i]]);
   }
   myChart.setDataArray(_total, 'total');
   myChart.setLineColor('#C81900', 'total');
   myChart.setLineWidth(2, 'total');
   
   // X轴
-  myChart.setAxisNameX('time: ' + data_interval + 'ms');
+  myChart.setAxisNameX('time');
   myChart.setAxisAlignFirstX(true);
   myChart.setGraphExtend(true);
-  myChart.setShowXValues(false);
   // Y轴
   myChart.setAxisNameY('MB');
   
@@ -92,27 +85,17 @@ var drawCPULine = function () {
   myChart.setTextPaddingLeft(0);
  
   // 各个进程曲线
-  var data = window._data_mem = JSON.parse('<%- cpu_line %>');
-  var data_size = <%= data_size %>;
-  var data_interval = <%= data_interval %>;
-  var time_start = data_size * data_interval;
-  var time_end = new Date().getTime();
+  var data = window._data_cpu = JSON.parse('<%- cpu_line %>');
   var total = {}
   for (var pid in data) {
-    if (!(data[pid] && data[pid].length > 0))
-      continue;
-      
-    // 整理数据
     for (var i in data[pid]) {
-      // 计算时间刻度
-      var t = data_size - Math.round((time_end - data[pid][i][0]) / data_interval);
-      data[pid][i][0] = t;
-      // CPU总数
-      var v = Number(data[pid][i][1]);
+      var t = data[pid][i][0];
+      var v = data[pid][i][1];
       if (isNaN(total[t]))
         total[t] = v;
       else
         total[t] += v;
+      data[pid][i][0] = timePassStr(t, NOW);
     }
     var linename = 'PID:' + pid;
     var color = '#00' + parseInt(Math.random() * 10) + parseInt(Math.random() * 10) + '80';
@@ -123,17 +106,17 @@ var drawCPULine = function () {
   // 总数曲线
   var _total = [];
   for (var i in total) {
-    _total.push([i, Math.round(total[i] / <%= totalcpu %>)]);
+    i = parseInt(i);
+    _total.push([timePassStr(i, NOW), total[i] / <%= totalcpu %>]);
   }
   myChart.setDataArray(_total, 'total');
   myChart.setLineColor('#C81900', 'total');
   myChart.setLineWidth(2, 'total');
   
   // X轴
-  myChart.setAxisNameX('time: ' + data_interval + 'ms');
+  myChart.setAxisNameX('time');
   myChart.setAxisAlignFirstX(true);
   myChart.setGraphExtend(true);
-  myChart.setShowXValues(false);
   // Y轴
   myChart.setAxisNameY('%');
   
