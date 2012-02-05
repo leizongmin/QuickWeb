@@ -201,28 +201,39 @@ var requestThread = function (url, control, count, callback) {
     // 发送请求  start:请求开始时间  response:响应时间  end:结束时间  size:响应长度
     //           status:响应代码     result:结果  'timeout',  'success',  'error'
     var r = {start: new Date().getTime()}
-    var s = http.request(url, function (res) {
-      r.response = new Date().getTime();
-      r.status = res.statusCode;
-      // 等待发送完数据
-      var data = BufferArray();
-      res.on('data', function (chunk) {
-        data.add(chunk);
+    try {
+      var s = http.request(url, function (res) {
+        r.response = new Date().getTime();
+        r.status = res.statusCode;
+        try {
+          // 等待发送完数据
+          var data = BufferArray();
+          res.on('data', function (chunk) {
+            data.add(chunk);
+          });
+          res.on('end', function () {
+            r.end = new Date().getTime();
+            var resData = data.toBuffer();
+            r.result = control.test(r.status, reqHeaders, reqData
+                                            , res.headers, resData);
+            r.size = resData.length;
+            result.push(r);
+            
+            // 下一个请求
+            request();
+          });
+        } catch (err) {
+          // 下一个请求
+          request();
+        }
       });
-      res.on('end', function () {
-        r.end = new Date().getTime();
-        var resData = data.toBuffer();
-        r.result = control.test(r.status, reqHeaders, reqData
-                                        , res.headers, resData);
-        r.size = resData.length;
-        result.push(r);
-        
-        // 下一个请求
-        request();
-      });
-    });
-    // 发送data数据
-    s.end(reqData);
+      // 发送data数据
+      s.end(reqData);
+    }
+    catch (err) {
+      // 下一个请求
+      request();
+    }
   }
   
   // 开始
