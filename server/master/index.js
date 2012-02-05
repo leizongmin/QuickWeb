@@ -65,13 +65,13 @@ global.QuickWeb.master.pushExceptions = pushExceptions;
 // ----------------------------------------------------------------------------
 // Worker进程请求统计信息
 var workerStatus = global.QuickWeb.master.workerStatus = {
-  request: 0, response: 0, error: 0, url: {}
+  request: 0, response: 0, error: 0, connection: 0, connectionPid: {}, url: {}
 }
 
 // 更新Worker进程请求统计信息历史数据
 var workerStatusHistory = global.QuickWeb.master.workerStatusHistory = [];
 var workerStatusLast = global.QuickWeb.master.workerStatusLast = {
-  request: 0, response: 0, error: 0
+  request: 0, response: 0, error: 0, connection: 0
 }
 // 默认每隔1分钟更新一次提交请求统计信息
 if (isNaN(serverConfig['status update']['connector']))
@@ -87,6 +87,11 @@ setInterval(function () {
              , error:     workerStatus.error - workerStatusLast.error
              , timestamp: new Date().getTime()
              }
+  // 当前活动连接数
+  plus.connection = 0;
+  for (var i in workerStatus.connectionPid)
+    plus.connection += workerStatus.connectionPid[i];
+  
   workerStatusHistory.push(plus);
   if (workerStatusHistory.length > workerStatusHistorySize)
     workerStatusHistory.shift();
@@ -94,7 +99,7 @@ setInterval(function () {
   workerStatusLast.request = workerStatus.request;
   workerStatusLast.response = workerStatus.response;
   workerStatusLast.error = workerStatus.error;
-  workerStatusLast.error = workerStatusLast.error;
+  workerStatusLast.connection = workerStatus.connection;
 }, serverConfig['status update']['connector']);
 
 // 资源占用监视器采集周期

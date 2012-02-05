@@ -79,7 +79,14 @@ if (isNaN(serverConfig['status update']['connector']))
   serverConfig['status update']['connector'] = 60000;
 setInterval(function () {
   debug('update connector status');
-  cluster.send({cmd: 'connector status', data: connector.resetStatus()});
+  // 获取请求统计
+  var data = connector.resetStatus();
+  // 获取活动连接数
+  data.connection = 0;
+  for (var i in listenHttp)
+    data.connection += listenHttp[i].connections;
+  // 发送给Master
+  cluster.send({cmd: 'connector status', data: data});
 }, serverConfig['status update']['connector']);
 
 

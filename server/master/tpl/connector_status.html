@@ -9,14 +9,16 @@
 
   <table width="750" align="center">
     <tr class="table-header">
-      <td width="33%">请求数量</td>
-      <td width="33%">已处理数量</td>
+      <td width="25%">当前活动连接</td>
+      <td width="25%">请求数量</td>
+      <td width="25%">已处理数量</td>
       <td>无法处理数量</td>
     </tr>
     <tr>
-      <td width="120"><%= status.request %></td>
-      <td width="120"><%= status.response %></td>
-      <td width="120"><%= status.error %></td>
+      <td><%= status.connection %></td>
+      <td><%= status.request %></td>
+      <td><%= status.response %></td>
+      <td><%= status.error %></td>
     </tr>
   </table>
   <div id="status_line"></div>
@@ -58,26 +60,31 @@ var drawStatusLine = function () {
  
   // 各个进程曲线
   var data = window._data_status = JSON.parse('<%- history %>');
-  var sreq = [], sres = [], serr = [];
+  var sreq = [], sres = [], serr = [], sconn = [];
   for (var i in data) {
     // 刻度
     var label = timePassStr(data[i].timestamp);
-    sreq.push([label, data[i].request]);
-    sres.push([label, data[i].response]);
-    serr.push([label, data[i].error]);
+    sreq.push([label, data[i].request]);      // 请求数
+    sres.push([label, data[i].response]);     // 响应数
+    serr.push([label, data[i].error]);        // 出错数
+    sconn.push([label, data[i].connection]);  // 活动连接数
   }
   // 请求数量
   myChart.setDataArray(sreq, 'request');
   myChart.setLineColor('#004024', 'request');
-  myChart.setLineWidth(1, 'request');
+  myChart.setLineWidth(2, 'request');
   // 响应数量
   myChart.setDataArray(sres, 'response');
   myChart.setLineColor('#00A01E', 'response');
-  myChart.setLineWidth(1, 'response');
-  // 无法相应数量
+  myChart.setLineWidth(2, 'response');
+  // 无法响应数量
   myChart.setDataArray(serr, 'error');
-  myChart.setLineColor('#D04700', 'error');
-  myChart.setLineWidth(1, 'error');
+  myChart.setLineColor('#FF2438', 'error');
+  myChart.setLineWidth(3, 'error');
+  // 活动连接数
+  myChart.setDataArray(sconn, 'connection');
+  myChart.setLineColor('#FFF814', 'connection');
+  myChart.setLineWidth(3, 'connection');
   
   // X轴
   myChart.setAxisNameX('History');
