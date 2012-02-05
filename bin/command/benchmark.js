@@ -50,26 +50,14 @@ exports.run = function () {
     params.m = 'GET';
     
   // 插件
-  var defaultF = {
-    headers:  function () {
-      return {'X-Request-By': 'QuickWeb-benchmark'}
-              },
-    data:     function () { return; },
-    test:     function (status, reqHeaders, reqData, resHeaders, resData) {
-      if (status >= 200 && status <= 299)
-        return 'success';
-      else
-        return 'error';
-    }
-  }
   if (typeof params.f === 'string' && params.f !== '') {
     params.fm = require(path.resolve(f));
-    for (var i in defaultF)
+    for (var i in defaultControl)
       if (!params.fm[i])
-        params.fm[i] = defaultF[i];
+        params.fm[i] = defaultControl[i];
   }
   else {
-    params.fm = defaultF;
+    params.fm = defaultControl;
   }
   
   //---------------------------------------------------------------------
@@ -114,6 +102,8 @@ exports.run = function () {
     }
   }
   
+  // 开始时间
+  var startTime = new Date().getTime();
   // 启动线程
   while (n > params.c) {
     requestThread(params.url, params.fm, params.c, onResult);
@@ -132,9 +122,9 @@ exports.run = function () {
     console.error(err.stack);
   });
   process.on('exit', function () {
-    
-    console.log(result);
-    
+    var endTime = new Date().getTime();
+    var ret = params.fm.result(startTime, endTime, result);
+    console.log(ret);
     utils.exit('OK');
   });
   
@@ -199,4 +189,101 @@ var requestThread = function (url, control, count, callback) {
   
   // 开始
   request();
+}
+
+/** 默认的控制插件 */
+var defaultControl = {}
+
+/**
+ * 获取请求的headers
+ *
+ * @return {object}
+ */
+defaultControl.headers = function () {
+  return {'X-Request-By': 'QuickWeb-benchmark'}
+}
+
+/**
+ * 获取发送的数据
+ *
+ * @return {string|Buffer} 如果没有则返回null
+ */
+defaultControl.data = function () {
+  return null;
+}
+
+/**
+ * 检查结果是否正确
+ *
+ * @param {int} status 响应状态码
+ * @param {object} reqHeaders 发送请求的headers
+ * @param {string|Buffer} reqData 发送请求的数据
+ * @param {object} resHeaders 响应的headers
+ * @param {Buffer} resData 响应的内容
+ * @return {string} 结果描述
+ */
+defaultControl.test = function (status, reqHeaders, reqData, resHeaders, resData) {
+  if (status >= 200 && status <= 299)
+    return 'success';
+  else
+    return 'error';
+}
+
+/**
+ * 计算结果
+ *
+ * @param {int} startTime 开始时间
+ * @param {int} endTime 结束时间
+ * @param {array} result 各个请求的返回结果，每项包括 start, response, end, status, result
+ * @return {object} 结果
+ */
+defaultControl.result = function (startTime, endTime, result) {
+  // 请求平均时间
+  var tResponse = [];   // 开始相应时间
+  var tEnd = [];        // 完全响应时间
+  // 结果统计
+  var tResult = {}
+  
+  for (var i in result) {
+    var req = result[i];
+    var start = req.start;
+    // 响应时间
+    tResponse.push(req.response - req.start);
+    tEnd.push(req.end - req.start);
+    // 响应结果
+    req.result = req.result.trim().toLowerCase();
+    if (!tResult[req.result])
+      tResult[req.result] = 1;
+    else
+      tResult[req.result]++;
+  }
+  
+  console.log(getAvgMaxMin(tResponse), getAvgMaxMin(tEnd));
+  console.log(getPercentageMin(tResponse, 60));
+  console.log(tResponse, tEnd, tResult);
+}
+
+// 计算平均值，最大值，最小值
+var getAvgMaxMin = function (arr) {
+  var sum = 0;
+  var max = arr[0];
+  var min = arr[0];
+  for (var i in arr) {
+    var v = arr[i];
+    sum += v;
+    if (v > max)
+      max = v;
+    else if (v < min)
+      min = v;
+  }
+  return {avg: sum / arr.length, max: max, min: min}
+}
+
+// 指定百分比的最小值是多少
+var getPercentageMin = function (arr, per) {
+  var arr = arr.sort();
+  var i = arr.length - Math.round((arr.length / 100) * per);
+  if (i < 0)
+    i = 0;
+  return arr[i];
 }
