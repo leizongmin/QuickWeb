@@ -7,13 +7,19 @@ var url = require('url');
 
 
 /**
- * 显示帮助信息
+ * 运行
  *
  * @return {int}
  */
 exports.run = function () {
 
-  // node rt c=100 n=10000 u=http://127.0.0.1
+  // 使用方法：
+  // qickweb -benchmark c=100 n=10000 u=http://127.0.0.1 m=POST f=file.js
+  // file.js格式：  exports.headers = 每次请求的headers
+  //                exports.data()    返回每次请求写入的数据
+  //                exports.test(res) 检查是否成功   
+  
+  //-------------------------------------------------
   // 获取命令参数
   var params = {}
   for (var i = 0; i < arguments.length; i++) {
@@ -21,22 +27,50 @@ exports.run = function () {
     if (line.length > 1)
       params[line[0].toLowerCase().trim()] = line[1];
   }
+  
+  // 请求的次数，默认10000
   params.n = parseInt(params.n);
   if (isNaN(params.n) || params.n < 1)
     params.n = 10000;
+    
+  // 启动的socket数量，默认100
   params.c = parseInt(params.c);
   if (isNaN(params.c) || params.c < 1)
     params.c = 100;
+    
+  // 请求的URL地址，默认http://127.0.0.1/
   if (typeof params.u !== 'string' || params.u === '')
     params.u = 'http://127.0.0.1/';
+    
+  // 请求方法，默认GET
+  if (typeof params.m !== 'string' || params.m === '')
+    params.m = 'GET';
+    
+  // 插件
+  var defaultF = {
+    headers:  {'X-Request-By': 'QuickWeb-benchmark'},
+    data:     function () { return; },
+    test:     function (res) { return true; }
+  }
+  if (typeof params.f === 'string' && params.f !== '') {
+    params.fm = require(path.resolve(f));
+    for (var i in defaultF)
+      if (!params.fm[i])
+        params.fm[i] = defaultF[i];
+  }
+  else {
+    params.fm = defaultF;
+  }
+  
+  // 分析URL
   var u = url.parse(params.u);  
   params.url = { host:      u.host
                , hostname:  u.hostname
                , port:      u.port || 80
-               , method:    'GET'
+               , method:    params.m
                , path:      u.path
                }
-  //console.log(params);  
+  console.log(params);  
   console.log(params.u);
   console.log(params.n + ' times, ' + params.c + ' sockets');
     

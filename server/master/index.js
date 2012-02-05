@@ -186,7 +186,7 @@ for (var i = 0; i < serverConfig.cluster; i++)
 process.on('uncaughtException', function (err) {
   debug(err.stack);
   // IPC通讯出错
-  if (err.toString().indexOf('write EINVAL - cannot write to IPC channel')) {
+  if (err.toString().indexOf('EINVAL - cannot write to IPC channel') >= 0) {
     console.error(err.stack);
     process.exit(-1);
   }

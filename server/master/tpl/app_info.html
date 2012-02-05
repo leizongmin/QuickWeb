@@ -43,7 +43,7 @@
       <td><%= config.request[i] %></td>
     </tr>
     <% } %>
-    <% if (config.request.event) { %>
+    <% if (config.request && config.request.event) { %>
     <% for (var i in config.request.event) { %>
     <tr>
       <td><%= i %> 事件</td>
@@ -65,7 +65,7 @@
       <td><%= config.response[i] %></td>
     </tr>
     <% } %>
-    <% if (config.response.event) { %>
+    <% if (config.response && config.response.event) { %>
     <% for (var i in config.response.event) { %>
     <tr>
       <td><%= i %> 事件</td>
@@ -73,7 +73,7 @@
     </tr>
     <% } %>
     <% } %>
-    <% if (config.response.header) { %>
+    <% if (config.response && config.response.header) { %>
     <% for (var i in config.response.header) { %>
     <tr>
       <td>响应头：<%= i %></td>
