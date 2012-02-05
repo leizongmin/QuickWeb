@@ -5,6 +5,7 @@
 var http = require('http');
 var url = require('url');
 var quickweb = require('../../');
+var cluster = quickweb.Cluster;
 var BufferArray = quickweb.import('tool').bufferArray;
 var utils = require('./__utils');
 
@@ -21,6 +22,7 @@ exports.run = function () {
   // file.js格式：  exports.headers() 每次请求的headers
   //                exports.data()    返回每次请求写入的数据
   //                exports.test(res) 检查是否成功   
+  //                exports.result()  计算结果
   
   //-------------------------------------------------------------------
   // 获取命令参数
@@ -40,6 +42,11 @@ exports.run = function () {
   params.c = parseInt(params.c);
   if (isNaN(params.c) || params.c < 1)
     params.c = 100;
+    
+  // 启动的进程数量，默认1
+  params.p = parseInt(params.p);
+  if (isNaN(params.p) || params.p < 1)
+    params.p = 1;
     
   // 请求的URL地址，默认http://127.0.0.1/
   if (typeof params.u !== 'string' || params.u === '')
@@ -77,8 +84,7 @@ exports.run = function () {
   //---------------------------------------------------------------------
   // 开始
   // 设置最大Socket数量
-  http.globalAgent.maxSockets = params.c;
-  var n = params.n;
+  http.globalAgent.maxSockets = params.c * 2;
   
   // 结果
   var result = [];
@@ -105,13 +111,20 @@ exports.run = function () {
   // 开始时间
   var startTime = new Date().getTime();
   // 启动线程
-  while (n > params.c) {
-    requestThread(params.url, params.fm, params.c, onResult);
-    n -= params.c;
-    realThreadCount++;
-  }
-  if (n > 0) {
+  var n1 = params.n;
+  var n2 = Math.round(params.n / params.c);
+  if (n2 < 1)
+    n2 = n1;
+  while (n1 > 0) {
+    if (n1 - n2 >= 0)
+      var n = n2;
+    else if (n2 - n1 > 0)
+      var n = n2 - n1;
+    else
+      break;
+    
     requestThread(params.url, params.fm, n, onResult);
+    n1 -= n;
     realThreadCount++;
   }
   utils.log('start ' + realThreadCount + ' thread...');
@@ -123,8 +136,31 @@ exports.run = function () {
   });
   process.on('exit', function () {
     var endTime = new Date().getTime();
-    var ret = params.fm.result(startTime, endTime, result);
-    console.log(ret);
+    var ret = params.fm.result(startTime, endTime, result, params.n);
+    // 输出结果
+    console.log('================================================');
+    console.log('               Benchmark Result                 ');
+    console.log('================================================');
+    var L = function (t, v) {
+      if (!v) {
+        console.log('  ==============================================');
+        console.log('  ' + t);
+      }
+      else
+        console.log('    - ' + t + ' :    ' + v);
+    }
+    for (var i in ret) {
+      if (typeof ret[i] === 'object') {
+        L(i);
+        for (var j in ret[i])
+          L(j, ret[i][j]);
+      }
+      else {
+        L(i, ret[i]);
+      }
+    }
+    console.log('\n');
+    
     utils.exit('OK');
   });
   
@@ -162,7 +198,7 @@ var requestThread = function (url, control, count, callback) {
       u[i] = url[i];
     u.headers = reqHeaders;
     
-    // 发送请求  start:请求开始时间  response:响应时间  end:结束时间
+    // 发送请求  start:请求开始时间  response:响应时间  end:结束时间  size:响应长度
     //           status:响应代码     result:结果  'timeout',  'success',  'error'
     var r = {start: new Date().getTime()}
     var s = http.request(url, function (res) {
@@ -175,8 +211,10 @@ var requestThread = function (url, control, count, callback) {
       });
       res.on('end', function () {
         r.end = new Date().getTime();
+        var resData = data.toBuffer();
         r.result = control.test(r.status, reqHeaders, reqData
-                                        , res.headers, data.toBuffer());
+                                        , res.headers, resData);
+        r.size = resData.length;
         result.push(r);
         
         // 下一个请求
@@ -235,9 +273,10 @@ defaultControl.test = function (status, reqHeaders, reqData, resHeaders, resData
  * @param {int} startTime 开始时间
  * @param {int} endTime 结束时间
  * @param {array} result 各个请求的返回结果，每项包括 start, response, end, status, result
+ * @param {int} count 总请求数
  * @return {object} 结果
  */
-defaultControl.result = function (startTime, endTime, result) {
+defaultControl.result = function (startTime, endTime, result, count) {
   // 请求平均时间
   var tResponse = [];   // 开始相应时间
   var tEnd = [];        // 完全响应时间
@@ -258,9 +297,42 @@ defaultControl.result = function (startTime, endTime, result) {
       tResult[req.result]++;
   }
   
-  console.log(getAvgMaxMin(tResponse), getAvgMaxMin(tEnd));
-  console.log(getPercentageMin(tResponse, 60));
-  console.log(tResponse, tEnd, tResult);
+  // 返回结果
+  var ret = {}
+  var dres = getAvgMaxMin(tResponse);
+  var dend = getAvgMaxMin(tEnd);
+  var d = ret['start response time (ms)'] = {}
+    d['max'] = dres.max;      // 最大响应时间
+    d['min'] = dres.min;      // 最小响应时间
+    d['avg'] = dres.avg;      // 平均响应时间
+  var d = ret['finish receive time (ms)'] = {}
+    d['max'] = dend.max;      // 最大响应时间
+    d['min'] = dend.min;      // 最小响应时间
+    d['avg'] = dend.avg;      // 平均响应时间
+  var d = ret['Percentage of the requests served within a certain time (ms)'] = {};
+    //d['95%'] = getPercentageMax(tResponse, 95);
+    d['90%'] = getPercentageMax(tResponse, 90);
+    //d['85%'] = getPercentageMax(tResponse, 85);
+    d['80%'] = getPercentageMax(tResponse, 80);
+    //d['75%'] = getPercentageMax(tResponse, 75);
+    d['70%'] = getPercentageMax(tResponse, 70);
+    //d['65%'] = getPercentageMax(tResponse, 65);
+    d['60%'] = getPercentageMax(tResponse, 60);
+    //d['55%'] = getPercentageMax(tResponse, 55);
+    d['50%'] = getPercentageMax(tResponse, 50);
+  var spent = endTime - startTime;
+  ret['Spent time (s)'] = Math.round(spent / 1000);
+  ret['Requests per second (rps)'] = Math.round((result.length / spent) * 1000);
+  ret['Requests per minute      '] = Math.round((result.length / spent) * 1000) * 60;
+  var d = ret['Result'] = {}
+    var tc = result.length - count;
+    if (tc > 0)
+      tResult['timeout'] = tc;
+    for (var i in tResult)
+      d[i] = tResult[i];
+  
+  
+  return ret;
 }
 
 // 计算平均值，最大值，最小值
@@ -279,11 +351,13 @@ var getAvgMaxMin = function (arr) {
   return {avg: sum / arr.length, max: max, min: min}
 }
 
-// 指定百分比的最小值是多少
-var getPercentageMin = function (arr, per) {
+// 指定百分比的最大值是多少
+var getPercentageMax = function (arr, per) {
   var arr = arr.sort();
-  var i = arr.length - Math.round((arr.length / 100) * per);
+  var i = Math.round((arr.length / 100) * per);
   if (i < 0)
     i = 0;
+  else if (i >= arr.length)
+    i = arr.length - 1;
   return arr[i];
 }
