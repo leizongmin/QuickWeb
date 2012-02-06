@@ -37,7 +37,12 @@ describe('service.session.file', function () {
       session.get('123456', config, function (err, data) {
         should.equal(err, null);
         data.should.eql(save);
-        done();
+        
+        session.set('123456', config, process, function (err, data) {
+          console.log(err.toString());
+          err.should.instanceof(Error);
+          done();
+        });
       });
     });
   });
