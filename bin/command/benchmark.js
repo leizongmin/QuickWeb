@@ -11,6 +11,30 @@ var utils = require('./__utils');
 
 
 /**
+ * 帮助
+ */
+exports.help = function () {
+  var L = function (s) { console.log('  ' + s); }
+  
+  L('Usage:');
+  L('quickweb -benchmark [c=100] [n=10000] [u=http://127.0.0.1] [m=GET] [f=control.js]');
+  L('');
+  L('Params:');
+  L('  c=100                start 100 threads, default as 100');
+  L('  n=10000              send 10000 requests, default as 10000');
+  L('  u=http://127.0.0.1   the requests url, default as http://127.0.0.1/');
+  L('  m=GET                the request method, default as GET');
+  L('  f=control.js         the control module, default as normal');
+  L('control module exports:');
+  L('  headers():    return the request headers');
+  L('  data():       return the request data, it must includes when m=POST or PUT');
+  L('  test(status, reqHeaders, reqData, resHeaders, resData): check the');
+  L('                response result, return "success", "error", or others');
+  L('  result(startTime, endTime, results, count): analysis results');
+  L('');
+}
+
+/**
  * 运行
  *
  * @return {int}
