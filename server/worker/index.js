@@ -150,9 +150,11 @@ var loadApp = function (dir) {
         var p = line[1];
         connector.addFile(appname, p);
         // 默认首页文件
-        if (path.basename(p) === 'index.html')
-          connector.addFile(appname, path.dirname('/' + p) + '/'
+        if (path.basename(p) === 'index.html') {
+          connector.addFile( appname
+                           , (path.dirname('/' + p) + '/').replace('//', '/')
                            , path.resolve(appconf.appdir, 'html', p));
+        }
         break;
         
       // 注册nsp程序路由
