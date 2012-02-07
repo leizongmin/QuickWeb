@@ -39,7 +39,10 @@ exports.run = function (appdir) {
   utils.cpfile(path.resolve(__dirname, '__app_config.js'), 'config.js');
   
   // 空白的路由信息文件
-  utils.mkfile('route.txt', '');
+  utils.mkfile('route.txt', 'code\tindex.js');
+  
+  // 测试页面
+  utils.cpfile(path.resolve(__dirname, '__app_index.js'), 'code/index.js');
   
   utils.exit('OK.');
   return 1;
