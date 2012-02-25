@@ -10,12 +10,6 @@ var path = require('path');
 exports.path = '/page/sys_info';
 
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   res.renderFile('sys_info.html', getSysInfo());
 }
 

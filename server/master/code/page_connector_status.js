@@ -10,12 +10,6 @@ exports.path = '/page/connector_status';
 
 // 显示应用信息
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   var serverConfig = global.QuickWeb.master.config;
   var workerStatus = global.QuickWeb.master.workerStatus;
   var workerStatusHistory = global.QuickWeb.master.workerStatusHistory;

@@ -139,7 +139,14 @@ console.log('Master server runing on ' + server_listen_addr);
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;
 
-connector.addApp('default', {appdir: masterPath});
+connector.addApp('default', {
+  appdir: masterPath,
+  onRequest: function (req, res, next) {
+    if (checkAuth(req.auth()))
+      next();
+    else
+      res.authFail();
+  }});
 
 // 载入code目录里面的所有js文件
 var codefiles = tool.listdir(masterPath + '/code', '.js').file;

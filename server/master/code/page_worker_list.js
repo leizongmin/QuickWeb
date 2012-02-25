@@ -10,12 +10,6 @@ exports.path = '/page/worker_list';
 
 // 进程列表
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   var processMonitor = global.QuickWeb.master.processMonitor;
   
   var data = [];

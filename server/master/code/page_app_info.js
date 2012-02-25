@@ -12,12 +12,6 @@ exports.path = '/page/app_info';
 
 // 显示应用信息
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   var appdir = req.get.path;
   var appname = req.get.name;
   if (!appname)

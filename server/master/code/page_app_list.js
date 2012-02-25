@@ -12,12 +12,6 @@ exports.path = '/page/app_list';
 
 // 显示应用列表
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   var appPath = path.resolve('./app');
   fs.readdir(appPath, function (err, apps) {
     if (err)
@@ -38,12 +32,6 @@ exports.get = function (req, res) {
 
 // 载入/卸载 应用
 exports.post = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   req.on('post complete', function () {
     var op = req.post.op;
     var appPath = req.post.path;

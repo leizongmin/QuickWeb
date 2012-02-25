@@ -10,12 +10,6 @@ var cluster = quickweb.Cluster;
 exports.path = '/page/load_line';
 
 exports.get = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   var processMonitor = global.QuickWeb.master.processMonitor;
   var config = global.QuickWeb.master.config;
   
