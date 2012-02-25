@@ -113,4 +113,33 @@ describe('ServerRequest', function () {
     }).end(data);
   });
     
+  // 解析POST json
+  it('#decode POST json', function (done) {
+    // 创建服务器
+    var server = http.createServer(function (req, res) {
+      req = quickweb.extendRequest(req);
+      req.on('post complete', function () {
+        req.post.should.eql({a: 1, b: 2, c: 3});
+        res.end('ok');
+      });
+      req.on('post error', function (err) {
+        throw err;
+      });
+    });
+    server.listen(8011);
+    
+    // 发起请求
+    var data = JSON.stringify({a: 1, b: 2, c: 3});
+    http.request({ host:  '127.0.0.1'
+                 , path:  '/'
+                 , method:'POST'
+                 , headers:{'content-type': 'application/json'
+                           , 'content-length': data.length
+                           }
+                 , port:  8011
+                 }, function (res) {
+      server.close();
+      done();
+    }).end(data);
+  });
 });
