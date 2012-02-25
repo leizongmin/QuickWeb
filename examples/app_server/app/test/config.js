@@ -17,6 +17,20 @@ module.exports = {
   'path':   '/test',
   
   
+  
+  // onRequest插件，在接收到属于本应用请求，准备处理之前，所有的请求都会经过此处进行处理
+  // 中间件可在此处执行  第一个参数为扩展后的request实例，第二个参数为扩展后的response实例
+  // 第三个参数为一个函数，仅当调用此函数时，程序的控制权才会交由QuickWeb Connector来进行路由处理
+  'onRequest': function (req, res, next) {
+    // 例：验证是否已登录
+    var user = req.auth();
+    if (!user || user.username !== 'admin' || user.password !== '123456')
+      return res.authFail();
+    else
+      return next();
+  },
+  
+  
   /* ServerRequest对象配置 */
   'request': {
     'decode get':       true,          // 自动解析GET数据

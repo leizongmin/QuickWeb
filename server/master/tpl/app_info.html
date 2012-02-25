@@ -29,6 +29,10 @@
       <td>虚拟路径</td>
       <td><%= config.path %></td>
     </tr>
+    <tr>
+      <td>onRequest插件</td>
+      <td><%= (typeof config.onRequest === "function" ? "有" : "无") %></td>
+    </tr>
   </table>
   
   <table width="750" align="center">
