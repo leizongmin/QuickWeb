@@ -208,3 +208,11 @@ process.on('uncaughtException', function (err) {
     pushExceptions(process.pid, err.stack);
   }
 });
+
+
+
+// ----------------------------------------------------------------------------
+// 创建进程PID
+fs.writeFile('server.pid', '' + process.pid, function (err) {
+  pushExceptions(process.pid, err.stack);
+});
