@@ -1,3 +1,5 @@
+//@jsdev(qwdebug) debug
+
 /**
  * QuickWeb Worker
  *
@@ -52,7 +54,7 @@ for (var i in serverConfig['listen http']) {
   var server = http.createServer(connector.listener());
   server.listen(port);
   listenHttp[port] = server;
-  debug('listen on port ' + port + '...');
+  /*debug debug('listen on port ' + port + '...'); */
 }
 global.QuickWeb.worker.listen = listenHttp;
 
@@ -63,7 +65,7 @@ require('./message');
 // ----------------------------------------------------------------------------
 // 进程异常  
 process.on('uncaughtException', function (err) {
-  debug(err.stack);
+  /*debug debug(err.stack); */
   // 如果是主进程意外终止，则退出本程序
   if (err.toString().indexOf('channel closed') >= 0) {
     console.error('Master process is death.');
@@ -78,7 +80,7 @@ process.on('uncaughtException', function (err) {
 if (isNaN(serverConfig['status update']['connector']))
   serverConfig['status update']['connector'] = 60000;
 setInterval(function () {
-  debug('update connector status');
+  /*debug debug('update connector status'); */
   // 获取请求统计
   var data = connector.resetStatus();
   // 获取活动连接数
@@ -104,7 +106,7 @@ var loadApp = function (dir) {
   
   // 检查应用是否已加载过
   if (appname in global.QuickWeb.worker.applist) {
-    debug('load app ignore: ' + appname + ' has in loaded.');
+    /*debug debug('load app ignore: ' + appname + ' has in loaded.'); */
     return;
   }
   

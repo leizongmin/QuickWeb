@@ -1,3 +1,5 @@
+//@jsdev(qwdebug) debug
+
 /**
  * QuickWeb Master
  *
@@ -127,7 +129,7 @@ var server_listen_addr = serverConfig.master.host + ':'
 try {
   var server = http.createServer(connector.listener());
   server.listen(serverConfig.master.port, serverConfig.master.host);
-  debug('listen master server: ' + server_listen_addr);
+  /*debug debug('listen master server: ' + server_listen_addr); */
 }
 catch (err) {
   console.error('Cannot create master server on ' + server_listen_addr
@@ -196,7 +198,7 @@ for (var i = 0; i < serverConfig.cluster; i++)
 // ----------------------------------------------------------------------------
 // 进程异常  
 process.on('uncaughtException', function (err) {
-  debug(err.stack);
+  /*debug debug(err.stack); */
   // IPC通讯出错
   if (err.toString().indexOf('EINVAL - cannot write to IPC channel') >= 0) {
     console.error(err.stack);

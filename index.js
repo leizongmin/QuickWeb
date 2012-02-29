@@ -9,8 +9,21 @@
 var http = require('http'); 
 var os = require('os');
 
- 
-// 版本号
+
+
+// 使用JSDEV
+// 当设置环境变量NODE_ENV=test以及QUICKWEB_DEBUG=相应的模块时，会输出调试信息
+// 每个模块第一行需要设置为 //@jsdev(qwdebug) debug
+// 输出调试信息的地方使用： /*debug console.log('debug info from module a.') */
+require('jsdev').replaceRequire();
+
+
+
+// 版本信息
+// quickweb.version         QuickWeb的版本号
+// quickweb.cpu_num         系统CPU个数
+// quickweb.node_version    Node.js版本号，如[0,6,5]表示v0.6.5
+// QuickWeb版本号
 exports.version = '0.3.0-pre'; 
 
 // QuickWeb信息
@@ -35,10 +48,20 @@ if (exports.node_version[0] < 1 && exports.node_version[1] < 6) {
   console.error(Error(
       'QuickWeb must be run in Node v0.6.0 or upper version!').stack);
   process.exit(-1);
-}  
+}
  
  
  
+// 主要的QuickWeb模块
+// quickweb.Service             基础服务管理器
+// quickweb.import              载入服务
+// quickweb.Connector           连接管理器
+// quickweb.ServerRequest       扩展的ServerRequest对象
+// quickweb.ServerResponse      扩展的ServerResponse对象
+// quickweb.extend              扩展ServerRequest和ServerResponse对象
+// quickweb.extendRequest       扩展ServerRequest对象
+// quickweb.extendResponse      扩展ServerResponse对象
+// quickweb.Cluster             扩展的cluster模块
 // 服务管理器 
 exports.Service = require('./lib/Service');
 

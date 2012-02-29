@@ -1,3 +1,5 @@
+//@jsdev(qwdebug) debug
+
 /**
  * QuickWeb Master Message Center
  *

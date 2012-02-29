@@ -1,3 +1,5 @@
+//@jsdev(qwdebug) debug
+
 /**
  * QuickWeb Worker Message Center
  *
@@ -28,7 +30,7 @@ var worker = global.QuickWeb.worker;
 
 // 处理消息
 var messageListener = function (pid, msg) {
-  debug('on broadcast');
+  /*debug debug('on broadcast'); */
   
   // 只接受master的消息
   if (pid != 0)
@@ -36,12 +38,12 @@ var messageListener = function (pid, msg) {
     
   // 载入应用
   if (msg.cmd === 'load app') {
-    debug('load app path: ' + msg.dir);
+    /*debug debug('load app path: ' + msg.dir); */
     worker.loadApp(msg.dir);
   }
   // 卸载应用
   else if (msg.cmd === 'unload app') {
-    debug('unload app path: ' + msg.dir);
+    /*debug debug('unload app path: ' + msg.dir); */
     worker.unloadApp(msg.dir);
   }
   
