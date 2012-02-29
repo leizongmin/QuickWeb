@@ -214,5 +214,6 @@ process.on('uncaughtException', function (err) {
 // ----------------------------------------------------------------------------
 // 创建进程PID
 fs.writeFile('server.pid', '' + process.pid, function (err) {
-  pushExceptions(process.pid, err.stack);
+  if (err)
+    pushExceptions(process.pid, err.stack);
 });
