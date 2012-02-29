@@ -76,30 +76,31 @@ exports.Connector = require('./lib/Connector');
 
 
 // ServerResponse扩展
-exports.ServerResponse = require('./lib/ServerResponse');
+var ServerResponse = exports.ServerResponse = require('./lib/ServerResponse');
 // ServerRequest扩展
-exports.ServerRequest = require('./lib/ServerRequest');
+var ServerRequest = exports.ServerRequest = require('./lib/ServerRequest');
+
 
 // 扩展ServerRequest和ServerResponse对象
 // extend(req, res, {request, response})
 exports.extend = function (req, res, conf) {
   conf = conf || {}
   // 扩展
-  req = exports.extendRequest(req, conf.request);
-  res = exports.extendResponse(res, conf.response);
+  req = ServerRequest.extend(req, conf.request);
+  res = ServerResponse.extend(res, conf.response);
   // 互相链接
   req._qw_response = res;
   res._qw_request = req;
   // 返回相应的对象
-  return { request: req, response: res}
+  return {request: req, response: res}
 }
 // 扩展ServerRequest对象
 exports.extendRequest = function (obj, conf) {
-  return exports.ServerRequest.extend(obj, conf);
+  return ServerRequest.extend(obj, conf);
 }
 // 扩展ServerResponse对象
 exports.extendResponse = function (obj, conf) {
-  return exports.ServerResponse.extend(obj, conf);
+  return ServerResponse.extend(obj, conf);
 }
 
 
