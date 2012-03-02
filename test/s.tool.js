@@ -17,6 +17,11 @@ describe('Service tool', function () {
     tool.relativePath('/test', '\\test\\a').should.equal('a');
   });
   
+  it('#requireWithContext', function () {
+    var a = tool.requireWithContext(path.resolve(__dirname, 'lib/rm.js'), {}, module);
+    
+  });
+  
   it('#requireFile no cache', function () {
     var a = tool.requireFile(path.resolve(__dirname, 'requirefile.module'));
     var b = tool.requireFile(path.resolve(__dirname, 'requirefile.module'));
