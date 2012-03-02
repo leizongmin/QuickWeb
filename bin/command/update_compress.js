@@ -1,5 +1,5 @@
 /**
- * QuickWeb Command -update-gzip
+ * QuickWeb Command -update-compress
  *
  * @author 老雷<leizongmin@gmail.com>
  * @version 0.3.0

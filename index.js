@@ -12,7 +12,7 @@ var os = require('os');
 
 
 // 使用JSDEV
-// 当设置环境变量NODE_ENV=test以及QUICKWEB_DEBUG=相应的模块时，会输出调试信息
+// 当设置环境变量NODE_ENV=qwdebug以及QUICKWEB_DEBUG=相应的模块时，会输出调试信息
 // 每个模块第一行需要设置为 //@jsdev(qwdebug) debug
 // 输出调试信息的地方使用： /*debug console.log('debug info from module a.') */
 require('jsdev').replaceRequire();
