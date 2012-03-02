@@ -17,10 +17,21 @@ describe('Service tool', function () {
     tool.relativePath('/test', '\\test\\a').should.equal('a');
   });
   
-  it('#requireFile', function () {
+  it('#requireFile no cache', function () {
     var a = tool.requireFile(path.resolve(__dirname, 'requirefile.module'));
-    var b = tool.requireFile(path.resolve(__dirname, 'requirefile.module'))
+    var b = tool.requireFile(path.resolve(__dirname, 'requirefile.module'));
     a.value.should.not.equal(b.value);
+  });
+  
+  it('#requireFile specified context', function () {
+    var v = 123456;
+    var a = tool.requireFile(path.resolve(__dirname, 'requirefile.module'), {}, module);
+    var b = tool.requireFile(path.resolve(__dirname, 'requirefile.module'), {contextValue: v}, module);
+    a.value.should.not.equal(b.value);
+    a.contextValue.should.equal(0);
+    b.contextValue.should.equal(v * 10);
+    var c = require('./requirefile2');
+    c.count.should.equal(1);
   });
   
   it('#bufferArray', function () {
