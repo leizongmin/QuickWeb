@@ -19,7 +19,8 @@ describe('Service tool', function () {
   
   it('#requireWithContext', function () {
     var a = tool.requireWithContext(path.resolve(__dirname, 'lib/rm.js'), {}, module);
-    
+    var b = tool.requireWithContext(path.resolve(__dirname, 'lib/rm.js'), {});
+    var c = tool.requireWithContext(path.resolve(__dirname, 'lib/rm.js'));
   });
   
   it('#requireFile no cache', function () {

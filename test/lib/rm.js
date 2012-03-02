@@ -8,4 +8,5 @@ var c = require('quickweb');
 var d = require('ejs');
 
 
-debug(a, b, c, d);
+if (typeof debug === 'function')
+  debug(a, b, c, d);
