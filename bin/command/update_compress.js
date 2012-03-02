@@ -21,6 +21,9 @@ else
   debug = function() { };
  
 
+// 图片文件扩展名
+var IMAGE_FILE = ['.gif', '.jpg', '.jpeg', '.png']; 
+ 
 
 /**
  * 生成文件目录结构
@@ -61,6 +64,11 @@ exports.run = function (appdir) {
     // 如果列表已空，则退出程序
     if (!f) {
       utils.exit('OK.');
+    }
+    // 忽略图片文件
+    else if (IMAGE_FILE.indexOf(path.extname(f)) !== -1) {
+      utils.log('Ignore image file: ' + f);
+      compressFile();
     }
     else {
       utils.log('Compress file "' + f + '"...');
