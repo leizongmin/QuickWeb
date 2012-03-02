@@ -109,5 +109,12 @@ module.exports = {
       }
       */
     }
+  },
+  
+  /* 全局变量配置 */
+  'global': {
+    'TestLog': function (msg) {
+      console.log('[' + new Date() + '] TestLog: ', msg);
+    }
   }
 }

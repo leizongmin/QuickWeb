@@ -123,5 +123,17 @@ module.exports = {
       }
       */
     }
+  },
+  
+  
+  /* 全局变量配置 */
+  'global': {
+    /*
+    // global所定义的所有成员均可在code目录里面的路由处理程序里面直接引用
+    // 例：在code目录里面的路由处理程序均可直接使用TestLog()
+    'TestLog': function (msg) {
+      console.log('[' + new Date() + '] TestLog: ', msg);
+    }
+    */
   }
 }

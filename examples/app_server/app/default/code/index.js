@@ -6,6 +6,7 @@
  
 exports.get = function (req, res) {
   res.send('Hello, world.');
+  TestLog(req.headers);
 }
 
 exports.post = function (req, res) {

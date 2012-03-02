@@ -9,3 +9,5 @@ else
   exports.count++;
  
 console.log('载入' + exports.count + '次');
+
+console.log('global.contextValue=', global.contextValue);

@@ -161,7 +161,7 @@ var loadApp = function (dir) {
         
       // 注册nsp程序路由
       case 'code':
-        var m = tool.requireFile(dir + '/code/' + line[1]);
+        var m = tool.requireFile(dir + '/code/' + line[1], appconf.global, module);
         var mp = '/' + line[1].substr(0, line[1].length - 3) + '.nsp';
         if (typeof m.path === 'string' || m.path instanceof RegExp)
           connector.addCode(appname, m);
