@@ -1,13 +1,14 @@
 var should = require('should');
 var Service = require('../lib/Service');
 var fs = require('fs');
+var path = require('path');
 
 describe('service.renderer', function () {
 
   var ejsrenderer = Service.import('renderer.ejs');
   var renderer = Service.import('renderer');
 
-  // äÖÈ¾
+  // æ¸²æŸ“
   it('#render', function () {
     var tpl = 'Hello, <%=name%>!';
     var data = {name: 'QuickWeb'}
@@ -15,7 +16,7 @@ describe('service.renderer', function () {
       .should.equal(ejsrenderer.render(tpl, data));
   });
   
-  // ÅäÖÃ
+  // é…ç½®
   it('#config', function () {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf).should.eql(ejsrenderer.config(conf));
@@ -23,7 +24,7 @@ describe('service.renderer', function () {
     ejsrenderer.config(conf).should.eql(conf);
   });
   
-  // äÖÈ¾
+  // æ¸²æŸ“
   it('#render', function () {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
@@ -33,7 +34,7 @@ describe('service.renderer', function () {
       .should.equal(ejsrenderer.render(tpl, data));
   });
   
-  // ±àÒë
+  // ç¼–è¯‘
   it('#compile', function () {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
@@ -44,7 +45,7 @@ describe('service.renderer', function () {
     f1(data).should.equal(f2(data));
   });
   
-  // ±àÒëÎÄ¼ş
+  // ç¼–è¯‘æ–‡ä»¶
   it('#compileFile', function (done) {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
@@ -61,7 +62,7 @@ describe('service.renderer', function () {
     });
   });
   
-  // äÖÈ¾ÎÄ¼ş
+  // æ¸²æŸ“æ–‡ä»¶
   it('#renderFile', function (done) {
     var conf = {open: '{{', close: '}}'}
     renderer.config('ejs', conf);
@@ -75,6 +76,19 @@ describe('service.renderer', function () {
       console.log(text);
       text.should.equal(renderer.render('ejs', tpl, data));
       fs.unlink(f);
+      done();
+    });
+  });
+  
+  // æ¸²æŸ“æ–‡ä»¶ + é¢„å¤„ç†
+  it('#renderFile + preprocess', function (done) {
+    renderer.config('ejs', {open: '<%', close: '%>', preprocess: true});
+    var f = path.resolve(__dirname, 'template/layout.html');
+    renderer.renderFile('ejs', f, {}, function (err, text) {
+      if (err)
+        throw err;
+      console.log(text);
+      text.indexOf('è¿™æ˜¯body').should.not.equal(-1);
       done();
     });
   });

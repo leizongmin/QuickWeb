@@ -55,4 +55,16 @@ describe('Service tool', function () {
     a.toString().should.equal('abcd');
   });
   
+  it('#merge', function () {
+    var a = {a: 123, b: 456}
+    var b = {c: 456, d: 789}
+    var c = {b: 654, e: 120}
+    var ab = {a: 123, b: 456, c: 456, d: 789}
+    var bc = {c: 456, d: 789, b: 654, e: 120}
+    var ac = {a: 123, b: 654, e: 120}
+    tool.merge(a, b).should.eql(ab);
+    tool.merge(b, c).should.eql(bc);
+    tool.merge(a, c).should.eql(ac);
+  });
+  
 });
