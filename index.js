@@ -24,7 +24,7 @@ require('jsdev').replaceRequire();
 // quickweb.cpu_num         系统CPU个数
 // quickweb.node_version    Node.js版本号，如[0,6,5]表示v0.6.5
 // QuickWeb版本号
-exports.version = '0.3.0-pre'; 
+exports.version = '0.3.0-pre-0303'; 
 
 // QuickWeb信息
 exports.quickweb_path = __dirname;      // 模块目录
