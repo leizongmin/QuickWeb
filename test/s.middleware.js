@@ -3,11 +3,12 @@ var Service = require('../lib/Service');
 
 describe('service.middleware', function () {
   
-  var MiddleWare = Service.import('middleware').create;
+  var AsyncMiddleWare = Service.import('middleware').createAsync;
+  var SyncMiddleWare = Service.import('middleware').createSync;
   
-  it('#use', function (done) {
-    var mw = MiddleWare();
-    var add = function (req, res, next) {
+  it('#AsyncMiddleWare', function (done) {
+    var mw = AsyncMiddleWare();
+    var add = function (req, next) {
       if (isNaN(req.sum))
         req.sum = 1;
       else
@@ -17,11 +18,29 @@ describe('service.middleware', function () {
     mw.use(add);
     mw.use(add, add, add);
     
-    mw.start({}, {}, function (req, res) {  
+    mw.start({}, function (req) {  
       console.log(req);
       req.sum.should.equal(4);
       done();
     });
+  });
+  
+  it('#SyncMiddleWare', function () {
+    var mw = SyncMiddleWare();
+    var add = function (req) {
+      if (isNaN(req.sum))
+        req.sum = 1;
+      else
+        req.sum++;
+    }
+    mw.use(add);
+    mw.use(add, add, add);
+    
+    var req = {}
+    mw.start(req);
+    
+    console.log(req);
+    req.sum.should.equal(4);
   });
   
 });
