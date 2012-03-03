@@ -18,7 +18,8 @@ describe('service.middleware', function () {
     mw.use(add);
     mw.use(add, add, add);
     
-    mw.start({}, function (req) {  
+    var start = mw.handler();
+    start({}, function (req) {  
       console.log(req);
       req.sum.should.equal(4);
       done();
@@ -37,7 +38,8 @@ describe('service.middleware', function () {
     mw.use(add, add, add);
     
     var req = {}
-    mw.start(req);
+    var start = mw.handler();
+    start(req);
     
     console.log(req);
     req.sum.should.equal(4);
