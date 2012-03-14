@@ -34,13 +34,13 @@ describe('service.cookie', function () {
   });
   
   it('#stringify', function () {
-    cookie.stringify('k', 'v').trim().should.equal('k=v;');
+    cookie.stringify('k', 'v').trim().should.equal('k=v; HttpOnly');
     
     // 忽略不符合条件的数据类型
-    cookie.stringify('k', 'v', {path: 1}).trim().should.equal('k=v;');
-    cookie.stringify('k', 'v', {expires: ''}).trim().should.equal('k=v;');
-    cookie.stringify('k', 'v', {domain: 123}).trim().should.equal('k=v;');
-    cookie.stringify('k', 'v', {secure: 1}).trim().should.equal('k=v;');
+    cookie.stringify('k', 'v', {path: 1}).trim().should.equal('k=v; HttpOnly');
+    cookie.stringify('k', 'v', {expires: ''}).trim().should.equal('k=v; HttpOnly');
+    cookie.stringify('k', 'v', {domain: 123}).trim().should.equal('k=v; HttpOnly');
+    cookie.stringify('k', 'v', {secure: 1}).trim().should.equal('k=v; HttpOnly');
     
     var c = cookie.parse(cookie.stringify('k', 'v', {path: '/'}));
     c['k'].should.equal('v');
@@ -65,8 +65,7 @@ describe('service.cookie', function () {
     
     var c = cookie.parse(cookie.stringify('k', 'v', {secure: true}));
     c['k'].should.equal('v');
-    cookie.stringify('k', 'v', {secure: true}).substr(-6)
-          .should.equal('secure');
+    cookie.stringify('k', 'v', {secure: true}).indexOf('secure').should.not.equal(-1);
           
     // 数组
     var cs = cookie.stringify([ ['k1', 'v1']
