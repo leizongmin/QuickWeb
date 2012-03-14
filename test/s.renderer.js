@@ -93,4 +93,23 @@ describe('service.renderer', function () {
     });
   });
   
+  // 渲染文件 + 不预处理
+  it('#renderFile + no preprocess', function (done) {
+    // 删除缓存
+    console.log(renderer.cache);
+    for (var i in renderer.cache) {
+      delete renderer.cache[i];
+    }
+    
+    renderer.config('ejs', {open: '<%', close: '%>', preprocess: false});
+    var f = path.resolve(__dirname, 'template/layout.html');
+    renderer.renderFile('ejs', f, {}, function (err, text) {
+      if (err)
+        throw err;
+      console.log(text);
+      text.indexOf('这是body').should.equal(-1);
+      done();
+    });
+  });
+  
 });
