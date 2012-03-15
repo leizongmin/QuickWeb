@@ -120,6 +120,17 @@ global.QuickWeb.master.processMonitor = processMonitor;
 
 
 // ----------------------------------------------------------------------------
+// 自动载入的应用
+if (Array.isArray(serverConfig['auto load app'])) {
+  for (var i in serverConfig['auto load app']) {
+    var appname = serverConfig['auto load app'][i];
+    var apppath = path.resolve('./app', appname);
+    global.QuickWeb.master.applist[appname] = apppath;
+  }
+}
+
+
+// ----------------------------------------------------------------------------
 // 启动管理服务器
 var connector = quickweb.Connector.create();
 global.QuickWeb.master.connector = connector;

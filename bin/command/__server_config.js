@@ -37,6 +37,10 @@ module.exports = {
   },
   
   
+  /* 自动加载的应用 */
+  'auto load app':  [ /* 'test' 表示服务器启动完毕后自动载入应用test */ ],
+  
+  
   /* 更新服务器状态 */
   'status update': {
   
