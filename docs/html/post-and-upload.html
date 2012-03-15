@@ -21,7 +21,159 @@
     </div> 
      
     <div class="main">   
-      <h1>使用POST提交数据与上传文件</h1> 
+      <h1>使用POST提交数据与上传文件</h1>
+
+<h2>一般方式</h2>
+
+<p>示例代码：</p>
+
+<pre><code>exports.post = function (req, res) {
+  // 监听post complete事件
+  req.on('post complete', function () {
+    // POST参数
+    console.log('姓名：' + req.post.name);
+    console.log('年龄：' + req.post.age);
+    // 上传文件
+    if (req.file) {
+      console.log('头像文件：' + req.file.face.path);
+      // 输出该头像
+      res.sendFile(req.file.face.path);
+    }
+    else {
+      res.send('没有上传头像！');
+    }
+  });
+
+  // 监听post error事件
+  req.on('post error', function (err) {
+    console.error('解析POST数据时出错：' + err.stack);
+    res.sendError(500, err);
+  });
+}
+</code></pre>
+
+<p>说明：</p>
+
+<ul>
+<li><p>通过<code>exports.post</code>来注册处理POST请求的函数；</p></li>
+<li><p>在处理POST或PUT请求时，需要监听两个事件：</p>
+
+<ul><li><p><strong>post complete</strong> 客户端发送数据完毕；</p></li>
+<li><p><strong>post error</strong> 客户端在发送数据过程中出错；</p></li></ul></li>
+<li><p>请求的POST参数通过<code>req.post</code>来获取；</p></li>
+<li><p>如果有上传文件，则<code>req.file</code>为对象类型（如果没有上传文件时为<strong>null</strong>）</p></li>
+</ul>
+
+<p>上例中的代码运行效果如下：</p>
+
+<p>填写表单</p>
+
+<p><img src="images/6.png" alt="填写表单" title="" /></p>
+
+<p>提交</p>
+
+<p><img src="images/7.png" alt="结果" title="" /></p>
+
+<h2>提交JSON格式的数据</h2>
+
+<p>QuickWeb默认支持解析Content-Type为application/json格式的数据。一般用于提供REST风格的API。</p>
+
+<p>示例代码（服务器端）：</p>
+
+<pre><code>exports.path = '/json';
+
+exports.post = function (req, res) {
+  // 监听post complete事件
+  req.on('post complete', function () {
+    // POST参数
+    console.log('姓名：' + req.post.name);
+    console.log('年龄：' + req.post.age);
+    // 返回JSON数据
+    res.sendJSON({msg: 'hello, ' + req.post.name});
+  });
+
+  // 监听post error事件
+  req.on('post error', function (err) {
+    console.error('解析POST数据时出错：' + err.stack);
+    res.sendError(500, err);
+  });
+}
+</code></pre>
+
+<p>示例代码（客户端）：</p>
+
+<pre><code>var http = require('http');
+
+// 发送请求
+http.request({
+  host:   '127.0.0.1',
+  port:   8080,
+  path:   '/json',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+},function (res) {
+
+  var data = '';
+  res.on('data', function (chunk) {
+    data += chunk;
+  });
+  res.on('end', function () {
+    // 解析服务器返回的数据
+    var json = JSON.parse(data);
+    console.log('服务器返回信息：' + json.msg);
+  });
+
+// 将数据转换为JSON字符串被发送
+}).end(JSON.stringify({name: '张三', age: 23}));
+</code></pre>
+
+<p>运行结果如下：</p>
+
+<p><img src="images/8.png" alt="运行结果" title="" /></p>
+
+<h2>octet-stream格式的数据流</h2>
+
+<p>对于Content-Type为<code>application/octet-stream</code>的POST或PUT请求，QuickWeb会将提交的
+数据当作一个上传的文件，文件名为stream，可通过<code>req.file.stream</code>来获取。</p>
+
+<p>以下为一个利用FileUploader上传组件来进行批量上传文件的例子：</p>
+
+<pre><code>exports.path = '/upload';
+
+exports.post = function (req, res) {
+  // 监听post complete事件
+  req.on('post complete', function () {
+    if (!req.file || !req.file.stream) {
+      console.log('没有上传文件！');
+      res.sendJSON({error: '没有上传文件！'});
+    }
+    else {
+      console.log('上传文件已保存到：' + req.file.stream.path);
+      res.send({success: '上传文件已保存到：' + req.file.stream.path});
+    }
+  });
+
+  // 监听post error事件
+  req.on('post error', function (err) {
+    console.error('解析POST数据时出错：' + err.stack);
+    res.sendError(500, err);
+  });
+}
+</code></pre>
+
+<p>运行结果：</p>
+
+<p>选择文件页面</p>
+
+<p><img src="images/9.png" alt="选择文件" title="" /></p>
+
+<p>运行结果</p>
+
+<p><img src="images/10.png" alt="运行结果" title="" /></p>
+
+<h2><a href="files/post-upload.zip">本页所有实例的代码可点这里下载</a></h2> 
     </div> 
   </body> 
 </html>
