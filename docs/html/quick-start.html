@@ -1,0 +1,83 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>QuickWeb 0.3 文档</title> 
+    <meta charset="utf-8"> 
+    <!-- <base href="html/"> --> 
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap-responsive.min.css"> 
+    <link rel="stylesheet" href="public/style.css"> 
+  </head> 
+  <body> 
+    <a href="https://github.com/leizongmin/QuickWeb"> 
+      <img style="position: absolute; top: 40px; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> 
+    </a> 
+    <div class="navbar navbar-fixed-top"> 
+      <div class="navbar-inner"> 
+        <div class="container"> 
+          <a class="brand" href="index.html">QuickWeb 0.3 文档</a> 
+        </div> 
+      </div> 
+    </div> 
+     
+    <div class="main">   
+      <h1>创建第一个简单的应用</h1>
+
+<p>在创建QuickWeb应用之前，先介绍一下基于QuickWeb的应用目录结构：</p>
+
+<pre><code>config.js ---------------- [服务器配置文件]
+app ---------------------- [应用目录]
+ +- test_app ------------- [应用test_app目录]
+ +   +-- config.js ------- [应用配置文件]
+ +   +-- route.txt ------- [应用路由表]
+ +   +-- code ------------ [应用处理程序目录]
+ +   +-- html ------------ [应用静态资源文件目录]
+ +   +-- tpl ------------- [应用模板目录]
+ +- blog ----------------- [应用blog目录]
+     +-- config.js
+     +-- route.txt
+     +-- code
+     +-- html
+     +-- tpl
+</code></pre>
+
+<p>使用<a href="command.html">QuickWeb命令行工具</a>可以很方便地创建以上的目录结构。例如：</p>
+
+<p>要将QuickWeb服务器创建到/server目录，先执行<code>cd /server</code>进入该目录，
+并执行<code>quickweb -init</code>即自动创建了一个名为<code>app</code>的目录及默认的
+服务器配置文件<code>config.js</code></p>
+
+<p>接着，创建一个应用：</p>
+
+<p>执行<code>cd app</code>进入应用目录，创建一个目录：<code>mkdir test_app</code>，然后执行
+<code>quickweb -init-app test_app</code>初始化应用：这时会在test_app目录创建了
+<code>code</code>，<code>html</code>，<code>tpl</code>这三个目录，以及默认的应用配置文件<code>config.js</code>及
+路由表<code>route.txt</code>。</p>
+
+<p>现在，启动QuickWeb服务器试试：</p>
+
+<p>返回/server目录：<code>cd /server</code>，执行<code>quickweb -start</code>即可启动服务器。</p>
+
+<p><img src="images/1.png" alt="命令行" title="" /></p>
+
+<p>QuickWeb服务器在启动完毕后，默认是不会自动载入刚才创建的应用的，需要登录
+到服务器管理界面来手动载入该应用：</p>
+
+<p>在浏览器中打开<a href="http://127.0.0.1:8850">http://127.0.0.1:8850</a></p>
+
+<p>此时弹出一个登录窗口，输入用户名：admin，密码：admin，点“确定”</p>
+
+<p><img src="images/2.png" alt="登录窗口" title="" /></p>
+
+<p>进入服务器管理界面后，点左边导航栏中的“<strong>应用</strong>”，并在右边出现的应用列表中，
+点”<strong>test_app</strong>“一栏的”<strong>载入</strong>“按钮，即可载入该应用。</p>
+
+<p><img src="images/3.png" alt="载入应用" title="" /></p>
+
+<p>在浏览器中打开<a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a>，
+此时会看到一个页面，显示当前时间：</p>
+
+<p><img src="images/4.png" alt="演示页面" title="" /></p> 
+    </div> 
+  </body> 
+</html>

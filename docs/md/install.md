@@ -17,3 +17,4 @@
 在命令行中运行以下命令：**quickweb -help**
 此时屏幕会打印出quickweb命令的使用方法，则表示安装成功。
 
+![help](images/5.png)
