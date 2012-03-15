@@ -31,9 +31,13 @@ exports.run = function (appdir) {
   utils.chdir(appdir);
   
   var appdir = process.cwd();
-  utils.log('Scan app dir "' + appdir + '"...');
+  
+  // 加载配置文件
+  utils.log('Load app config...');
+  var config = require(path.resolve(appdir, 'config.js'));
   
   // 读取html目录和code目录的文件结构
+  utils.log('Scan app dir "' + appdir + '"...');
   var phtml = path.resolve('html');
   var pcode = path.resolve('code');
   var shtml = tool.listdir(phtml);
@@ -57,7 +61,7 @@ exports.run = function (appdir) {
   utils.log('find ' + scode.file.length + ' code file(s)');
   for (var i in scode.file) {
     try {
-      var m = require(scode.file[i]);
+      var m = tool.requireFile(scode.file[i], config.global);
       var p = tool.relativePath(pcode, scode.file[i]);
       ret.push('code\t' + p);
     }
