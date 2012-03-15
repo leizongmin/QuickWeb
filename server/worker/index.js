@@ -13,6 +13,7 @@ var path = require('path');
 var quickweb = require('../../');
 var tool = quickweb.import('tool');
 var cluster = quickweb.Cluster;
+var apps = quickweb.import('apps');
 
 
 var debug;
@@ -30,7 +31,7 @@ else
 // global.QuickWeb.worker.unloadApp         卸载指定应用
 
 // 设置全局变量
-global.QuickWeb.worker = {applist: {}}
+global.QuickWeb.worker = {applist: apps.applist}
 
 // 载入服务器配置
 var serverConfig = tool.requireFile(path.resolve('./config.js'));
@@ -94,107 +95,13 @@ setInterval(function () {
 
   
 // ----------------------------------------------------------------------------
-/**
- * 载入指定应用目录
- *
- * @param {string} dir
- */
-var loadApp = function (dir) {
-  dir = path.resolve(dir);
-  // 应用名称
-  var appname = path.basename(dir);
-  
-  // 检查应用是否已加载过
-  if (appname in global.QuickWeb.worker.applist) {
-    /*debug debug('load app ignore: ' + appname + ' has in loaded.'); */
-    return;
-  }
-  
-  // 载入应用配置及路由表
-  var appconf = tool.requireFile(dir + '/config.js');
-  var approute = fs.readFileSync(dir + '/route.txt', 'utf8').split(/\r?\n/);
-  
-  // X-Powered-By响应头
-  if (!appconf.response)
-    appconf.response = {}
-  if (!appconf.response.header)
-    appconf.response.header = {}
-  appconf.response.header['X-Powered-By'] = 'QuickWeb/NSP';
-  
-  // 添加应用
-  appconf.appdir = dir;
-  connector.addApp(appname, appconf);
-  
-  // 目录转向
-  var dirRedirect = function (p) {
-    var h = function (req, res) {
-      res.redirect(req.url + '/');
-    }
-    return {path: p, get: h, head: p}
-  }
-  
-  // 注册路由
-  for (var i in approute) {
-    var line = approute[i].split('\t');
-    if (line.length < 2)
-      continue;
-      
-    switch (line[0].toLowerCase()) {
-      
-      // 注册目录路由
-      case 'dir':
-        var p = '/' + line[1];
-        connector.addCode(appname, dirRedirect(p));
-        break;
-      
-      // 注册文件路由
-      case 'file':
-        var p = line[1];
-        connector.addFile(appname, p);
-        // 默认首页文件
-        if (path.basename(p) === 'index.html') {
-          connector.addFile( appname
-                           , (path.dirname('/' + p) + '/').replace('//', '/')
-                           , path.resolve(appconf.appdir, 'html', p));
-        }
-        break;
-        
-      // 注册nsp程序路由
-      case 'code':
-        var m = tool.requireFile(dir + '/code/' + line[1], appconf.global);
-        var mp = '/' + line[1].substr(0, line[1].length - 3) + '.nsp';
-        if (typeof m.path === 'string' || m.path instanceof RegExp)
-          connector.addCode(appname, m);
-        m.path = mp;
-        connector.addCode(appname, m);
-        // 默认首页文件
-        if (path.basename(mp) === 'index.nsp') {
-          m.path = path.dirname(mp);
-          connector.addCode(appname, m);
-        }
-        break;
-    }
-  }
-  
-  // 保存到应用列表
-  global.QuickWeb.worker.applist[appname] = dir;
+/** 载入指定应用目录 */
+var loadApp = global.QuickWeb.worker.loadApp = function (dir) {
+  return apps.load(connector, dir);
 }
-global.QuickWeb.worker.loadApp = loadApp;
 
-/**
- * 卸载指定应用
- *
- * @param {string} dir
- */
-var unloadApp = function (dir) {
-  dir = path.resolve(dir);
-  // 应用名称
-  var appname = path.basename(dir);
-  
-  // 删除应用
-  connector.removeApp(appname);
-  
-  // 删除应用列表
-  delete global.QuickWeb.worker.applist[appname];
+/** 卸载指定应用 */
+var unloadApp = global.QuickWeb.worker.unloadApp = function (dir) {
+  return apps.unload(connector, dir);
 }
-global.QuickWeb.worker.unloadApp = unloadApp;
+
