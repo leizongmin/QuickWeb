@@ -41,7 +41,7 @@ global.QuickWeb.master = {applist: {}}
 
 
 // 载入服务器配置
-var serverConfig = tool.requireFile(path.resolve('./config.js'));
+var serverConfig = require(path.resolve('./config.js'));
 global.QuickWeb.master.config = serverConfig;
 
   

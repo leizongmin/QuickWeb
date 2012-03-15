@@ -4,7 +4,21 @@
  
 // 注意： 
 // 此配置文件可能会被多次载入，如在程序中有进行其他一些初始化操作，需要自己判断  
- 
+
+var quickweb = require('quickweb');
+if (quickweb.Cluster.isWorker) {
+  /*
+  // 此处执行在Worker进程中需要初始化的代码
+  console.log('This is worker.');
+  */
+}
+else {
+  /*
+  // 此处执行在Master进程中需要初始化的代码
+  console.log('This is master.');
+  */
+}
+
 module.exports = {
 
   /* Worker进程数量 0表示自动设置为CPU个数 */

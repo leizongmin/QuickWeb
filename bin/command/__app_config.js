@@ -5,6 +5,23 @@
 // 注意： 
 // 此配置文件可能会被多次载入，如在程序中有进行其他一些初始化操作，需要自己判断 
  
+var quickweb = require('quickweb');
+if (quickweb.Cluster.isWorker) {
+  /*
+  // 此处执行在Worker进程中需要初始化的代码
+  // 一般可在此处执行诸如初始化数据库连接等操作
+  console.log('This is worker.');
+  */
+}
+else {
+  /*
+  // 此处执行在Master进程中需要初始化的代码
+  // 在Master进程中，一般在查看本应用的配置信息时才会载入此文件，
+  // 一般不需要进行诸如初始化数据库连接等操作
+  console.log('This is master.');
+  */
+} 
+ 
 module.exports = {
   
   /*
