@@ -22,7 +22,7 @@ else {
 module.exports = {
 
   /* Worker进程数量 0表示自动设置为CPU个数 */
-  'cluster':    0,
+  'cluster':    1,
   
   /* 监听的端口 可同时监听多个端口，例如： [80, 81, 82] */
   'listen http':  [8080],
