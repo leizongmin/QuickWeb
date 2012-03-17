@@ -15,19 +15,21 @@
     <tr class="table-header">
       <td width="110">应用名称</td>
       <td>目录</td>
-      <td width="100">是否已加载</td>
+      <td width="50">加载</td>
       <td width="260">操作</td>
     </tr>
-    <% for (var i in app) { %>
-    <tr>
+    <% var num = 0; for (var i in app) { num++; %>
+    <tr class="app-<%=num %> loaded-<%= app[i].loaded %>">
       <td><span class="app-name"><%= app[i].name %></span></td>
       <td><span class="app-path"><%= app[i].path %></span></td>
-      <td><span class="app-loaded"><%= app[i].loaded %></span></td>
+      <td><span class="app-loaded">
+        <button onclick="<%= app[i].loadact %>('app-<%=num %>')"><%= app[i].loadactTitle %></button>
+      </span></td>
       <td><span class="app-op">
           <a href="/page/app_info?path=<%= app[i].path %>&name=<%= app[i].name %>">详细信息</a>
         </span>
-        <button onclick="updateRoute(this)">更新路由表</button>
-        <button onclick="updateCompress(this)">更新压缩文件</button>
+        <button onclick="updateRoute('app-<%=num %>')">更新路由表</button>
+        <button onclick="updateCompress('app-<%=num %>')">更新压缩文件</button>
       </td>
     </tr>
     <% } %>
@@ -41,21 +43,19 @@
 </html>
 <script src="/jquery.min.js"></script>
 <script>
-$(document).ready(function () {
-  $('.app-loaded').each(function () {
-    var $obj = $(this);
-    if ($obj.text().toLowerCase().trim() == 'false') {
-      $obj.after('<button onclick="loadApp(this)">载入</button>');
-    }
-    else {
-      $obj.after('<button onclick="unloadApp(this)">卸载</button>');
-    }
-  });
-});
+
+function getAppInfo(obj) {
+  obj = '.' + obj;
+  var ret = {
+    path: $('.app-path', $(obj)).text().trim(),
+    name: $('.app-name', $(obj)).text().trim()
+  }
+  return ret;
+}
 
 function loadApp(obj) {
-  var path = $('.app-path', $(obj).parent().parent()).text().trim();
-  var name = $('.app-name', $(obj).parent().parent()).text().trim();
+  var path = getAppInfo(obj).path;
+  var name = getAppInfo(obj).name;
   $('#form_path').val(path);
   $('#form_name').val(name);
   $('#form_op').val('load');
@@ -63,23 +63,34 @@ function loadApp(obj) {
 }
 
 function unloadApp(obj) {
-  var path = $('.app-path', $(obj).parent().parent()).text().trim();
-  var name = $('.app-name', $(obj).parent().parent()).text().trim();
+  var path = getAppInfo(obj).path;
+  var name = getAppInfo(obj).name;
   $('#form_path').val(path);
   $('#form_name').val(name);
   $('#form_op').val('unload');
   $('#form').submit();
 }
 
+function unzipApp(obj) {
+  var path = getAppInfo(obj).path;
+  var name = getAppInfo(obj).name;
+  $('#form_path').val(path);
+  $('#form_name').val(name);
+  $('#form_op').val('unzip');
+  $('#form').submit();
+}
+
 function updateRoute(obj) {
-  var path = $('.app-path', $(obj).parent().parent()).text().trim();
+  var path = getAppInfo(obj).path;
+  var name = getAppInfo(obj).name;
   $('#form_path').val(path);
   $('#form_op').val('update_route');
   $('#form').submit();
 }
 
 function updateCompress(obj) {
-  var path = $('.app-path', $(obj).parent().parent()).text().trim();
+  var path = getAppInfo(obj).path;
+  var name = getAppInfo(obj).name;
   $('#form_path').val(path);
   $('#form_op').val('update_compress');
   $('#form').submit();

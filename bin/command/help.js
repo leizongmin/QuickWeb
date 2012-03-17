@@ -43,6 +43,7 @@ exports.run = function (cmd) {
     L('                             a simple benchmark test program');
     L('  -start [path]              start server');
     L('  -stop [path]               stop server');
+    L('  -unzip [file]              extract files a specified zip file.');
     L('  -help [option]             show this information');
   }
   // 查看指定命令的用法

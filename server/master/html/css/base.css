@@ -15,3 +15,9 @@ td {
   background-color: #00576C;
   color: white;
 }
+.loaded-true {
+  background-color: #D4FFCC;
+}
+.loaded-false {
+  
+}

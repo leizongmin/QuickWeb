@@ -21,7 +21,7 @@ else
 
 
 /**
- * 生成服务器目录结构
+ * 停止服务器
  *
  * @param {string} serverdir 服务器目录
  * @return {int}

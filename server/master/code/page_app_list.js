@@ -19,11 +19,23 @@ exports.get = function (req, res) {
     else {
       var data = {}
       for (var i in apps) {
+      
         var app = {name: apps[i]}
         app.path = path.resolve(appPath, app.name);
-        app.loaded = app.name in global.QuickWeb.master.applist
-                   ? true : false;
+        app.loaded = app.name in global.QuickWeb.master.applist ? true : false;
+        
+        // 如果是zip文件
+        if (path.extname(app.name) === '.zip') {
+          app.loadact = 'unzipApp';
+          app.loadactTitle = '解压';
+        }
+        else {
+          app.loadact = app.loaded ? 'unloadApp' : 'loadApp';
+          app.loadactTitle = app.loaded ? '卸载' : '载入';
+        }
+        
         data[app.name] = app;
+        
       }
       res.renderFile('app_list.html', {app: data, message: res.___message});
     }
@@ -83,6 +95,23 @@ exports.post = function (req, res) {
           exports.get(req, res);
         }
       });
+    }
+    
+    // 解压文件
+    else if (op === 'unzip') {
+      tool.quickwebCmd( ['-unzip', appPath]
+                      , function (err, stdout, stderr) {
+        if (err)
+          res.sendError(500, err.stack);
+        else {
+          res.___message = stdout + stderr;
+          exports.get(req, res);
+        }
+      });
+    }
+    
+    else {
+      res.sendError(500, '无法识别的命令：' + op);
     }
   });
 }
