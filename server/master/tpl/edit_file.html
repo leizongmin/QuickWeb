@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>编辑文件</title>
+<link rel="stylesheet" href="/css/base.css">
+<style>
+#editor { 
+  margin: 0;
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+</style>
+</head>
+<body>
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td>
+        <form method="POST">
+        路径：
+        <input name="path" type="text" value="<%= path %>" style="width: 560px;padding: 4px;font-weight: bold;color: #00576C;padding-left: 16px;">
+        <input id="data" name="data" type="hidden">
+        <input type="submit" value="保存修改" onclick="saveFile()">
+      </form>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <pre id="editor"><%- data %></pre>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+<script src="/jquery.min.js"></script>
+<script src="/ace/ace.js"></script>
+<script src="/ace/theme-chrome.js"></script>
+<script src="/ace/mode-<%= mode %>.js"></script>
+<script>
+
+/* 创建编辑器 */
+$(document).ready(function () {
+  window.editor = ace.edit("editor");
+  editor.setTheme("ace/theme/chrome");
+  var Mode = require("ace/mode/<%= mode %>").Mode;
+  editor.getSession().setMode(new Mode());
+  editor.setFontSize('14px');
+});
+
+// 保存修改
+function saveFile () {
+  var data = editor.getSession().getValue();
+  $('#data').val(data);
+  return true;
+}
+
+</script>

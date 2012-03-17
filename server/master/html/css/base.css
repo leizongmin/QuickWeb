@@ -21,3 +21,10 @@ td {
 .loaded-false {
   
 }
+.type-file {
+  font-weight: bold;
+  color: #00576C;
+}
+.type-dir {
+  background-color: #FFF6EC;
+}

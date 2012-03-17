@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>文件管理</title>
+<link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="5">
+      <form method="GET">
+        路径：
+        <input name="path" type="text" value="<%= path %>" style="width: 560px;padding: 4px;font-weight: bold;color: #00576C;padding-left: 16px;">
+        <input type="submit" value="列出文件">
+      </form>
+      </td>
+    </tr>
+    <tr class="table-header">
+      <td>文件名</td>
+      <td width="30">类型</td>
+      <td width="50">大小</td>
+      <td width="200">修改时间</td>
+      <td width="100">操作</td>
+    </tr>
+    <% for (var i in list) { var file = list[i]; %>
+    <tr class="type-<%= file.type %>">
+      <td>
+        <% if (file.type == "dir") { %>
+        <a href="/page/list_dir?path=<%= file.path %>"><%= file.name %></a>
+        <% } else { %>
+        <%= file.name %>
+        <% } %>
+      </td>
+      <td><%= file.type %></td>
+      <td><%= file.size %></td>
+      <td><%= file.mtime %></td>
+      <td>
+        <% if (file.type == "file") { %>
+        <button onclick="editFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">编辑</button>
+        <button onclick="removeFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">删除</button>
+        <% } else { %>
+        <button onclick="removeFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">删除空目录</button>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+    <form id="form_remove" method="POST">
+      <input name="op" type="hidden" value="remove">
+      <input id="remove_path" name="path" type="hidden">
+    </form>
+  </table>
+</body>
+</html>
+<script src="/jquery.min.js"></script>
+<script>
+
+function editFile (path) {
+  console.log('编辑文件：' + path);
+  var url = '/page/edit_file?path=' + path;
+  window.open(url, '_blank');
+}
+
+function removeFile (path) {
+  if (confirm('确定要删除文件”' + path + '“吗？') === true) {
+    console.log('删除文件：' + path);
+    $('#remove_path').val(path);
+    $('#form_remove').submit();
+  }
+}
+
+</script>
