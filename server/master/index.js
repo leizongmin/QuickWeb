@@ -8,6 +8,7 @@
  */
  
 var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var os = require('os');
@@ -138,7 +139,18 @@ global.QuickWeb.master.connector = connector;
 var server_listen_addr = serverConfig.master.host + ':'
                        + serverConfig.master.port;
 try {
-  var server = http.createServer(connector.listener());
+  // 读取证书
+  var opt = {}
+  if (serverConfig.master.key)
+    opt.key = fs.readFileSync(serverConfig.master.key);
+  else
+    opt.key = fs.readFileSync(path.resolve(__dirname, './cert/ca-key.pem'));
+  if (serverConfig.master.cert)
+    opt.cert = fs.readFileSync(serverConfig.master.cert);
+  else
+    opt.cert = fs.readFileSync(path.resolve(__dirname, './cert/ca-cert.pem'));
+  // 创建HTTPS服务器
+  var server = https.createServer(opt, connector.listener());
   server.listen(serverConfig.master.port, serverConfig.master.host);
   /*debug debug('listen master server: ' + server_listen_addr); */
 }
@@ -147,7 +159,7 @@ catch (err) {
                + '\n' + err.stack);
   process.exit(-1);
 }
-console.log('Master server runing on ' + server_listen_addr);
+console.log('Master server runing on https://' + server_listen_addr);
         
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;

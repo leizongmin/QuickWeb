@@ -32,6 +32,10 @@ module.exports = {
   'master': {
     'port':       8850,           // 监听端口
     'host':       '127.0.0.1',    // 监听地址，设置为0.0.0.0时可以从任何主机访问
+    /*
+    'key':        'key.pem',      // 证书文件
+    'cert':       'cert.pem',     // 证书文件
+    */
     'admin':      'admin',        // 账户
     'password':   'admin'         // 密码
   },
