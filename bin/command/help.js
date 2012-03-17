@@ -42,6 +42,7 @@ exports.run = function (cmd) {
     L('  -benchmark [c=client_size] [n=request_num] [u=URL]');
     L('                             a simple benchmark test program');
     L('  -start [path]              start server');
+    L('  -stop [path]               stop server');
     L('  -help [option]             show this information');
   }
   // 查看指定命令的用法
@@ -66,7 +67,7 @@ exports.run = function (cmd) {
   
   // 结尾
   L('');
-  L('For more information, please visit http://github.com/leizongmin/QuickWeb');
+  L('For more information, please visit http://leizongmin.github.com/QuickWeb/');
   
   return 1;
 }
