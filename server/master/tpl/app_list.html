@@ -12,6 +12,19 @@
   <hr>
   <% } %>
   <table width="750" align="center">
+    <tr>
+      <td width="110" class="table-header">上传文件</td>
+      <td>
+        <form id="form_upload" method="POST" enctype="multipart/form-data">
+          <input name="op" value="upload" type="hidden">
+          <input type="file" name="upload">
+          <input type="submit" value="上传">
+        </form>
+      </td>
+    </tr>
+  </table>
+  <br>
+  <table width="750" align="center">
     <tr class="table-header">
       <td width="110">应用名称</td>
       <td>目录</td>
@@ -95,4 +108,5 @@ function updateCompress(obj) {
   $('#form_op').val('update_compress');
   $('#form').submit();
 }
+
 </script>

@@ -110,6 +110,21 @@ exports.post = function (req, res) {
       });
     }
     
+    // 上传文件
+    else if (op === 'upload') {
+      var filename = req.file.upload.path;
+      var basename = req.file.upload.name;
+      // 保存到应用目录的文件名
+      var savefilename = path.resolve('./app', basename);
+      // 移动文件
+      tool.moveFile(filename, savefilename, function (err) {
+        if (err)
+          return res.sendError(500, err);
+        else
+          return exports.get(req, res);
+      });
+    }
+    
     else {
       res.sendError(500, '无法识别的命令：' + op);
     }
