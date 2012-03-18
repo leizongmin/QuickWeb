@@ -6,7 +6,7 @@
  */
 
 var path = require('path');
-var Zip = require('adm-zip').Zip;
+var Zip = require('adm-zip');
 var child_process = require('child_process');
 var quickweb = require('../../');
 var cluster = quickweb.Cluster;
@@ -39,10 +39,12 @@ exports.run = function (filename) {
   
   // 尝试使用系统自带的unzip命令
   var opt = {}
+  utils.log('try system command "unzip"...');
   child_process.exec('unzip -xqo ' + filename + ' -d ' + extpath, opt,
   function (err, stdout, stderr) {
     // 如果出错，可能系统没有unzip命令，则使用adm-zip模块来解压
     if (err || stderr.length > 0) {
+      utils.log(err + '\n' + stderr);
       utils.log('use adm-zip module.');
       return extractFile(filename, extpath);
     }
