@@ -27,6 +27,18 @@ module.exports = {
   /* 监听的端口 可同时监听多个端口，例如： [80, 81, 82] */
   'listen http':  [8080],
   
+  /* 监听的HTTPS端口 可同时监听多个端口，例如： [443, 8443] */
+  /*
+  'listen https':  [443],
+  */
+  
+  /* HTTPS 证书文件 */
+  /*
+  'https': {
+    'key':      'cert/key.pem',
+    'cert':     'cert/cert.pem'
+  },
+  */
   
   /* 管理界面配置 */
   'master': {

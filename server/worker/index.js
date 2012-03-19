@@ -8,6 +8,7 @@
  */
  
 var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var quickweb = require('../../');
@@ -50,12 +51,44 @@ if (typeof serverConfig.onRequest === 'function')
 // ----------------------------------------------------------------------------
 // 监听端口
 var listenHttp = {}
+// 监听http端口
 for (var i in serverConfig['listen http']) {
   var port = parseInt(serverConfig['listen http'][i]);
   var server = http.createServer(connector.listener());
   server.listen(port);
   listenHttp[port] = server;
   /*debug debug('listen on port ' + port + '...'); */
+}
+if (serverConfig['listen https']) {
+  try {
+    // 读取证书,如果没有设置证书则使用默认的证书
+    var opt = {}
+    if (serverConfig.https && serverConfig.https.key) {
+      opt.key = fs.readFileSync(serverConfig.https.key);
+    }
+    else {
+      opt.key = fs.readFileSync(path.resolve(__dirname, './cert/ca-key.pem'));
+      console.log('use default https key.');
+    }
+    if (serverConfig.https && serverConfig.https.cert) {
+      opt.cert = fs.readFileSync(serverConfig.https.cert);
+    }
+    else {
+      opt.cert = fs.readFileSync(path.resolve(__dirname, './cert/ca-cert.pem'));
+      console.log('use default https cert.');
+    }
+  }
+  catch (err) {
+    console.error('Read cert file fail: ' + err);
+  }
+}
+// 监听https端口
+for (var i in serverConfig['listen https']) {
+  var port = parseInt(serverConfig['listen https'][i]);
+  var server = https.createServer(opt, connector.listener());
+  server.listen(port);
+  listenHttp[port] = server;
+  /*debug debug('listen on https port ' + port + '...'); */
 }
 global.QuickWeb.worker.listen = listenHttp;
 
