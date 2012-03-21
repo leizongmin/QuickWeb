@@ -37,7 +37,7 @@ exports.get = function (req, res) {
       '.htm':   'html',
       '.coffee':'coffee'
     }
-    var mode = T[extname] || ['javascript', 'JavaScript'];
+    var mode = T[extname] || 'javascript';
     
     res.renderFile('edit_file.html', {
       path:   p,
