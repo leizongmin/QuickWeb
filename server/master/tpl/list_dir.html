@@ -10,8 +10,10 @@
     <tr class="table-header">
       <td colspan="5">
       <form method="GET">
+        <button onclick="history.back(); return false;">&lt;后退</button>
+        <button onclick="history.forward(); return false;">前进&gt;</button>
         路径：
-        <input name="path" type="text" value="<%= path %>" style="width: 560px;padding: 4px;font-weight: bold;color: #00576C;padding-left: 16px;">
+        <input class="file-path-input" name="path" type="text" value="<%= path %>">
         <input type="submit" value="列出文件">
       </form>
       </td>
@@ -25,24 +27,26 @@
     </tr>
     <% for (var i in list) { var file = list[i]; %>
     <tr class="type-<%= file.type %>">
-      <td>
-        <% if (file.type == "dir") { %>
-        <a href="/page/list_dir?path=<%= file.path %>"><%= file.name %></a>
-        <% } else { %>
+      <% if (file.type == "dir") { %>
+      <td onclick="window.location='/page/list_dir?path=<%= file.path.replace(/([\\\/])/ig, "\\$1") %>';"><span class="file-name">
         <%= file.name %>
-        <% } %>
-      </td>
-      <td><%= file.type %></td>
-      <td><%= file.size %></td>
-      <td><%= file.mtime %></td>
-      <td>
+      </span></td>
+      <% } else { %>
+      <td onclick="editFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')"><span class="file-name">
+        <%= file.name %>
+      </span></td>
+      <% } %>
+      <td><span class="file-type"><%= file.type %></span></td>
+      <td><span class="file-size"><%= file.size %></span></td>
+      <td><span class="file-mtime"><%= file.mtime %></span></td>
+      <td><span class="file-op">
         <% if (file.type == "file") { %>
         <button onclick="editFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">编辑</button>
         <button onclick="removeFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">删除</button>
         <% } else { %>
         <button onclick="removeFile('<%= file.path.replace(/([\\\/])/ig, "\\$1") %>')">删除空目录</button>
         <% } %>
-      </td>
+      </span></td>
     </tr>
     <% } %>
     <form id="form_remove" method="POST">

@@ -2,13 +2,27 @@ body {
   max-width: 960px;
   margin: auto;
   font-size: 14px;
+  background-color: white;
+  background-image: url(/grid-18px-masked.png);
+  background-repeat: repeat-x;
+  background-position: 0 40px;
 }
 table {
   border: 1px solid #00576C;
+  border-collapse:collapse
 }
 td {
   padding: 4px;
   text-align: left;
+  border: 1px solid #888;
+}
+tr:hover {
+  cursor: pointer;
+  background-color: #D9EDF7;
+  color: #3A87AD;
+}
+tr:hover a {
+  color: #3A87AD;
 }
 .table-header {
   font-weight: bold;
@@ -19,12 +33,51 @@ td {
   background-color: #D4FFCC;
 }
 .loaded-false {
-  
+  color: #888;
 }
 .type-file {
-  font-weight: bold;
-  color: #00576C;
+  color: #333;
 }
 .type-dir {
   background-color: #FFF6EC;
+}
+.app-name {
+  font-weight: bold;
+  color: #333;
+}
+.file-name {
+  font-weight: bold;
+}
+.file-type {
+  color: #888;
+}
+.file-size {
+  color: #08C;
+}
+.file-mtime {
+  font-size: 12px;
+  color: #888;
+}
+.file-path-input {
+  width: 440px;
+  padding: 4px;
+  font-weight: bold;
+  color: #00576C;
+  padding-left: 16px;
+}
+.worker-timestamp {
+  font-size: 12px;
+  color: #888;
+}
+.worker-cpu {
+  color: #F85D00;
+  font-weight: bold;
+}
+.worker-pid {
+  font-weight: bold;
+  color: #333;
+}
+.worker-mem {
+  color: #3A87AD;
+  font-weight: bold;
 }
