@@ -30,13 +30,19 @@ exports.get = function (req, res) {
           app.loadactTitle = '解压';
         }
         else {
+          // 检查目录里面是否有config.js文件，如果没有则忽略
+          if (!app.loaded) {
+            var confn = path.resolve(app.path, 'config.js');
+            if (!path.existsSync(confn))
+              continue;
+          }
           app.loadact = app.loaded ? 'unloadApp' : 'loadApp';
           app.loadactTitle = app.loaded ? '卸载' : '载入';
         }
-        
+
         data[app.name] = app;
-        
       }
+      
       res.renderFile('app_list.html', {app: data, message: res.___message});
     }
   });

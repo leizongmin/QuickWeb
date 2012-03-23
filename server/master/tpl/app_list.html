@@ -32,7 +32,7 @@
       <td width="260">操作</td>
     </tr>
     <% var num = 0; for (var i in app) { num++; %>
-    <tr class="app-<%=num %> loaded-<%= app[i].loaded %>">
+    <tr class="app-<%=num %> loaded-<%= app[i].loaded %> act-<%= app[i].loadact %>">
       <td><span class="app-name"><%= app[i].name %></span></td>
       <td><span class="app-path"><%= app[i].path %></span></td>
       <td><span class="app-loaded">

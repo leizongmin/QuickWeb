@@ -35,6 +35,9 @@ tr:hover a {
 .loaded-false {
   color: #888;
 }
+.act-unzipApp {
+  background-color: #FFF6EC;
+}
 .type-file {
   color: #333;
 }
