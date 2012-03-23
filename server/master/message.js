@@ -67,13 +67,6 @@ cluster.on('message', function (pid, msg) {
     ms.connection = 0;
     for (var i in ms.connectionPid)
       ms.connection += ms.connectionPid[i];
-    
-    for (var i in ws.url) {
-      if (i in ms.url)
-        ms.url[i] += ws.url[i];
-      else
-        ms.url[i] = ws.url[i];
-    }
   }
   
 });
