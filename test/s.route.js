@@ -44,7 +44,7 @@ describe('Service.Route', function () {
                                    });
      route.query('hhh').should.eql({ handle:  fun3
                                    , index:   1
-                                   , value:   null
+                                   , value:   []
                                    , info:    {}
                                    });
     route.query('/a').should.eql({ handle:  fun1
