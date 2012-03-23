@@ -3,8 +3,10 @@
  *
  */
  
+var quickweb = require('quickweb'); 
+ 
 exports.path = '/';
 
 exports.get = function (req, res) {
-  res.sendFile('index.html');
+  res.renderFile('index.html', {version: quickweb.version});
 }

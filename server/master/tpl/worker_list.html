@@ -12,7 +12,10 @@
       <td width="100">内存占用</td>
       <td width="100">CPU占用</td>
       <td width="200">时间戳</td>
-      <td>操作 <button onclick="forkWorker()">增加进程</button></td>
+      <td>操作
+        <button onclick="forkWorker()">增加进程</button>
+        <button onclick="restartAllWorker()">全部重启</button>
+      </td>
     </tr>
     <% for (var i in worker) { %>
     <tr>
@@ -50,6 +53,11 @@ function killWorker(pid) {
 function restartWorker(pid) {
   $('#form_pid').val(pid);
   $('#form_op').val('restart');
+  $('#form').submit();
+}
+
+function restartAllWorker() {
+  $('#form_op').val('restart_all');
   $('#form').submit();
 }
 

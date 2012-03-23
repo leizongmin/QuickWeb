@@ -1,11 +1,13 @@
 body {
-  max-width: 960px;
   margin: auto;
   font-size: 14px;
   background-color: white;
   background-image: url(/grid-18px-masked.png);
   background-repeat: repeat-x;
   background-position: 0 40px;
+}
+body.main {
+  width: 960px;
 }
 table {
   border: 1px solid #00576C;
