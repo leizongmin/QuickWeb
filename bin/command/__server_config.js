@@ -49,7 +49,8 @@ module.exports = {
     'cert':       'cert.pem',     // 证书文件
     */
     'admin':      'admin',        // 账户
-    'password':   'admin'         // 密码
+    // 密码(默认为admin)    此字符串可通过 quickweb -password [密码] 来获取
+    'password':   'FE:BECBB101FB4BCC2362266AD9CECA036A:E7'
   },
   
   

@@ -197,8 +197,8 @@ var checkAuth = function (info) {
       && serverConfig.master.password))
     return true;
     
-  if (info.username == serverConfig.master.admin
-      && info.password == serverConfig.master.password)
+  if (info.username == serverConfig.master.admin &&
+      tool.validatePassword(info.password, serverConfig.master.password))
     return true;
   else
     return false;

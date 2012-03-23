@@ -67,4 +67,12 @@ describe('Service tool', function () {
     tool.merge(a, c).should.eql(ac);
   });
   
+  it('#encryptPassword', function () {
+    var p = 'hello' + new Date().getTime();
+    var m = tool.encryptPassword(p);
+    console.log(p, m);
+    tool.validatePassword(p, m).should.equal(true);
+    tool.validatePassword('haha', m).should.equal(false);
+    console.log(tool.validatePassword(p, m));
+  });
 });
