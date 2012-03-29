@@ -2,3 +2,15 @@
 
 ## [帮助文档：http://leizongmin.github.com/QuickWeb/](http://leizongmin.github.com/QuickWeb/)
 
+
+
+开发计划
+=============
+
+*  完善应用管理界面
+
+*  Websocket支持(使用socket.io)
+
+*  优化性能
+
+*  完善单元测试代码
