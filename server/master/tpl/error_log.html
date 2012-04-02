@@ -22,7 +22,7 @@
     <tr>
       <td><%= log[i].pid %></td>
       <td><%= (new Date(log[i].timestamp).toUTCString()) %></td>
-      <td><%= log[i].error %></td>
+      <td><pre><%= log[i].error %></pre></td>
     </tr>
     <% } %>
   </table>
