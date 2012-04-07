@@ -28,6 +28,22 @@ exports.get = function (req, res) {
     if (err)
       return res.sendError(500, err);
       
+    var FATHER_DIR = {
+      name:   '..',
+      path:   path.resolve(p, '..'),
+      size:   0,
+      mtime:  new Date(),
+      type:   'dir'
+    }
+      
+    // 如果是空目录，直接显示
+    if (list.length < 1) {
+      return res.renderFile('list_dir.html', {
+        list:   [FATHER_DIR],
+        path:   p
+      });
+    }
+      
     var task = Parallel(function (input, callback) {
       fs.stat(input, callback);
     });
@@ -41,7 +57,7 @@ exports.get = function (req, res) {
     
     task.start(_data, function (data) {
      
-      var list = [];
+      var list = [FATHER_DIR];
       for (var i in data) {
         list.push({
           name:   data[i].key,
