@@ -54,5 +54,25 @@
       <td><%= config["exception log size"] %></td>
     </tr>
   </table>
+  <br>
+  <table width="750" align="center">
+    <tr class="table-header">
+      <td colspan="3">
+        <div style="text-align: center">在线管理员</div>
+      </td>
+    </tr>
+    <tr class="table-header">
+      <td width="120">IP地址</td>
+      <td width="300">最后活动时间</td>
+      <td>请求的URL</td>
+    </tr>
+    <% for (var ip in online) { var admin = online[ip]; %>
+    <tr>
+      <td><%= ip %></td>
+      <td><span class="timestamp"><%= admin.timestamp %></span></td>
+      <td><%= admin.url %></td>
+    </tr>
+    <% } %>
+  </table>
 </body>
 </html>

@@ -35,6 +35,7 @@ else
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限
 // global.QuickWeb.master.processMonitor  系统资源占用监视器
+// global.QuickWeb.master.onlineAdmin     登录的管理员列表
 
 
 // 设置全局变量
@@ -164,6 +165,7 @@ console.log('Master server runing on https://' + server_listen_addr);
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;
 
+var onlineAdmin = global.QuickWeb.master.onlineAdmin = {};
 var AUTH_FAIL_IP = {};
 connector.addApp('default', {
   appdir: masterPath,
@@ -190,6 +192,10 @@ connector.addApp('default', {
     
     if (checkAuth(req.auth())) {
       delete AUTH_FAIL_IP[ip];
+      
+      // 记录最后的操作
+      onlineAdmin[ip] = {timestamp: new Date(), url: req.url};
+      
       return next();
     }
     // 如果验证失败

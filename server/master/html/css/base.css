@@ -86,3 +86,7 @@ tr:hover a {
   color: #3A87AD;
   font-weight: bold;
 }
+.timestamp {
+  font-size: 12px;
+  color: #888;
+}

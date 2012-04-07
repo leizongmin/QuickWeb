@@ -28,6 +28,7 @@ else
 // global.QuickWeb.master.path            服务器路径
 // global.QuickWeb.master.checkAuth       验证管理权限
 // global.QuickWeb.master.processMonitor  系统资源占用监视器
+// global.QuickWeb.master.onlineAdmin     登录的管理员列表
 var master = global.QuickWeb.master;
 
   
