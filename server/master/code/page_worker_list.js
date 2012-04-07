@@ -24,12 +24,6 @@ exports.get = function (req, res) {
 
 // 启动/杀死进程
 exports.post = function (req, res) {
-  // 权限验证
-  if (!global.QuickWeb.master.checkAuth(req.auth())) {
-    res.authFail();
-    return;
-  }
-  
   req.on('post complete', function () {
     var op = req.post.op;
     var pid = parseInt(req.post.pid);

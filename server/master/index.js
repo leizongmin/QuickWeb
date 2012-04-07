@@ -164,13 +164,40 @@ console.log('Master server runing on https://' + server_listen_addr);
 var masterPath = path.resolve(__dirname);
 global.QuickWeb.master.path = masterPath;
 
+var AUTH_FAIL_IP = {};
 connector.addApp('default', {
   appdir: masterPath,
   onRequest: function (req, res, next) {
-    if (checkAuth(req.auth()))
-      next();
-    else
-      res.authFail();
+    // 请求的IP
+    var ip = req.socket.remoteAddress;
+    var timestamp = new Date().getTime();
+    if (!AUTH_FAIL_IP[ip])
+      AUTH_FAIL_IP[ip] = {time: timestamp, count: 0, refuse: false};
+    var client = AUTH_FAIL_IP[ip];
+    // 该IP在某段时间内累计失败次数太多，则拒绝连接
+    // 失败超过3次，禁止10分钟
+    if (client.count >= 3) {
+      if (client.refuse === false) {
+        client.refuse = true;
+        setTimeout(function () {
+          /*debug debug('Refuse timeout: ' + ip); */
+          delete AUTH_FAIL_IP[ip];
+        }, 60000 * 10);
+      }
+      /*debug debug('Refuse: ' + ip); */
+      return res.authFail();
+    }
+    
+    if (checkAuth(req.auth())) {
+      delete AUTH_FAIL_IP[ip];
+      return next();
+    }
+    // 如果验证失败
+    else {
+      client.count++;
+      /*debug debug('Auth fail from ' + ip + '   ' + client.count + ' times.'); */
+      return res.authFail();
+    }
   }});
 
 // 载入code目录里面的所有js文件
