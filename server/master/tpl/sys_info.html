@@ -26,8 +26,12 @@
       <td><%= release %></td>
     </tr>
     <tr>
-      <td>运行时间</td>
+      <td>系统已运行时间</td>
       <td><%= (parseInt(uptime / 60 / 60 * 10) / 10) %>小时</td>
+    </tr>
+    <tr>
+      <td>QuickWeb已运行时间</td>
+      <td><%= (parseInt(quickweb.uptime / 60 / 60 * 10) / 10) %>小时</td>
     </tr>
     <tr>
       <td>负载</td>
@@ -66,6 +70,7 @@
       <td><%= quickweb.path %></td>
     </tr>
   </table>
+  <br>
   <table width="750" align="center">
     <tr class="table-header">
       <td colspan="8">

@@ -32,6 +32,7 @@ var getSysInfo = function () {
                              }
                 , quickweb   :{ ver     : quickweb.version
                               , path    : path.resolve(__dirname, '../../..')
+                              , uptime  : process.uptime()
                              }
                 }
   return sysinfo;
