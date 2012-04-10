@@ -151,7 +151,7 @@ exports.post = function (req, res) {
                 cluster.broadcast({cmd: 'load app', dir: appPath});
                 // 更新应用状态
                 applist[appName] = appPath;
-                console.log(appPath, appName, applist);
+                //console.log(appPath, appName, applist);
                 return exports.get(req, res);
               }, 2000);
             });
