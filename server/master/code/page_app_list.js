@@ -126,8 +126,40 @@ exports.post = function (req, res) {
       tool.moveFile(filename, savefilename, function (err) {
         if (err)
           return res.sendError(500, err);
-        else
+          
+        // 如果选择了“快速部署”
+        if (req.post.quick_install) {
+          tool.quickwebCmd( ['-unzip', savefilename]
+                          , function (err, stdout, stderr) {
+            if (err)
+              return res.sendError(500, err.stack);
+              
+            // 删除压缩文件
+            fs.unlink(savefilename, function (err) {
+              if (err)
+                return res.sendError(500, err.stack);
+              
+              // 重新加载应用
+              var extname = path.extname(savefilename);
+              var appName = basename.substr(0, basename.length - extname.length);
+              var appPath = savefilename.substr(0, savefilename.length - extname.length);
+              // 向各个Worker进程广播载入应用指令
+              cluster.broadcast({cmd: 'unload app', dir: appPath});
+              delete applist[appName];
+              setTimeout(function () {
+                // 向各个Worker进程广播卸载应用指令
+                cluster.broadcast({cmd: 'load app', dir: appPath});
+                // 更新应用状态
+                applist[appName] = appPath;
+                console.log(appPath, appName, applist);
+                return exports.get(req, res);
+              }, 2000);
+            });
+          });
+        }
+        else {
           return exports.get(req, res);
+        }
       });
     }
     

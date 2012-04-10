@@ -13,11 +13,12 @@
   <% } %>
   <table width="750" align="center">
     <tr>
-      <td width="110" class="table-header">上传文件</td>
+      <td width="110" class="table-header">上传应用</td>
       <td>
         <form id="form_upload" method="POST" enctype="multipart/form-data">
           <input name="op" value="upload" type="hidden">
           <input type="file" name="upload">
+          <input type="submit" name="quick_install" value="快速部署">
           <input type="submit" value="上传">
         </form>
       </td>

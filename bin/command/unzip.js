@@ -61,7 +61,7 @@ exports.run = function (filename) {
  */
 exports.help = function () {
   var L = function (t) { console.log('  ' + t); }
-  L('extract files a specified zip file.');
+  L('extract a specified zip file.');
   L('');
   L('Examples:');
   L('  quickweb -unzip /file.zip    extract file "/file.zip" to "/file"');
