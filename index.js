@@ -2,7 +2,7 @@
  * QuickWeb
  *
  * @author 老雷<leizongmin@gmail.com>
- * @version 0.3.0
+ * @version 0.4.0
  */
  
  
@@ -24,7 +24,7 @@ var os = require('os');
 // quickweb.cpu_num         系统CPU个数
 // quickweb.node_version    Node.js版本号，如[0,6,5]表示v0.6.5
 // QuickWeb版本号
-exports.version = '0.3.0-b418'; 
+exports.version = '0.4.0-pre-419'; 
 
 // QuickWeb信息
 exports.quickweb_path = __dirname;      // 模块目录
