@@ -36,12 +36,14 @@ exports.run = function (appdir) {
   utils.log('Load app config...');
   var config = require(path.resolve(appdir, 'config.js'));
   
-  // 读取html目录和code目录的文件结构
+  // 读取html目录和code目录、tpl目录的文件结构
   utils.log('Scan app dir "' + appdir + '"...');
   var phtml = path.resolve('html');
   var pcode = path.resolve('code');
+  var ptpl = path.resolve('tpl');
   var shtml = tool.listdir(phtml);
   var scode = tool.listdir(pcode, '.js');
+  var stpl = tool.listdir(ptpl);
   
   // 分析路径
   var ret = []
@@ -56,6 +58,12 @@ exports.run = function (appdir) {
   for (var i in shtml.file) {
     var p = tool.relativePath(phtml, shtml.file[i]);
     ret.push('file\t' + p);
+  }
+  // tpl目录
+  utils.log('find ' + stpl.file.length + ' template file(s)');
+  for (var i in stpl.file) {
+    var p = tool.relativePath(ptpl, stpl.file[i]);
+    ret.push('tpl\t' + p);
   }
   // 程序
   utils.log('find ' + scode.file.length + ' code file(s)');
