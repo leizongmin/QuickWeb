@@ -63,6 +63,20 @@ module.exports = {
     'session config': {                // 针对该session引擎的配置
       'path': '/tmp'
     },
+    
+    /*
+     使用基于redis的session配置
+    'session type':     'redis',       // 使用默认的文件存储引擎
+    'session tag':      'SESSID',      // session标识符
+    'session cookie maxage': 31536000, // Session的Cookie保存时间（单位：秒），默认为1年
+    'session config': {                // 针对该session引擎的配置
+      'host':     '127.0.0.1',         // 服务器地址
+      'port':     6379,                // 端口
+      'prefix':   'SESSION:',          // 键名前缀
+      'maxage':   2592000              // 存活时间（单位：秒），默认为1个月
+    },
+    */
+    
   
     /* Request对象事件 */
     'event': {

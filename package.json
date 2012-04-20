@@ -15,7 +15,8 @@
     "formidable":   ">= 1.0.2",
     "tinyliquid":   ">= 0.0.1",
     "mkdirp":       ">= 0.0.7",
-    "adm-zip":      ">= 0.1.3"
+    "adm-zip":      ">= 0.1.3",
+    "redis":        ">= 0.7.1"
   },
   "bin": {
     "quickweb":   "./bin/quickweb.js"
