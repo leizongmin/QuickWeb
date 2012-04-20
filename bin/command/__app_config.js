@@ -48,6 +48,13 @@ module.exports = {
   },
   */
   
+  
+  /*
+  // 公共中间件，会自动载入middleware目录的中间件模块，此处在onRequest前执行
+  'middleWare':       ['test'],   
+  */
+  
+  
   /* ServerRequest对象配置 */
   'request': {
     'decode get':       true,          // 自动解析GET数据
