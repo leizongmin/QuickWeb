@@ -152,5 +152,19 @@ module.exports = {
       console.log('[' + new Date() + '] TestLog: ', msg);
     }
     */
+  },
+  
+  
+  /* MVC渲染模式(仅支持TinyLiquid模板引擎)  */
+  'enableMVC':  true,
+  /* MVC 数据模型 */
+  'MVCModels':  {
+    /*
+    'random': function (env, callback) {
+      setTimeout(function () {
+        callback(null, Math.random());
+      }, 100);
+    }
+    */
   }
 }

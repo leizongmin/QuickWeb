@@ -25,6 +25,7 @@ else
 
 
 // global.QuickWeb.worker.applist           应用列表
+// global.QuickWeb.app                      应用数据
 // global.QuickWeb.worker.config            服务器配置
 // global.QuickWeb.worker.connector         Connector对象
 // global.QuickWeb.worker.listen            监听的httpServer对象
@@ -32,7 +33,10 @@ else
 // global.QuickWeb.worker.unloadApp         卸载指定应用
 
 // 设置全局变量
-global.QuickWeb.worker = {applist: apps.applist}
+global.QuickWeb.worker = {applist: apps.applist};
+
+// 应用数据
+global.QuickWeb.app = {};
 
 // 载入服务器配置
 var serverConfig = tool.requireFile(path.resolve('./config.js'));

@@ -23,6 +23,7 @@ else
 
 
 // global.QuickWeb.loader.applist           应用列表
+// global.QuickWeb.app                      应用数据
 // global.QuickWeb.loader.config            服务器配置
 // global.QuickWeb.loader.connector         Connector对象
 // global.QuickWeb.loader.listen            监听的httpServer对象
@@ -31,7 +32,10 @@ else
 
 
 // 设置全局变量
-global.QuickWeb.loader = {applist: apps.applist}
+global.QuickWeb.loader = {applist: apps.applist};
+
+// 应用数据
+global.QuickWeb.app = {};
 
 // 载入服务器配置
 var serverConfig = tool.requireFile(path.resolve('./config.js'));
