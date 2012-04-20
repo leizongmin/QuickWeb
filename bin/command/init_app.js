@@ -34,6 +34,7 @@ exports.run = function (appdir) {
   utils.mkdir('code');
   utils.mkdir('html');
   utils.mkdir('tpl');
+  utils.mkdir('middleware');
   
   // 创建配置文件
   utils.cpfile(path.resolve(__dirname, '__app_config.js'), 'config.js');

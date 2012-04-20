@@ -41,9 +41,11 @@ exports.run = function (appdir) {
   var phtml = path.resolve('html');
   var pcode = path.resolve('code');
   var ptpl = path.resolve('tpl');
+  var pmiddleware = path.resolve('middleware');
   var shtml = tool.listdir(phtml);
   var scode = tool.listdir(pcode, '.js');
   var stpl = tool.listdir(ptpl);
+  var smiddleware = tool.listdir(pmiddleware);
   
   // 分析路径
   var ret = []
@@ -64,6 +66,12 @@ exports.run = function (appdir) {
   for (var i in stpl.file) {
     var p = tool.relativePath(ptpl, stpl.file[i]);
     ret.push('tpl\t' + p);
+  }
+  // middleware目录
+  utils.log('find ' + smiddleware.file.length + ' middleware module(s)');
+  for (var i in smiddleware.file) {
+    var p = tool.relativePath(pmiddleware, smiddleware.file[i]);
+    ret.push('middleware\t' + p);
   }
   // 程序
   utils.log('find ' + scode.file.length + ' code file(s)');
