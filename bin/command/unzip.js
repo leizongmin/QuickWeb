@@ -25,35 +25,28 @@ else
  * 解压zip文件
  *
  * @param {string} filename 文件名
+ * @param {string} target 目标目录
  * @return {int}
  */
-exports.run = function (filename) {
+exports.run = function (filename, target) {
 
+  if (!filename)
+    return utils.die('Please specified a zip file!');
+  
   // 文件名绝对路径
   filename = path.resolve(filename);
   
   // 输出目录
-  var extname = path.extname(filename);
-  var extpath = filename.substr(0, filename.length - extname.length);
+  if (target) {
+    var extpath = path.resolve(target);
+  }
+  else {
+    var extname = path.extname(filename);
+    var extpath = filename.substr(0, filename.length - extname.length);
+  }
   utils.log('extract file "' + filename + '" to "' + extpath + '"...');
   
-  // 尝试使用系统自带的unzip命令
-  var opt = {}
-  utils.log('try system command "unzip"...');
-  child_process.exec('unzip -xqo ' + filename + ' -d ' + extpath, opt,
-  function (err, stdout, stderr) {
-    // 如果出错，可能系统没有unzip命令，则使用adm-zip模块来解压
-    if (err || stderr.length > 0) {
-      utils.log(err + '\n' + stderr);
-      utils.log('use adm-zip module.');
-      return extractFile(filename, extpath);
-    }
-    else {
-      return utils.exit(stdout);
-    }
-  });
-  
-  return 0;
+  return extractFile(filename, extpath);
 }
 
 /**
