@@ -43,6 +43,7 @@ exports.run = function (cmd) {
     L('                             a simple benchmark test program');
     L('  -start [path]              start server');
     L('  -stop [path]               stop server');
+    L('  -single [path]             start a single process server');
     L('  -unzip [file]              extract a specified zip file');
     L('  -password [password]       encrypt a password string');
     L('  -help [option]             show this information');

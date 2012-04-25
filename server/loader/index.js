@@ -74,8 +74,10 @@ fs.readdir('./app', function (err, apps) {
     for (var i in apps) {
       var a = apps[i];
       try {
-        loadApp(path.resolve('./app', a));
-        console.log('loaded app ' + a);
+        if (path.existsSync(path.resolve('./app', a, 'config.js'))) {
+          loadApp(path.resolve('./app', a));
+          console.log('loaded app ' + a);
+        }
       }
       catch (err) {
         console.log('load app ' + a + ' fail: ' + err.stack);
