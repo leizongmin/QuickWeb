@@ -42,10 +42,21 @@ exports.run = function (appdir) {
   var pcode = path.resolve('code');
   var ptpl = path.resolve('tpl');
   var pmiddleware = path.resolve('middleware');
-  var shtml = tool.listdir(phtml);
-  var scode = tool.listdir(pcode, '.js');
-  var stpl = tool.listdir(ptpl);
-  var smiddleware = tool.listdir(pmiddleware);
+  
+  var listdir = function (dir) {
+    try {
+      return tool.listdir(dir);
+    }
+    catch (err) {
+      utils.log('Directory "' + dir + '" not found!');
+      return {file: [], dir: []};
+    }
+  };
+  
+  var shtml = listdir(phtml);
+  var scode = listdir(pcode, '.js');
+  var stpl = listdir(ptpl);
+  var smiddleware = listdir(pmiddleware);
   
   // 分析路径
   var ret = []
