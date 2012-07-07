@@ -33,7 +33,7 @@ exports.get = function (req, res) {
           // 检查目录里面是否有config.js文件，如果没有则忽略
           if (!app.loaded) {
             var confn = path.resolve(app.path, 'config.js');
-            if (!path.existsSync(confn))
+            if (!fs.existsSync(confn))
               continue;
           }
           app.loadact = app.loaded ? 'unloadApp' : 'loadApp';

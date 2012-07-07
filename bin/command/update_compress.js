@@ -43,7 +43,7 @@ exports.run = function (appdir) {
   var shtml = tool.listdir(phtml);
   
   // 检查是否存在html目录
-  if (!path.existsSync('html'))
+  if (!fs.existsSync('html'))
     utils.die('Cannot find html dir!');
     
   // 创建目录gzip目录
