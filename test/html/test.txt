@@ -2009,7 +2009,7 @@ koichik, Maciej Małecki, Guglielmo Ferri, isaacs)
 2009.11.03, Version 0.1.16, 726865af7bbafe58435986f4a193ff11c84e4bfe
 
   * API: Use CommonJS-style module requiring
-    - require("/sys.js") becomes require("sys")
+    - require("/sys.js") becomes require('util')
     - require("circle.js") becomes require("./circle")
     - process.path.join() becomes require("path").join()
     - __module becomes module
