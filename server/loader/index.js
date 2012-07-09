@@ -74,7 +74,7 @@ fs.readdir('./app', function (err, apps) {
     for (var i in apps) {
       var a = apps[i];
       try {
-        if (path.existsSync(path.resolve('./app', a, 'config.js'))) {
+        if (fs.existsSync(path.resolve('./app', a, 'config.js'))) {
           loadApp(path.resolve('./app', a));
           console.log('loaded app ' + a);
         }
