@@ -1,5 +1,7 @@
 ## v0.4版已迁移至这里：https://github.com/quickweb/quickweb
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/leizongmin/QuickWeb.svg)](https://greenkeeper.io/)
+
 ## 如有问题，请联系 [@老雷](http://weibo.com/ucdok)
 
 
